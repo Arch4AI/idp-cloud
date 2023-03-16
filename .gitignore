@@ -1,0 +1,15 @@
+.idea
+target/
+http-utils/target/
+management/target/
+oauth-utils/target/
+
+.mvn
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+*.iml

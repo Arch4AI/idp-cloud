@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration>
+    <!--配置数据库连接的位置-->
+    <properties resource="application.properties"/>
+
+    <!-- 此处指定生成针对MyBatis3的DAO -->
+    <context id="mysql" targetRuntime="MyBatis3">
+        <!-- 字段带`,解决列表跟关键字冲突问题 -->
+        <property name="autoDelimitKeywords" value="true"/>
+        <property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
+
+
+        <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
+        <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin"/>
+        <plugin type="org.mybatis.generator.plugins.MapperAnnotationPlugin"/>
+
+        <!-- 用来除去时间信息的，这在配合类似subversion的代码管理工具时使用很有效，因为可以减少没有必要的注释迁入 -->
+        <commentGenerator>
+            <property name="suppressDate" value="true"/>
+            <!--  关闭自动生成的注释  -->
+            <property name="suppressAllComments" value="false"/>
+        </commentGenerator>
+        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+                        connectionURL="${spring.datasource.url}&amp;nullCatalogMeansCurrent=true"
+                        userId="${spring.datasource.username}" password="${spring.datasource.password}">
+            <property name="useInformationSchema" value="true"/>
+        </jdbcConnection>
+
+        <!-- javaTypeResolver式类型转换的信息 -->
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+        <!-- 模型对象 -->
+        <javaModelGenerator targetPackage="com.dataease.cloud.base.domain" targetProject="src/main/java">
+            <property name="enableSubPackages" value="true"/>
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+        <!-- XML映射文件 -->
+        <sqlMapGenerator targetPackage="mapper" targetProject="src/main/resources">
+            <property name="enableSubPackages" value="true"/>
+        </sqlMapGenerator>
+        <!-- 接口 -->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.dataease.cloud.base.mapper"
+                             targetProject="src/main/java">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+
+        <table tableName="cloud_oauth2_authorization">
+<!--            <columnOverride column="attributes" javaType="java.lang.String" jdbcType="BLOB"-->
+<!--                            typeHandler="com.dataease.cloud.utils.StringBlobTypeHandler"></columnOverride>-->
+<!--            <columnOverride column="authorization_code_value" javaType="java.lang.String" jdbcType="BLOB"-->
+<!--                            typeHandler="com.dataease.cloud.utils.StringBlobTypeHandler"></columnOverride>-->
+<!--            <columnOverride column="authorization_code_metadata" javaType="java.lang.String" jdbcType="BLOB"-->
+<!--                            typeHandler="com.dataease.cloud.utils.StringBlobTypeHandler"></columnOverride>-->
+<!--            <columnOverride column="access_token_value" javaType="java.lang.String" jdbcType="BLOB"-->
+<!--                            typeHandler="com.dataease.cloud.utils.StringBlobTypeHandler"></columnOverride>-->
+<!--            <columnOverride column="access_token_metadata" javaType="java.lang.String" jdbcType="BLOB"-->
+<!--                            typeHandler="com.dataease.cloud.utils.StringBlobTypeHandler"></columnOverride>-->
+<!--            <columnOverride column="oidc_id_token_value" javaType="java.lang.String" jdbcType="BLOB"-->
+<!--                            typeHandler="com.dataease.cloud.utils.StringBlobTypeHandler"></columnOverride>-->
+<!--            <columnOverride column="oidc_id_token_metadata" javaType="java.lang.String" jdbcType="BLOB"-->
+<!--                            typeHandler="com.dataease.cloud.utils.StringBlobTypeHandler"></columnOverride>-->
+<!--            <columnOverride column="refresh_token_value" javaType="java.lang.String" jdbcType="BLOB"-->
+<!--                            typeHandler="com.dataease.cloud.utils.StringBlobTypeHandler"></columnOverride>-->
+<!--            <columnOverride column="refresh_token_metadata" javaType="java.lang.String" jdbcType="BLOB"-->
+<!--                            typeHandler="com.dataease.cloud.utils.StringBlobTypeHandler"></columnOverride>-->
+        </table>
+        <table tableName="cloud_oauth2_authorization_consent">
+        </table>
+        <table tableName="cloud_oauth2_registered_client">
+        </table>
+    </context>
+</generatorConfiguration>
