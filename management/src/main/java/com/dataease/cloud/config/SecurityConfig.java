@@ -6,15 +6,15 @@ import com.dataease.cloud.security.handler.CustomAccessDeniedHandler;
 import com.dataease.cloud.security.handler.CustomAuthenticationEntryPoint;
 import com.dataease.cloud.security.handler.CustomLogoutSuccessHandler;
 import com.dataease.cloud.security.rememberme.RememberMeDetailsService;
+import com.dataease.cloud.security.rememberme.service.CustomTokenBasedRememberMeServices;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.RememberMeServices;
 
 /**
  * security 配置见下
@@ -73,17 +73,27 @@ public class SecurityConfig {
                 .and()
                 .sessionManagement()
                 .maximumSessions(1)//暂时无效 没有实现redis-session的管理 不会踢出对应的session-key
-//                .sessionRegistry(sessionRegistry())
                 .and()
                 .and()
                 .rememberMe()
-                //.authenticationSuccessHandler(remembeMeSuccessHandler)
                 .userDetailsService(rememberMeDetailsService)
-                .alwaysRemember(true)
-                .key(REMEMBER_ME_KEY)
+                .rememberMeServices(rememberMeServices())
+//                .alwaysRemember(true)
+//                .key(REMEMBER_ME_KEY)
                 .and()
                 .apply(customSecurityConfigurerAdapter)
                 .and()
                 .build();
+    }
+
+    /**
+     * 重写记住我
+     * @return
+     */
+    @Bean
+    public RememberMeServices rememberMeServices(){
+        CustomTokenBasedRememberMeServices customTokenBasedRememberMeServices = new CustomTokenBasedRememberMeServices(REMEMBER_ME_KEY,rememberMeDetailsService,86400);
+        customTokenBasedRememberMeServices.setAlwaysRemember(true);
+        return customTokenBasedRememberMeServices;
     }
 }

@@ -6,6 +6,8 @@ import com.dataease.cloud.base.mapper.CloudOauth2RegisteredClientMapper;
 import com.dataease.cloud.utils.ObjectMapperUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
@@ -17,7 +19,10 @@ import org.springframework.security.oauth2.server.authorization.settings.TokenSe
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -47,8 +52,8 @@ public class CustomRegisteredClientRepository implements RegisteredClientReposit
         client.setId(registeredClient.getId());
         client.setClientId(registeredClient.getClientId());
         client.setClientSecret(registeredClient.getClientSecret());
-        client.setClientIdIssuedAt(registeredClient.getClientIdIssuedAt() != null ? Date.from(registeredClient.getClientIdIssuedAt()) : Calendar.getInstance().getTime());
-        client.setClientSecretExpiresAt(registeredClient.getClientSecretExpiresAt() != null ? Date.from(registeredClient.getClientSecretExpiresAt()) : Calendar.getInstance().getTime());
+        client.setClientIdIssuedAt(registeredClient.getClientIdIssuedAt() != null ? Date.from(registeredClient.getClientIdIssuedAt()) : null);
+        client.setClientSecretExpiresAt(registeredClient.getClientSecretExpiresAt() != null ? Date.from(registeredClient.getClientSecretExpiresAt()) : null);
         client.setClientName(registeredClient.getClientName());
         client.setClientAuthenticationMethods(StringUtils.collectionToCommaDelimitedString(clientAuthenticationMethods));
         client.setAuthorizationGrantTypes(StringUtils.collectionToCommaDelimitedString(authorizationGrantTypes));
@@ -116,6 +121,7 @@ public class CustomRegisteredClientRepository implements RegisteredClientReposit
      * @return
      */
     public RegisteredClient entityRow(CloudOauth2RegisteredClient client){
+        PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         Set<String> clientAuthenticationMethods = StringUtils.commaDelimitedListToSet(client.getClientAuthenticationMethods());
         Set<String> authorizationGrantTypes = StringUtils.commaDelimitedListToSet(client.getAuthorizationGrantTypes());
         Set<String> redirectUris = StringUtils.commaDelimitedListToSet(client.getRedirectUris());
@@ -123,7 +129,7 @@ public class CustomRegisteredClientRepository implements RegisteredClientReposit
         RegisteredClient.Builder builder = RegisteredClient.withId(client.getId())
                 .clientId(client.getClientId())
                 .clientIdIssuedAt(client.getClientIdIssuedAt() != null ? client.getClientIdIssuedAt().toInstant() : null)
-                .clientSecret(client.getClientSecret())
+                .clientSecret(encoder.encode(client.getClientSecret()))
                 .clientSecretExpiresAt(client.getClientSecretExpiresAt() != null ? client.getClientSecretExpiresAt().toInstant() : null)
                 .clientName(client.getClientName())
                 .clientAuthenticationMethods((authenticationMethods) ->

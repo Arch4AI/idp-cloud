@@ -7,12 +7,14 @@ import com.dataease.cloud.base.mapper.CloudOauth2RegisteredClientMapper;
 import com.dataease.cloud.entity.response.Result;
 import com.dataease.cloud.security.handler.CustomAccessDeniedHandler;
 import com.dataease.cloud.security.handler.CustomAuthenticationEntryPoint;
-import com.dataease.cloud.security.jose.Jwks;
 import com.dataease.cloud.security.oauthserver.CustomOAuth2AuthorizationConsentService;
 import com.dataease.cloud.security.oauthserver.CustomOAuth2AuthorizationService;
 import com.dataease.cloud.security.oauthserver.CustomRegisteredClientRepository;
 import com.dataease.cloud.security.oauthserver.oidc.CustomUserInfoMapper;
+import com.dataease.cloud.security.oauthserver.resourceserver.ResourceServerAuthenticationEntryPoint;
+import com.dataease.cloud.service.CloudUserService;
 import com.dataease.cloud.utils.ObjectMapperUtils;
+import com.dataease.cloud.utils.RSAUtils;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
@@ -24,17 +26,11 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
-import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
@@ -43,9 +39,9 @@ import org.springframework.security.oauth2.server.authorization.settings.Authori
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 
 /**
  * oauth server的配置 非RX的写法 RX需要自己在webFilter里面去实现
@@ -69,24 +65,32 @@ public class AuthServerConfig {
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http,
                                                                       CustomAccessDeniedHandler customAccessDeniedHandler,
-                                                                      CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
+                                                                      CustomAuthenticationEntryPoint customAuthenticationEntryPoint,
+                                                                      CloudUserService cloudUserService) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
                         .oidc(oidcConfigurer -> oidcConfigurer.userInfoEndpoint(oidcUserInfoEndpointConfigurer ->
-                                oidcUserInfoEndpointConfigurer.userInfoMapper(new CustomUserInfoMapper())));
+                                oidcUserInfoEndpointConfigurer.userInfoMapper(new CustomUserInfoMapper(cloudUserService))));
         http
                 .exceptionHandling()
                 .authenticationEntryPoint(customAuthenticationEntryPoint)
                 .accessDeniedHandler(customAccessDeniedHandler)
                 .and()
-                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
+                .oauth2ResourceServer(httpSecurityOAuth2ResourceServerConfigurer -> {
+                    httpSecurityOAuth2ResourceServerConfigurer.jwt();
+                    httpSecurityOAuth2ResourceServerConfigurer.authenticationEntryPoint(new ResourceServerAuthenticationEntryPoint());
+                });
         return http.build();
     }
 
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE+1)
     public SecurityFilterChain resourceServerSecurityFilterChain(HttpSecurity http) throws Exception{
-        http.securityMatcher("/oauth2/resource/**").oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
+        http.securityMatcher("/oauth2/resource/**")
+                .oauth2ResourceServer(httpSecurityOAuth2ResourceServerConfigurer -> {
+                    httpSecurityOAuth2ResourceServerConfigurer.jwt();
+                    httpSecurityOAuth2ResourceServerConfigurer.authenticationEntryPoint(new ResourceServerAuthenticationEntryPoint());
+                })
                 .exceptionHandling(httpSecurityExceptionHandlingConfigurer -> {
                     httpSecurityExceptionHandlingConfigurer.accessDeniedHandler((request, response, accessDeniedException) -> {
                         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
@@ -113,28 +117,32 @@ public class AuthServerConfig {
         if(client != null) {
             id = client.getId();
         }
-        PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+
         RegisteredClient registeredClient = RegisteredClient.withId(id)
                 //客户端ID
                 .clientId(clientId)
                 //客服端密钥 建议自己生成 生成后展示给客户端即可 需要加密
-                .clientSecret(encoder.encode("123456"))
+                .clientSecret("123456")
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
                 // 授权模式 固定即可
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+                // 这个地方必须是全路径
                 .redirectUri("https://www.baidu.com")
                 //这里的scope理论上也可以定义 但是需要结合你实际接口需要的权限 建议这里用枚举 因为本身这个支持OIDC v1 所以默认带了OIDC的2个profile
                 .scope(OidcScopes.OPENID)
                 .scope(OidcScopes.PROFILE)
-                .scope(OidcScopes.ADDRESS)
                 .scope(OidcScopes.EMAIL)
                 .scope(OidcScopes.PHONE)
                 //客户端配置
                 .clientSettings(ClientSettings.builder()
-                        .requireAuthorizationConsent(true).build())
-                .tokenSettings(TokenSettings.builder().build())
+                        .requireAuthorizationConsent(false).build())
+                .tokenSettings(TokenSettings.builder()
+                        .authorizationCodeTimeToLive(Duration.ofMinutes(10))//code 10分钟有效
+                        .accessTokenTimeToLive(Duration.ofMinutes(30))//token 限制30分钟
+                        //默认refreshToken 是60分钟
+                        .build())
                 .build();
         registeredClientRepository.save(registeredClient);
         return registeredClientRepository;
@@ -148,7 +156,7 @@ public class AuthServerConfig {
      */
     @Bean
     public CustomOAuth2AuthorizationService authorizationService(CloudOauth2AuthorizationMapper cloudOauth2AuthorizationMapper, RegisteredClientRepository registeredClientRepository) {
-        return new CustomOAuth2AuthorizationService(cloudOauth2AuthorizationMapper, registeredClientRepository);
+        return new CustomOAuth2AuthorizationService(cloudOauth2AuthorizationMapper,registeredClientRepository);
     }
 
     /***
@@ -162,9 +170,14 @@ public class AuthServerConfig {
         return new CustomOAuth2AuthorizationConsentService(cloudOauth2AuthorizationConsentMapper, registeredClientRepository);
     }
 
+    /***
+     * 这个地方有问题 不能设置成每次启动就是随机的
+     * 这样分布式环境会存在非常大的问题
+     * @return
+     */
     @Bean
     public JWKSource<SecurityContext> jwkSource() {
-        RSAKey rsaKey = Jwks.generateRsa();
+        RSAKey rsaKey = RSAUtils.generateRsa();
         JWKSet jwkSet = new JWKSet(rsaKey);
         return (jwkSelector, securityContext) -> jwkSelector.select(jwkSet);
     }

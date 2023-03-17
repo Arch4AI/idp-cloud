@@ -1,9 +1,11 @@
 package com.dataease.cloud.security.jose;
 
+import cn.hutool.core.codec.Base64;
 import com.nimbusds.jose.jwk.Curve;
 import com.nimbusds.jose.jwk.ECKey;
 import com.nimbusds.jose.jwk.OctetSequenceKey;
 import com.nimbusds.jose.jwk.RSAKey;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.crypto.SecretKey;
 import java.security.KeyPair;
@@ -11,7 +13,6 @@ import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
-import java.util.UUID;
 
 /**
  * jwks生成
@@ -20,7 +21,10 @@ import java.util.UUID;
  * @version v1.0
  * @date 2023/2/24 10:37 AM
  **/
+@Slf4j
 public final class Jwks {
+
+    private static final String key = "idp_cloud";
 
     private Jwks() {
     }
@@ -29,10 +33,12 @@ public final class Jwks {
         KeyPair keyPair = KeyGeneratorUtils.generateRsaKey();
         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
         RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
+        log.info("pk:{}", Base64.encode(publicKey.getEncoded()));
+        log.info("prk:{}",Base64.encode(privateKey.getEncoded()));
         // @formatter:off
         return new RSAKey.Builder(publicKey)
                 .privateKey(privateKey)
-                .keyID(UUID.randomUUID().toString())
+                .keyID(key)
                 .build();
         // @formatter:on
     }
@@ -45,7 +51,7 @@ public final class Jwks {
         // @formatter:off
         return new ECKey.Builder(curve, publicKey)
                 .privateKey(privateKey)
-                .keyID(UUID.randomUUID().toString())
+                .keyID(key)
                 .build();
         // @formatter:on
     }
@@ -54,7 +60,7 @@ public final class Jwks {
         SecretKey secretKey = KeyGeneratorUtils.generateSecretKey();
         // @formatter:off
         return new OctetSequenceKey.Builder(secretKey)
-                .keyID(UUID.randomUUID().toString())
+                .keyID(key)
                 .build();
         // @formatter:on
     }

@@ -39,8 +39,10 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
     private RegisteredClientRepository registeredClientRepository;
     private CloudOauth2AuthorizationMapper cloudOauth2AuthorizationMapper;
     private ObjectMapper objectMapper = ObjectMapperUtils.objectMapper;
+    private static final String AUTHORITIES_SCOPE_PREFIX = "SCOPE_";
 
-    public CustomOAuth2AuthorizationService(CloudOauth2AuthorizationMapper cloudOauth2AuthorizationMapper,RegisteredClientRepository registeredClientRepository){
+    public CustomOAuth2AuthorizationService(CloudOauth2AuthorizationMapper cloudOauth2AuthorizationMapper,
+                                            RegisteredClientRepository registeredClientRepository){
         this.cloudOauth2AuthorizationMapper = cloudOauth2AuthorizationMapper;
         this.registeredClientRepository = registeredClientRepository;
     }

@@ -1,5 +1,8 @@
 package com.dataease.cloud.security.oauthserver.oidc;
 
+import cn.hutool.core.bean.BeanUtil;
+import com.dataease.cloud.security.LocalUser;
+import com.dataease.cloud.service.CloudUserService;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
@@ -13,36 +16,32 @@ import java.util.function.Function;
 
 /**
  * 返回用户信息
- *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/16 9:39 AM
  **/
 public class CustomUserInfoMapper implements Function<OidcUserInfoAuthenticationContext, OidcUserInfo> {
 
+    private CloudUserService cloudUserService;
+
+    public CustomUserInfoMapper(CloudUserService cloudUserService){
+        this.cloudUserService = cloudUserService;
+    }
+
     private static final List<String> EMAIL_CLAIMS = Arrays.asList(
-            StandardClaimNames.EMAIL,
-            StandardClaimNames.EMAIL_VERIFIED
+            CustomClaimNames.EMAIL
     );
     private static final List<String> PHONE_CLAIMS = Arrays.asList(
-            StandardClaimNames.PHONE_NUMBER,
-            StandardClaimNames.PHONE_NUMBER_VERIFIED
+            CustomClaimNames.PHONE
     );
     private static final List<String> PROFILE_CLAIMS = Arrays.asList(
-            StandardClaimNames.NAME,
-            StandardClaimNames.FAMILY_NAME,
-            StandardClaimNames.GIVEN_NAME,
-            StandardClaimNames.MIDDLE_NAME,
-            StandardClaimNames.NICKNAME,
-            StandardClaimNames.PREFERRED_USERNAME,
-            StandardClaimNames.PROFILE,
-            StandardClaimNames.PICTURE,
-            StandardClaimNames.WEBSITE,
-            StandardClaimNames.GENDER,
-            StandardClaimNames.BIRTHDATE,
-            StandardClaimNames.ZONEINFO,
-            StandardClaimNames.LOCALE,
-            StandardClaimNames.UPDATED_AT
+            CustomClaimNames.CREATE_TIME,
+            CustomClaimNames.GENDER,
+            CustomClaimNames.LANGUAGE,
+            CustomClaimNames.NICKNAME,
+            CustomClaimNames.UPDATE_TIME,
+            CustomClaimNames.USERANME,
+            CustomClaimNames.USERID
     );
 
     @Override
@@ -50,9 +49,13 @@ public class CustomUserInfoMapper implements Function<OidcUserInfoAuthentication
         OAuth2Authorization authorization = authenticationContext.getAuthorization();
         OidcIdToken idToken = authorization.getToken(OidcIdToken.class).getToken();
         OAuth2AccessToken accessToken = authenticationContext.getAccessToken();
-        Map<String, Object> scopeRequestedClaims = getClaimsRequestedByScope(idToken.getClaims(),
+        Map<String,Object> objectMap = idToken.getClaims();
+        String userId = authorization.getPrincipalName();
+        LocalUser localUser = cloudUserService.getUserById(userId);
+        Map<String,Object> userMap = BeanUtil.beanToMap(localUser);
+        userMap.putAll(objectMap);
+        Map<String, Object> scopeRequestedClaims = getClaimsRequestedByScope(userMap,
                 accessToken.getScopes());
-
         return new OidcUserInfo(scopeRequestedClaims);
     }
 
@@ -60,9 +63,6 @@ public class CustomUserInfoMapper implements Function<OidcUserInfoAuthentication
         Set<String> scopeRequestedClaimNames = new HashSet<>();
         scopeRequestedClaimNames.add(StandardClaimNames.SUB);
 
-        if (requestedScopes.contains(OidcScopes.ADDRESS)) {
-            scopeRequestedClaimNames.add(StandardClaimNames.ADDRESS);
-        }
         if (requestedScopes.contains(OidcScopes.EMAIL)) {
             scopeRequestedClaimNames.addAll(EMAIL_CLAIMS);
         }
