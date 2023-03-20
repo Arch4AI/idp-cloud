@@ -31,6 +31,7 @@ public class RemembeMeSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         //设置httpsession的超时时间 1天
-        request.getSession().setMaxInactiveInterval(86400);
+        log.info("*******************remeber me authentication success****************");
+        onAuthenticationSuccess(request,response,authentication);
     }
 }

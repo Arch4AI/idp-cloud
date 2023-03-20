@@ -1,7 +1,10 @@
 package com.dataease.cloud.config;
 
+import com.dataease.cloud.security.session.CustomSessionRegistryImpl;
+import com.dataease.cloud.service.SessionService;
 import com.dataease.cloud.utils.ObjectMapperUtils;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,7 +12,9 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
+
 
 /**
  * 开启redis http session
@@ -19,6 +24,7 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
  **/
 @Configuration
 @EnableRedisHttpSession
+@Slf4j
 public class SessionConfig {
 
     @Resource
@@ -38,5 +44,10 @@ public class SessionConfig {
     @Bean
     public RedisSerializer<Object> springSessionDefaultRedisSerializer(){
         return new GenericJackson2JsonRedisSerializer(ObjectMapperUtils.objectMapper);
+    }
+
+    @Bean
+    public SessionRegistry sessionRegistry(SessionService sessionService){
+        return new CustomSessionRegistryImpl(sessionService);
     }
 }

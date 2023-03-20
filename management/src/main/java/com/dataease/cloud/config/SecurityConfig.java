@@ -6,6 +6,7 @@ import com.dataease.cloud.security.handler.CustomAccessDeniedHandler;
 import com.dataease.cloud.security.handler.CustomAuthenticationEntryPoint;
 import com.dataease.cloud.security.handler.CustomLogoutSuccessHandler;
 import com.dataease.cloud.security.rememberme.RememberMeDetailsService;
+import com.dataease.cloud.security.rememberme.handler.RemembeMeSuccessHandler;
 import com.dataease.cloud.security.rememberme.service.CustomTokenBasedRememberMeServices;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -13,8 +14,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 /**
  * security 配置见下
@@ -43,7 +48,6 @@ public class SecurityConfig {
     @Resource
     private CustomSecurityConfigurerAdapter customSecurityConfigurerAdapter;
 
-
     /**
      * 定义过滤器
      * @param httpSecurity
@@ -52,7 +56,8 @@ public class SecurityConfig {
      */
     @Bean
     @Order
-    public SecurityFilterChain defaultSecurityWebFilterChain(HttpSecurity httpSecurity)throws Exception{
+    public SecurityFilterChain defaultSecurityWebFilterChain(HttpSecurity httpSecurity,
+                                                             SessionRegistry sessionRegistry)throws Exception{
         return httpSecurity.authorizeHttpRequests().requestMatchers(DefaultSecurityExcludes.excludes)
                 .permitAll()
                 .anyRequest()
@@ -73,13 +78,11 @@ public class SecurityConfig {
                 .and()
                 .sessionManagement()
                 .maximumSessions(1)//暂时无效 没有实现redis-session的管理 不会踢出对应的session-key
+                .sessionRegistry(sessionRegistry)
                 .and()
                 .and()
                 .rememberMe()
-                .userDetailsService(rememberMeDetailsService)
                 .rememberMeServices(rememberMeServices())
-//                .alwaysRemember(true)
-//                .key(REMEMBER_ME_KEY)
                 .and()
                 .apply(customSecurityConfigurerAdapter)
                 .and()
@@ -95,5 +98,30 @@ public class SecurityConfig {
         CustomTokenBasedRememberMeServices customTokenBasedRememberMeServices = new CustomTokenBasedRememberMeServices(REMEMBER_ME_KEY,rememberMeDetailsService,86400);
         customTokenBasedRememberMeServices.setAlwaysRemember(true);
         return customTokenBasedRememberMeServices;
+    }
+
+    /**
+     * 配置cors跨域访问
+     * @return
+     */
+    @Bean
+    public CorsFilter corsFilter(){
+        //1.添加CORS配置信息
+        CorsConfiguration config = new CorsConfiguration();
+        //放行哪些原始域
+        config.addAllowedOrigin("*");
+        //是否发送Cookie信息
+        config.setAllowCredentials(true);
+        //放行哪些原始域(请求方式)
+        config.addAllowedMethod("*");
+        //放行哪些原始域(头部信息)
+        config.addAllowedHeader("*");
+        //暴露哪些头部信息（因为跨域访问默认不能获取全部头部信息）
+        config.addExposedHeader("*");
+        //2.添加映射路径
+        UrlBasedCorsConfigurationSource configSource = new UrlBasedCorsConfigurationSource();
+        configSource.registerCorsConfiguration("/**", config);
+        //3.返回新的CorsFilter.
+        return new CorsFilter(configSource);
     }
 }

@@ -55,3 +55,21 @@ CREATE TABLE cloud_user_role
     PRIMARY KEY (user_id, role)
 ) COMMENT = '用户角色表';
 
+-- 用户session管理
+DROP TABLE IF EXISTS cloud_session;
+CREATE TABLE `cloud_session`
+(
+    `session_id`      varchar(64) NOT NULL COMMENT 'session_id',
+    `user_id`         varchar(64) NOT NULL COMMENT '用户ID',
+    `create_time`     datetime(0) NULL COMMENT '创建时间',
+    `last_quest_time` datetime(0) NULL COMMENT '更新时间',
+    `expire_time`     datetime(0) NULL COMMENT '到期时间',
+    `expired`         boolean NULL COMMENT '是否已经到期',
+    PRIMARY KEY (`session_id`),
+    INDEX             `index_user_id`(`user_id`, `expired`) COMMENT '用户ID索引'
+) COMMENT = '用户session管理';
+
+
+
+
+

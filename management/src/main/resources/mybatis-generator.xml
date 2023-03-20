@@ -48,29 +48,8 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table tableName="cloud_oauth2_authorization">
-<!--            <columnOverride column="attributes" javaType="java.lang.String" jdbcType="BLOB"-->
-<!--                            typeHandler="com.dataease.cloud.utils.StringBlobTypeHandler"></columnOverride>-->
-<!--            <columnOverride column="authorization_code_value" javaType="java.lang.String" jdbcType="BLOB"-->
-<!--                            typeHandler="com.dataease.cloud.utils.StringBlobTypeHandler"></columnOverride>-->
-<!--            <columnOverride column="authorization_code_metadata" javaType="java.lang.String" jdbcType="BLOB"-->
-<!--                            typeHandler="com.dataease.cloud.utils.StringBlobTypeHandler"></columnOverride>-->
-<!--            <columnOverride column="access_token_value" javaType="java.lang.String" jdbcType="BLOB"-->
-<!--                            typeHandler="com.dataease.cloud.utils.StringBlobTypeHandler"></columnOverride>-->
-<!--            <columnOverride column="access_token_metadata" javaType="java.lang.String" jdbcType="BLOB"-->
-<!--                            typeHandler="com.dataease.cloud.utils.StringBlobTypeHandler"></columnOverride>-->
-<!--            <columnOverride column="oidc_id_token_value" javaType="java.lang.String" jdbcType="BLOB"-->
-<!--                            typeHandler="com.dataease.cloud.utils.StringBlobTypeHandler"></columnOverride>-->
-<!--            <columnOverride column="oidc_id_token_metadata" javaType="java.lang.String" jdbcType="BLOB"-->
-<!--                            typeHandler="com.dataease.cloud.utils.StringBlobTypeHandler"></columnOverride>-->
-<!--            <columnOverride column="refresh_token_value" javaType="java.lang.String" jdbcType="BLOB"-->
-<!--                            typeHandler="com.dataease.cloud.utils.StringBlobTypeHandler"></columnOverride>-->
-<!--            <columnOverride column="refresh_token_metadata" javaType="java.lang.String" jdbcType="BLOB"-->
-<!--                            typeHandler="com.dataease.cloud.utils.StringBlobTypeHandler"></columnOverride>-->
+        <table tableName="cloud_session">
         </table>
-        <table tableName="cloud_oauth2_authorization_consent">
-        </table>
-        <table tableName="cloud_oauth2_registered_client">
-        </table>
+
     </context>
 </generatorConfiguration>

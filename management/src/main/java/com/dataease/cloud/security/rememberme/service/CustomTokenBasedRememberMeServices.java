@@ -17,6 +17,8 @@ import java.util.Date;
 /**
  * 重写记住我的方法
  *
+ * 因为默认有记住我 所以每次都会进来这里面
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/16 6:03 PM

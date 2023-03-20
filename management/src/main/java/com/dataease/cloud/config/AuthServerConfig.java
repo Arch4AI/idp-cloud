@@ -45,6 +45,7 @@ import java.time.Duration;
 
 /**
  * oauth server的配置 非RX的写法 RX需要自己在webFilter里面去实现
+ * 这2个暂时没接入sessionManager
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/2/24 4:08 PM
