@@ -3,6 +3,11 @@ target/
 http-utils/target/
 management/target/
 oauth-utils/target/
+ui/node_modules
+ui/dist
+ui/.gitignore
+ui/pnpm-lock.yaml
+ui/.vscode
 
 .mvn
 .apt_generated

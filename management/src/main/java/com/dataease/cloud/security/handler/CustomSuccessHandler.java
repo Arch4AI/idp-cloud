@@ -2,6 +2,7 @@ package com.dataease.cloud.security.handler;
 
 import com.dataease.cloud.base.domain.CloudUserLoginLog;
 import com.dataease.cloud.base.mapper.CloudUserLoginLogMapper;
+import com.dataease.cloud.entity.response.Result;
 import com.dataease.cloud.security.LocalUser;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -88,7 +89,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setContentType(MediaType.APPLICATION_JSON.toString());
         PrintWriter out = response.getWriter();
-        out.write(jacksonObjectMapper.writeValueAsString(principal));
+        out.write(jacksonObjectMapper.writeValueAsString(Result.success(principal)));
         out.flush();
         out.close();
     }

@@ -43,9 +43,9 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         HttpSessionRequestCache cache = new HttpSessionRequestCache();
         RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
         SavedRequest savedRequest = cache.getRequest(request,response);
-        if(savedRequest.getRedirectUrl().contains(authorizationServerSettings.getAuthorizationEndpoint())){
+        if(savedRequest != null && savedRequest.getRedirectUrl().contains(authorizationServerSettings.getAuthorizationEndpoint())){
             // 需要重定向到前端登录页面哦
-            redirectStrategy.sendRedirect(request,response,"/anonymous/sessions");
+            redirectStrategy.sendRedirect(request,response,"/login");
         }else{
             response.setCharacterEncoding(StandardCharsets.UTF_8.name());
             response.setContentType(MediaType.APPLICATION_JSON.toString());
