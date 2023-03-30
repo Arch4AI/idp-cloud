@@ -1,6 +1,7 @@
 package com.dataease.cloud.controller;
 
 import com.dataease.cloud.entity.response.Result;
+import com.dataease.cloud.security.LocalUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,8 +24,10 @@ public class UserController {
      */
     @GetMapping("me")
     public Result me(Authentication authentication){
-        if(authentication.isAuthenticated()){
-            return Result.success(authentication.getPrincipal());
+        if(authentication != null && authentication.isAuthenticated()){
+            LocalUser localUser = (LocalUser) authentication.getPrincipal();
+            localUser.setPassword(null);
+            return Result.success(localUser);
         }
         return Result.error("用户未登录");
     }

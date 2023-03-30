@@ -23,6 +23,7 @@ public final class DefaultSecurityExcludes {
             "/actuator/**",
             "/login",
             "/auth/providers",
-            "/auth/providers/**"
+            "/auth/providers/**",
+            "/user/me"
     };
 }

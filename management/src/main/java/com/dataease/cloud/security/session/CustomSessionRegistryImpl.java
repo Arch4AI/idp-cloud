@@ -1,14 +1,17 @@
 package com.dataease.cloud.security.session;
 
-import com.dataease.cloud.security.LocalUser;
 import com.dataease.cloud.service.SessionService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.session.*;
+import org.springframework.security.core.session.SessionInformation;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.session.Session;
 import org.springframework.util.Assert;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 /**
  * 自定义redisSessionRegisteryImpl

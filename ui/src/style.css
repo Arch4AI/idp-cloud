@@ -85,3 +85,33 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.slide-verify-refresh-icon {
+  display: none;
+}
+
+.slide-verify-refresh-icon{
+  width: 30px !important;
+  height: 30px !important;
+}
+
+.slide-verify-slider-text{
+  font-size: 14px !important;
+}
+
+.slide-verify-refresh-icon .iconfont.icon-refresh{
+  font-size: 28px !important;
+}
+
+.slide-verify-slider,.slide-verify-slider-mask-item,.slide-verify-slider-mask{
+  line-height: 32px !important;
+  height: 32px !important;
+}
+
+.slide-verify-slider-mask-item-icon{
+  font-size: 20px !important;
+}
+
+.container-success .slide-verify-slider-mask{
+  background-color: #0fc0a6 !important;
+}

@@ -4,6 +4,7 @@ import com.dataease.cloud.base.domain.CloudUserLoginLog;
 import com.dataease.cloud.base.mapper.CloudUserLoginLogMapper;
 import com.dataease.cloud.entity.response.Result;
 import com.dataease.cloud.security.LocalUser;
+import com.dataease.cloud.utils.CommonUtils;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
@@ -64,9 +65,9 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
             CloudUserLoginLog cloudUserLoginLog = new CloudUserLoginLog();
             cloudUserLoginLog.setLoginTime(Calendar.getInstance().getTime());
             cloudUserLoginLog.setUserId(localUser.getUserId());
-            log.info("sessionId:{},IP:{}",request.getSession().getId(),request.getRemoteAddr());
+            log.info("sessionId:{},IP:{}",request.getSession().getId(), CommonUtils.getIpAddress(request));
             cloudUserLoginLog.setSessionId(request.getSession().getId());
-            cloudUserLoginLog.setIp(request.getRemoteAddr());
+            cloudUserLoginLog.setIp(CommonUtils.getIpAddress(request));
             cloudUserLoginLogMapper.insertSelective(cloudUserLoginLog);
             log.info("用户{}登录成功了",localUser.getUsername());
         }

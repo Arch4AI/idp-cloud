@@ -2,7 +2,7 @@ import apiRequest from '@/request/request'
 
 // 这个是账号密码登录
 export const loginByPwd = (data: PasswordLoginReq) => {
-  return apiRequest<PasswordLoginReq, LoginResp>({
+  return apiRequest<PasswordLoginReq, LocalUser>({
     url: '/user/login',
     method: 'post',
     data
@@ -11,7 +11,7 @@ export const loginByPwd = (data: PasswordLoginReq) => {
 
 // 手机登录
 export const loginByPhone = (data: PhoneLoginReq) => {
-  return apiRequest<PhoneLoginReq, LoginResp>({
+  return apiRequest<PhoneLoginReq, LocalUser>({
     url: '/phone/login',
     method: 'post',
     data
@@ -20,7 +20,7 @@ export const loginByPhone = (data: PhoneLoginReq) => {
 
 // 第三方登录 这里需要做很多事情
 export const loginByExternal = (data: ExternalLoginReq) => {
-  return apiRequest<ExternalLoginReq, LoginResp>({
+  return apiRequest<ExternalLoginReq, LocalUser>({
     url: '/external/login',
     method: 'post',
     data
@@ -29,7 +29,7 @@ export const loginByExternal = (data: ExternalLoginReq) => {
 
 // 用户注册 注册完成后自动完成登录
 export const register = (data: UserRegisterReq) => {
-  return apiRequest<UserRegisterReq, LoginResp>({
+  return apiRequest<UserRegisterReq, LocalUser>({
     url: '/user/register',
     method: 'post',
     data
@@ -38,7 +38,7 @@ export const register = (data: UserRegisterReq) => {
 
 // 补充信息或者是修改用户信息 如果是补充信息会自动实现登录
 export const updateProfile = (data: UserProfileReq) => {
-  return apiRequest<UserProfileReq, LoginResp>({
+  return apiRequest<UserProfileReq, LocalUser>({
     url: '/user/profile',
     method: 'post',
     data

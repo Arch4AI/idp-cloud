@@ -1,4 +1,5 @@
-import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router'
+import userStore from '@/store/user'
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -9,7 +10,11 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/home',
     name: 'Home',
-    component: () => import('@/pages/home/Index.vue')
+    component: () => import('@/pages/home/Index.vue'),
+    beforeEnter: (to, from, next) => {
+      console.log('局部的路由守卫')
+      next()
+    }
   }
 ]
 
@@ -19,12 +24,17 @@ const router = createRouter({
   routes
 })
 
-// 这个是路由守卫
+// 全局这个是路由守卫
 router.beforeEach((to, from, next) => {
   //这里可以判断是不是已经有用户登录了 没有的话直接进行跳转
   // 这里判断用户是否登录 否则有些页面无法进入
   // 还可以在这里判断角色权限 如果这个用户的权限不对 则直接跳转到默认的界面即可
   //直接下一步
+  const storeUser = userStore()
+  // console.log('come in router before:'+ JSON.stringify(to.query))
+  // const req:ExternalLoginReq = to.query as ExternalLoginReq
+  // console.log(JSON.stringify(req.state))
+  console.log(storeUser.user.authorities)
   next()
 })
 

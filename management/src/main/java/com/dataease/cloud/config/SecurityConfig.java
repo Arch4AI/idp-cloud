@@ -6,7 +6,6 @@ import com.dataease.cloud.security.handler.CustomAccessDeniedHandler;
 import com.dataease.cloud.security.handler.CustomAuthenticationEntryPoint;
 import com.dataease.cloud.security.handler.CustomLogoutSuccessHandler;
 import com.dataease.cloud.security.rememberme.RememberMeDetailsService;
-import com.dataease.cloud.security.rememberme.handler.RemembeMeSuccessHandler;
 import com.dataease.cloud.security.rememberme.service.CustomTokenBasedRememberMeServices;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -109,7 +108,7 @@ public class SecurityConfig {
         //1.添加CORS配置信息
         CorsConfiguration config = new CorsConfiguration();
         //放行哪些原始域
-        config.addAllowedOrigin("*");
+        config.addAllowedOriginPattern("*");
         //是否发送Cookie信息
         config.setAllowCredentials(true);
         //放行哪些原始域(请求方式)

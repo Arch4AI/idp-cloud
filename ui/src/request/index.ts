@@ -1,9 +1,9 @@
-import axios, { AxiosError, AxiosResponse } from 'axios'
 import type { AxiosInstance, InternalAxiosRequestConfig } from 'axios'
+import axios, { AxiosError, AxiosResponse } from 'axios'
 import type {
+  CreateRequestConfig,
   RequestConfig,
-  RequestInterceptors,
-  CreateRequestConfig
+  RequestInterceptors
 } from './types'
 
 class Request {

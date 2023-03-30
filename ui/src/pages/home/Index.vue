@@ -1,3 +1,22 @@
+<script setup lang="ts">
+import { logout } from '@/api/logout/logout'
+import router from '@/router'
+import { MessagePlugin } from 'tdesign-vue-next'
+import userStore from '@/store/user'
+
+const storeUser = userStore()
+
+const userLogout = () => {
+  logout().then((res) => {
+    if (res.code === 200) {
+      MessagePlugin.success('用户退出成功')
+      router.push('/')
+    } else {
+      MessagePlugin.error(res.msg)
+    }
+  })
+}
+</script>
 <template>
   <t-layout>
     <t-header>
@@ -15,15 +34,15 @@
         <t-menu-item value="item3"> 菜单内容二 </t-menu-item>
         <t-menu-item value="item4" :disabled="true"> 菜单内容三 </t-menu-item>
         <template #operations>
-          <a href="javascript:;"
-            ><t-icon class="t-menu__operations-icon" name="search"
-          /></a>
-          <a href="javascript:;"
-            ><t-icon class="t-menu__operations-icon" name="notification-filled"
-          /></a>
-          <a href="javascript:;"
-            ><t-icon class="t-menu__operations-icon" name="home"
-          /></a>
+          <span v-if="storeUser.user" v-for="role in storeUser.user.authorities">{{ role.authority }}</span>
+          <t-button
+            shape="circle"
+            @click="userLogout"
+            theme="default"
+            class="t-menu__operations-icon"
+          >
+            <template #icon><t-icon name="logout" /></template>
+          </t-button>
         </template>
       </t-head-menu>
     </t-header>
@@ -96,7 +115,7 @@
           <div>Content</div>
         </t-content>
         <t-footer
-          >Copyright @ 2019-{{ new Date().getFullYear() }} Tencent. All Rights
+          >Copyright @ 2019-{{ new Date().getFullYear() }} FIT2CLOUD. All Rights
           Reserved</t-footer
         >
       </t-layout>

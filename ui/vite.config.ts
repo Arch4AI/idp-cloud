@@ -6,7 +6,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src') //添加@识别
-    }
+    },
   },
   plugins: [vue()],
   server: {
