@@ -6,6 +6,7 @@ import com.dataease.cloud.base.mapper.CloudSessionMapper;
 import com.dataease.cloud.security.LocalUser;
 import com.dataease.cloud.security.profile.ProfileAuthenticationToken;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -147,6 +148,7 @@ public class SessionService {
 
     /**
      * 直接设置超时
+     * //TODO 这个是否直接删除比较合理？
      * @param sessionId
      */
     public void expireNow(String sessionId){
@@ -205,6 +207,32 @@ public class SessionService {
         cloudSessionMapper.updateByPrimaryKeySelective(cloudSession);
         //在session里面也移除掉他
         sessionRepository.deleteById(sessionId);
+    }
+
+    /**
+     * 添加或者更新session
+     * @param session
+     * @param userId
+     */
+    public void addOrUpdateSessionRecord(HttpSession session, String userId){
+        CloudSession cloudSession = cloudSessionMapper.selectByPrimaryKey(session.getId());
+        if(cloudSession != null){
+            cloudSession.setLastQuestTime(Calendar.getInstance().getTime());
+            cloudSession.setUserId(userId);
+            cloudSessionMapper.updateByPrimaryKeySelective(cloudSession);
+        }else{
+            cloudSession = new CloudSession();
+            int duration = session.getMaxInactiveInterval();//存活时间间隔
+            Long instant = session.getLastAccessedTime();//最后一次更新的时间
+            Instant expireInstant = Instant.ofEpochMilli(instant).plusSeconds(duration);
+            cloudSession.setUserId(userId);
+            cloudSession.setSessionId(session.getId());
+            cloudSession.setExpired(false);
+            cloudSession.setLastQuestTime(Calendar.getInstance().getTime());
+            cloudSession.setCreateTime(Calendar.getInstance().getTime());
+            cloudSession.setExpireTime(Date.from(expireInstant));
+            cloudSessionMapper.insertSelective(cloudSession);
+        }
     }
 
     /**

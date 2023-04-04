@@ -56,4 +56,9 @@ public class Constants {
      * 外部源登录
      */
     public static final String EXTERNAL_LOGIN_URI = "/external/login";
+
+    /**
+     * 前端访问的路径
+     */
+    public static final String UI_URI = "/ui/**";
 }

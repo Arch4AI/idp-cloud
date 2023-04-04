@@ -24,6 +24,7 @@ public final class DefaultSecurityExcludes {
             "/login",
             "/auth/providers",
             "/auth/providers/**",
-            "/user/me"
+            "/user/me",
+            Constants.UI_URI
     };
 }

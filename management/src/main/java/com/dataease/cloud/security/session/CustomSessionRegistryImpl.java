@@ -2,8 +2,8 @@ package com.dataease.cloud.security.session;
 
 import com.dataease.cloud.service.SessionService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.session.SessionInformation;
-import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.context.ApplicationListener;
+import org.springframework.security.core.session.*;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.session.Session;
 import org.springframework.util.Assert;
@@ -20,7 +20,7 @@ import java.util.Set;
  * @date 2023/3/17 2:13 PM
  **/
 @Slf4j
-public class CustomSessionRegistryImpl implements SessionRegistry {
+public class CustomSessionRegistryImpl implements SessionRegistry , ApplicationListener<AbstractSessionEvent> {
 
     private final SessionService sessionService;
 
@@ -104,6 +104,24 @@ public class CustomSessionRegistryImpl implements SessionRegistry {
         }
         //这里只是把信息设置为已经超时
         sessionService.removeSessionInformation(sessionId);
+    }
+
+    /**
+     * //TODO 无法知道这个
+     * @param event
+     */
+    @Override
+    public void onApplicationEvent(AbstractSessionEvent event) {
+        if (event instanceof SessionDestroyedEvent) {
+            log.info("session destoryed");
+        }
+        else if(event instanceof SessionCreationEvent){
+            log.info("session created");
+        }
+        else if (event instanceof SessionIdChangedEvent) {
+            log.info("session id changed");
+        }
+
     }
 }
 

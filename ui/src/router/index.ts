@@ -4,15 +4,21 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
+    name: 'Home',
+    redirect: '/login'
+    //component: () => import('@/pages/home/Index.vue')
+  },
+  {
+    path: '/login',
     name: 'Login',
     component: () => import('@/pages/login/Index.vue')
   },
   {
-    path: '/home',
-    name: 'Home',
-    component: () => import('@/pages/home/Index.vue'),
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: () => import('@/pages/dashboard/Index.vue'),
     beforeEnter: (to, from, next) => {
-      console.log('局部的路由守卫')
+      //这个可以使用 局部的路由守卫
       next()
     }
   }
@@ -20,7 +26,7 @@ const routes: Array<RouteRecordRaw> = [
 
 // 导出路由
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(import.meta.env.VITE_APP_BASE_URL),
   routes
 })
 
@@ -31,9 +37,6 @@ router.beforeEach((to, from, next) => {
   // 还可以在这里判断角色权限 如果这个用户的权限不对 则直接跳转到默认的界面即可
   //直接下一步
   const storeUser = userStore()
-  // console.log('come in router before:'+ JSON.stringify(to.query))
-  // const req:ExternalLoginReq = to.query as ExternalLoginReq
-  // console.log(JSON.stringify(req.state))
   console.log(storeUser.user.authorities)
   next()
 })

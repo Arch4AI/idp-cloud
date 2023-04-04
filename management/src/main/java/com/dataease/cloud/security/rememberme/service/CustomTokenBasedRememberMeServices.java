@@ -2,6 +2,7 @@ package com.dataease.cloud.security.rememberme.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,6 +24,7 @@ import java.util.Date;
  * @version v1.0
  * @date 2023/3/16 6:03 PM
  **/
+@Slf4j
 public class CustomTokenBasedRememberMeServices extends TokenBasedRememberMeServices {
 
     private static final RememberMeTokenAlgorithm DEFAULT_MATCHING_ALGORITHM = RememberMeTokenAlgorithm.SHA256;
@@ -101,5 +103,9 @@ public class CustomTokenBasedRememberMeServices extends TokenBasedRememberMeServ
     @Override
     public void onLoginSuccess(HttpServletRequest request, HttpServletResponse response, Authentication successfulAuthentication) {
         super.onLoginSuccess(request, response, successfulAuthentication);
+        //这里面再去做一些操作？
+        // 是否要去检查一下最大的那个值？我暂时还未知
+        // 最好去检查一些session是否有多余的？
+        log.info("sessionId:{},user:{}",request.getRequestedSessionId(),successfulAuthentication.getName());
     }
 }

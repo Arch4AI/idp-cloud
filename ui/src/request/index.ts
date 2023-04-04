@@ -5,6 +5,7 @@ import type {
   RequestConfig,
   RequestInterceptors
 } from './types'
+import userStore from '@/store/user'
 
 class Request {
   // axios 实例
@@ -15,6 +16,12 @@ class Request {
   abortControllerMap: Map<string, AbortController>
 
   constructor(config: CreateRequestConfig) {
+    //定义默认的参数
+    axios.defaults.withCredentials = true
+    axios.defaults.maxRedirects = 0
+    axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
+    axios.defaults.headers['Access-Control-Allow-Origin'] = '*'
+    // axios.defaults.headers['Content-Type'] = 'application/json'
     this.instance = axios.create(config)
     // * 初始化存放取消请求控制器Map
     this.abortControllerMap = new Map()
@@ -44,14 +51,25 @@ class Request {
     this.instance.interceptors.response.use(
       // 因为我们接口的数据都在res.data下，所以我们直接返回res.data
       (res: AxiosResponse) => {
+        const storeUser = userStore()
         const url = res.config.url || ''
         this.abortControllerMap.delete(url)
+        if (res.data.code === 302) {
+          storeUser.user = res.data
+          window.location.href = res.data.msg
+          return
+        }
         return res.data
       },
       (err: any) => {
-        console.log('......')
-        // 这个地方可以判断是不是从页面过来的
-        throw err
+        if(err.response){
+          if(err.response.status === 403 || err.response.status === 403){
+            window.location.href = "/"
+            return 
+          }
+        }
+        Promise.reject(err)
+        //throw err
       }
     )
   }

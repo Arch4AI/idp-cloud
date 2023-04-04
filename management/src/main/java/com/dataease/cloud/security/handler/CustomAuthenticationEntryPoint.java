@@ -1,6 +1,8 @@
 package com.dataease.cloud.security.handler;
 
 import com.dataease.cloud.entity.response.Result;
+import com.dataease.cloud.properties.IdpProperties;
+import com.dataease.cloud.utils.GlobalConfigurations;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import jakarta.servlet.ServletException;
@@ -37,6 +39,9 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     @Resource
     private AuthorizationServerSettings authorizationServerSettings;
 
+    @Resource
+    private IdpProperties idpProperties;
+
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         //这里应该还需要判断 是不是从oauth2.0访问过来的 如果是没有验证应该重定向到vue前端的登录界面去
@@ -45,7 +50,13 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         SavedRequest savedRequest = cache.getRequest(request,response);
         if(savedRequest != null && savedRequest.getRedirectUrl().contains(authorizationServerSettings.getAuthorizationEndpoint())){
             // 需要重定向到前端登录页面哦
-            redirectStrategy.sendRedirect(request,response,"/login");
+            // 需要重定向到登录页面去
+            if(GlobalConfigurations.isReleaseMode()){
+                redirectStrategy.sendRedirect(request,response,"/login");
+            }else{
+                redirectStrategy.sendRedirect(request,response, idpProperties.getViteAddr()+"/login");
+            }
+
         }else{
             response.setCharacterEncoding(StandardCharsets.UTF_8.name());
             response.setContentType(MediaType.APPLICATION_JSON.toString());

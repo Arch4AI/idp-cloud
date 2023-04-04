@@ -16,6 +16,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -30,7 +31,7 @@ import org.springframework.web.filter.CorsFilter;
 @Slf4j
 public class SecurityConfig {
 
-    private static final String REMEMBER_ME_KEY = "cloud_cloud";
+    private static final String REMEMBER_ME_KEY = "idp_cloud";
 
     @Resource
     private CustomAccessDeniedHandler customAccessDeniedHandler;
@@ -76,7 +77,8 @@ public class SecurityConfig {
                 .logoutSuccessHandler(customLogoutSuccessHandler)
                 .and()
                 .sessionManagement()
-                .maximumSessions(1)//暂时无效 没有实现redis-session的管理 不会踢出对应的session-key
+                .maximumSessions(1)
+                //.maximumSessions(Integer.MAX_VALUE)
                 .sessionRegistry(sessionRegistry)
                 .and()
                 .and()

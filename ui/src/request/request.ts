@@ -14,8 +14,11 @@ interface ApiRequestConfig<T, R> extends RequestConfig<Response<R>> {
 }
 
 const request = new Request({
-  baseURL: import.meta.env.VITE_APP_BASE_URL,
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   timeout: 1000 * 60 * 5,
+  headers: {
+    'Content-Type': 'application/json;charset=utf-8;'
+  },
   interceptors: {
     // 请求拦截器
     requestInterceptors: (config) => config,

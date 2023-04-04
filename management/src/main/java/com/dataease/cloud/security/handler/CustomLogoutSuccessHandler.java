@@ -3,6 +3,7 @@ package com.dataease.cloud.security.handler;
 import com.dataease.cloud.base.domain.CloudUserLoginLogExample;
 import com.dataease.cloud.base.mapper.CloudUserLoginLogMapper;
 import com.dataease.cloud.entity.response.Result;
+import com.dataease.cloud.service.SessionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import jakarta.servlet.ServletException;
@@ -35,6 +36,9 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
     @Resource
     private ObjectMapper jacksonObjectMapper;
 
+    @Resource
+    private SessionService sessionService;
+
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
@@ -52,6 +56,9 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
             cloudUserLoginLog.setLogoutTime(new Date());
             cloudUserLoginLogMapper.updateByPrimaryKeySelective(cloudUserLoginLog);
         });
+
+        //设置sessionId过期
+        sessionService.expireNow(request.getRequestedSessionId());
 
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setContentType(MediaType.APPLICATION_JSON.toString());
