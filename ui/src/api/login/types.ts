@@ -21,8 +21,10 @@ interface UserRegisterReq {
   password: string
   email: string
   phone: string
-  gender?: number
+  gender?: string
   language?: string
+  code?: string
+  confirmPassword?: string
   sourceId?: string //第三方登录的源ID
   uuid?: string //第三方登录返回的uuid
 }
@@ -61,4 +63,11 @@ interface LoginResp {
   createTime: Date
   updateTime: Date
   language: string
+}
+
+// 这个是第三方登录没有绑定用户返回的信息对应code=403
+interface ExternalSecurityResponse{
+  sourceId?:string//对应源地址
+  uuid?:string//对应用户uuid
+  type?:string//对应类型 clientType
 }

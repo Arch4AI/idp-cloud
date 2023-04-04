@@ -8,3 +8,12 @@ export const sendSms = (data: SmsSendReq) => {
     data
   })
 }
+
+//检查验证码是否正常
+export const checkCode = (data: SmsCheckReq) => {
+  return apiRequest<SmsCheckReq, string>({
+    url: '/sms/check',
+    method: 'post',
+    data
+  })
+}

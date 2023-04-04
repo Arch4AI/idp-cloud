@@ -62,10 +62,10 @@ class Request {
         return res.data
       },
       (err: any) => {
-        if(err.response){
-          if(err.response.status === 403 || err.response.status === 403){
-            window.location.href = "/"
-            return 
+        if (err.response) {
+          if (err.response.status === 403 || err.response.status === 403) {
+            window.location.href = '/'
+            return
           }
         }
         Promise.reject(err)

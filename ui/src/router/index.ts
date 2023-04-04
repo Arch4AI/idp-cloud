@@ -1,4 +1,8 @@
+import { loginByExternal } from '@/api/login/login'
+import externalInfoStore from '@/store/externalUser'
 import userStore from '@/store/user'
+import { MessagePlugin } from 'tdesign-vue-next'
+import { LocationQuery } from 'vue-router'
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
 const routes: Array<RouteRecordRaw> = [
@@ -12,6 +16,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/login',
     name: 'Login',
     component: () => import('@/pages/login/Index.vue')
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: () => import('@/pages/register/Index.vue')
   },
   {
     path: '/dashboard',
@@ -31,13 +40,37 @@ const router = createRouter({
 })
 
 // 全局这个是路由守卫
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   //这里可以判断是不是已经有用户登录了 没有的话直接进行跳转
   // 这里判断用户是否登录 否则有些页面无法进入
   // 还可以在这里判断角色权限 如果这个用户的权限不对 则直接跳转到默认的界面即可
   //直接下一步
   const storeUser = userStore()
-  console.log(storeUser.user.authorities)
+  if(to.query){
+    const query:LocationQuery = to.query;
+    // 仅仅针对oauth2.0对接的情况 一定会有这2个东西 其余的都是附带的
+    if(query['state'] && query['code']){
+      //这里说明可以进来了
+      const req:ExternalLoginReq = query as ExternalLoginReq
+      const res =  await loginByExternal(req)
+      if(res.code === 200){
+        storeUser.user = res.data
+        next('dashboard')
+        return 
+      }else if(res.code === 403){
+        // 说明没有登录 需要将信息给到绑定的页面去进行绑定 //TODO
+        const resp:ExternalSecurityResponse = res.data as ExternalSecurityResponse
+        const stroeExternalInfo = externalInfoStore()
+        stroeExternalInfo.info = resp
+        next('login')
+        return 
+      }else{
+        MessagePlugin.error(res.msg)
+        next('login')
+        return 
+      }
+    }
+  }
   next()
 })
 

@@ -1,160 +1,177 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Registration Page</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-        integrity="sha512-NI2g38RxdZRElNGhlwV7AO15tbWfY98Xb6o+FLcMhB0Uy1eZZaoCHzCCZ+qo0DjQ2Ym9X4+O2UnLkgvE4/V/8Q=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      integrity="sha512-NI2g38RxdZRElNGhlwV7AO15tbWfY98Xb6o+FLcMhB0Uy1eZZaoCHzCCZ+qo0DjQ2Ym9X4+O2UnLkgvE4/V/8Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <style>
-        /* 全局样式 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      /* 全局样式 */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            font-family: sans-serif;
-            background-color: #f7f7f7;
-        }
+      body {
+        font-family: sans-serif;
+        background-color: #f7f7f7;
+      }
 
-        /* 注册页面外容器 */
-        .container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+      /* 注册页面外容器 */
+      .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
 
-        /* 注册表单 */
-        .form-container {
-            background-color: #ffffff;
-            border-radius: 5px;
-            padding: 40px;
-            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-            width: 400px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
+      /* 注册表单 */
+      .form-container {
+        background-color: #ffffff;
+        border-radius: 5px;
+        padding: 40px;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+        width: 400px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
 
-        h2 {
-            font-size: 2rem;
-            margin-bottom: 20px;
-            text-align: center;
-        }
+      h2 {
+        font-size: 2rem;
+        margin-bottom: 20px;
+        text-align: center;
+      }
 
-        /* 表单输入框 */
-        input[type="text"],
-        input[type="email"],
-        input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            border-radius: 3px;
-            border: none;
-            margin: 8px 0;
-            background-color: #f1f1f1;
-            font-size: 1rem;
-        }
+      /* 表单输入框 */
+      input[type='text'],
+      input[type='email'],
+      input[type='password'] {
+        width: 100%;
+        padding: 10px;
+        border-radius: 3px;
+        border: none;
+        margin: 8px 0;
+        background-color: #f1f1f1;
+        font-size: 1rem;
+      }
 
-        button[type="submit"] {
-            background-color: #1b75bb;
-            color: #fff;
-            font-size: 1rem;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-        }
+      button[type='submit'] {
+        background-color: #1b75bb;
+        color: #fff;
+        font-size: 1rem;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 10px;
+      }
 
-        button[type="submit"]:hover {
-            background-color: #145b8c;
-        }
+      button[type='submit']:hover {
+        background-color: #145b8c;
+      }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            position: relative;
-        }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        position: relative;
+      }
 
-        /* 输入框图标 */
-        .form-group i {
-            position: absolute;
-            font-size: 1.5rem;
-            right: 10px;
-            top: 15px;
-        }
+      /* 输入框图标 */
+      .form-group i {
+        position: absolute;
+        font-size: 1.5rem;
+        right: 10px;
+        top: 15px;
+      }
 
-        /* 输入框聚焦状态 */
-        input:focus {
-            border: 2px solid #1b75bb;
-            outline: none;
-            box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.1);
-        }
+      /* 输入框聚焦状态 */
+      input:focus {
+        border: 2px solid #1b75bb;
+        outline: none;
+        box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.1);
+      }
 
-        /* 头像上传按钮 */
-        #avatar {
-            display: none;
-        }
+      /* 头像上传按钮 */
+      #avatar {
+        display: none;
+      }
 
-        .upload {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+      .upload {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
 
-        .upload label {
-            cursor: pointer;
-        }
+      .upload label {
+        cursor: pointer;
+      }
 
-        .upload i {
-            font-size: 3rem;
-            margin-right: 10px;
-        }
+      .upload i {
+        font-size: 3rem;
+        margin-right: 10px;
+      }
 
-        .upload span {
-            font-size: 1.2rem;
-            color: #777;
-        }
+      .upload span {
+        font-size: 1.2rem;
+        color: #777;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="container">
-        <div class="form-container">
-            <h2>Create an Account</h2>
-            <form action="#" method="post" enctype="multipart/form-data">
-                <div class="form-group">
-                    <input type="text" placeholder="Username" name="username" required>
-                    <i class="fas fa-user"></i>
-                </div>
+      <div class="form-container">
+        <h2>Create an Account</h2>
+        <form action="#" method="post" enctype="multipart/form-data">
+          <div class="form-group">
+            <input
+              type="text"
+              placeholder="Username"
+              name="username"
+              required
+            />
+            <i class="fas fa-user"></i>
+          </div>
 
-                <div class="form-group">
-                    <input type="email" placeholder="Email" name="email" required>
-                    <i class="fas fa-envelope"></i>
-                </div>
+          <div class="form-group">
+            <input type="email" placeholder="Email" name="email" required />
+            <i class="fas fa-envelope"></i>
+          </div>
 
-                <div class="form-group">
-                    <input type="password" placeholder="Password" name="password" required>
-                    <i class="fas fa-lock"></i>
-                </div>
+          <div class="form-group">
+            <input
+              type="password"
+              placeholder="Password"
+              name="password"
+              required
+            />
+            <i class="fas fa-lock"></i>
+          </div>
 
-                <div class="form-group upload">
-                    <input type="file" name="avatar" accept="image/png, image/jpeg" id="avatar">
-                    <label for="avatar"><i class="fas fa-camera"></i></label>
-                    <span>Upload your avatar</span>
-                </div>
+          <div class="form-group upload">
+            <input
+              type="file"
+              name="avatar"
+              accept="image/png, image/jpeg"
+              id="avatar"
+            />
+            <label for="avatar"><i class="fas fa-camera"></i></label>
+            <span>Upload your avatar</span>
+          </div>
 
-                <button type="submit">Sign Up</button>
-            </form>
-        </div>
+          <button type="submit">Sign Up</button>
+        </form>
+      </div>
     </div>
-</body>
-
+  </body>
 </html>

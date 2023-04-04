@@ -11,14 +11,14 @@ const options: Ref<Array<DropdownOption>> = ref([
   {
     content: '修改信息',
     value: 1,
-    onClick: (dropdownItem: DropdownOption, context: { e: MouseEvent })=>{
+    onClick: (dropdownItem: DropdownOption, context: { e: MouseEvent }) => {
       MessagePlugin.error('暂未实现')
     }
   },
   {
     content: '退出',
     value: 2,
-    onClick: (dropdownItem: DropdownOption, context: { e: MouseEvent })=>{
+    onClick: (dropdownItem: DropdownOption, context: { e: MouseEvent }) => {
       userLogout()
     }
   }
