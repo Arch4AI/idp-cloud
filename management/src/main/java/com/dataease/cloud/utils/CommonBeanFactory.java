@@ -50,15 +50,16 @@ public class CommonBeanFactory implements ApplicationContextAware {
 
     /**
      * 根据参数获取Bean
+     *
      * @param className
      * @param var
      * @param <T>
      * @return
      */
-    public static <T> T getBean(Class<T> className,Object... var) {
+    public static <T> T getBean(Class<T> className, Object... var) {
         if (context == null || className == null) {
             return null;
         }
-        return context.getBean(className,var);
+        return context.getBean(className, var);
     }
 }

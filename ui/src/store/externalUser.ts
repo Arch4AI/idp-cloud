@@ -11,8 +11,7 @@ const externalInfoStore = defineStore('external_info', {
     info: {}
   }),
   getters: {},
-  actions: {
-  },
+  actions: {},
   // 同时支持localstorage sessionStorage
   persist: {
     enabled: true,

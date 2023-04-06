@@ -48,7 +48,7 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table tableName="cloud_session">
+        <table tableName="cloud_user_login_log">
         </table>
 
     </context>

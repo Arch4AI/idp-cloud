@@ -16,13 +16,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.RememberMeServices;
-import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 /**
  * security 配置见下
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/6 1:55 PM
@@ -50,6 +50,7 @@ public class SecurityConfig {
 
     /**
      * 定义过滤器
+     *
      * @param httpSecurity
      * @return
      * @throws Exception
@@ -57,7 +58,7 @@ public class SecurityConfig {
     @Bean
     @Order
     public SecurityFilterChain defaultSecurityWebFilterChain(HttpSecurity httpSecurity,
-                                                             SessionRegistry sessionRegistry)throws Exception{
+                                                             SessionRegistry sessionRegistry) throws Exception {
         return httpSecurity.authorizeHttpRequests().requestMatchers(DefaultSecurityExcludes.excludes)
                 .permitAll()
                 .anyRequest()
@@ -92,21 +93,23 @@ public class SecurityConfig {
 
     /**
      * 重写记住我
+     *
      * @return
      */
     @Bean
-    public RememberMeServices rememberMeServices(){
-        CustomTokenBasedRememberMeServices customTokenBasedRememberMeServices = new CustomTokenBasedRememberMeServices(REMEMBER_ME_KEY,rememberMeDetailsService,86400);
+    public RememberMeServices rememberMeServices() {
+        CustomTokenBasedRememberMeServices customTokenBasedRememberMeServices = new CustomTokenBasedRememberMeServices(REMEMBER_ME_KEY, rememberMeDetailsService, 86400);
         customTokenBasedRememberMeServices.setAlwaysRemember(true);
         return customTokenBasedRememberMeServices;
     }
 
     /**
      * 配置cors跨域访问
+     *
      * @return
      */
     @Bean
-    public CorsFilter corsFilter(){
+    public CorsFilter corsFilter() {
         //1.添加CORS配置信息
         CorsConfiguration config = new CorsConfiguration();
         //放行哪些原始域

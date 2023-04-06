@@ -1,7 +1,7 @@
 package com.dataease.cloud.security.oauthserver.oidc;
 
 /**
- * [描述当前类是什么作用]
+ * [自定义的属性]
  *
  * @author ShrChang.Liu
  * @version v1.0

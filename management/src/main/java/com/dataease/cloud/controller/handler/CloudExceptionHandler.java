@@ -19,8 +19,8 @@ public class CloudExceptionHandler {
 
     @ExceptionHandler
     @ResponseBody
-    public Result handException(Exception e){
-        log.error("Exception happend:",e);
+    public Result handException(Exception e) {
+        log.error("Exception happend:", e);
         return Result.error(e);
     }
 }

@@ -52,9 +52,10 @@ public class CloudExternalAuthSourceService {
 
     /**
      * 返回所有的提供商信息 最好就是不要返回密码信息 暂时未处理
+     *
      * @return
      */
-    public List<CloudExternalAuthSource> listAll(){
+    public List<CloudExternalAuthSource> listAll() {
         return cloudExternalAuthSourceMapper.selectByExample(null);
     }
 
@@ -62,9 +63,10 @@ public class CloudExternalAuthSourceService {
      * 获取可用的需要显示到页面上的信息
      * 最好是自定义显示几个字段即可 不需要显示所有的字段
      * 自己定义Mappger.xml
+     *
      * @return
      */
-    public List<CloudExternalAuthSource> listActive(){
+    public List<CloudExternalAuthSource> listActive() {
         CloudExternalAuthSourceExample example = new CloudExternalAuthSourceExample();
         example.createCriteria().andEnableEqualTo(true);
         List<CloudExternalAuthSource> settings = cloudExternalAuthSourceMapper.selectByExample(example);
@@ -75,26 +77,27 @@ public class CloudExternalAuthSourceService {
      * 获取支持的接入客户端类型
      * 如果需要支持显示名称需要另外开发
      */
-    public List<String> getSupportClientTypes(){
-       return Arrays.stream(AuthDefaultSource.values()).map(defaultSource -> defaultSource.name()).collect(Collectors.toList());
+    public List<String> getSupportClientTypes() {
+        return Arrays.stream(AuthDefaultSource.values()).map(defaultSource -> defaultSource.name()).collect(Collectors.toList());
     }
 
     /**
      * 获取返回的数据
+     *
      * @param id
      */
-    public ExternalLoginUri getSettingById(String id){
+    public ExternalLoginUri getSettingById(String id) {
         CloudExternalAuthSource setting = cloudExternalAuthSourceMapper.selectByPrimaryKey(id);
-        if(setting == null)
+        if (setting == null)
             CloudException.throwException("Provider setting not found!");
-        if(!setting.getEnable())
+        if (!setting.getEnable())
             CloudException.throwException("Provider not enable!");
         String state = Base64.encode(id);
-        AuthDefaultSource source = Arrays.stream(AuthDefaultSource.values()).filter(defaultSource->defaultSource.name().equals(setting.getClientType())).findFirst().orElse(null);
-        if(source == null)
+        AuthDefaultSource source = Arrays.stream(AuthDefaultSource.values()).filter(defaultSource -> defaultSource.name().equals(setting.getClientType())).findFirst().orElse(null);
+        if (source == null)
             CloudException.throwException("Provider not support!");
-        AuthDefaultRequest authDefaultRequest = getRequestBySource(source,setting);
-        if(authDefaultRequest == null)
+        AuthDefaultRequest authDefaultRequest = getRequestBySource(source, setting);
+        if (authDefaultRequest == null)
             CloudException.throwException("Auth request not found!");
         String uri = authDefaultRequest.authorize(state);
         return ExternalLoginUri
@@ -107,14 +110,15 @@ public class CloudExternalAuthSourceService {
 
     /**
      * 根据Source获取请求体
+     *
      * @param source
      * @param setting
      * @return
      */
-    private AuthDefaultRequest getRequestBySource(AuthDefaultSource source,CloudExternalAuthSource setting){
+    private AuthDefaultRequest getRequestBySource(AuthDefaultSource source, CloudExternalAuthSource setting) {
         AuthDefaultRequest request = null;
         AuthConfig authConfig = builder(setting);
-        switch (source){
+        switch (source) {
             case GITHUB:
                 request = new AuthGithubRequest(authConfig);
                 break;
@@ -143,7 +147,7 @@ public class CloudExternalAuthSourceService {
                 request = new AuthOschinaRequest(authConfig);
                 break;
             case ALIPAY:
-                request = new AuthAlipayRequest(authConfig,setting.getAlipayPublicKey());
+                request = new AuthAlipayRequest(authConfig, setting.getAlipayPublicKey());
                 break;
             case QQ:
                 request = new AuthQqRequest(authConfig);
@@ -258,10 +262,11 @@ public class CloudExternalAuthSourceService {
 
     /**
      * 返回一个参数
+     *
      * @param setting
      * @return
      */
-    private AuthConfig builder(CloudExternalAuthSource setting){
+    private AuthConfig builder(CloudExternalAuthSource setting) {
         AuthConfig authConfig = AuthConfig
                 .builder()
                 .clientId(setting.getClientId())
@@ -280,9 +285,9 @@ public class CloudExternalAuthSourceService {
                 .userInfoUri(setting.getUserInfoUri())
                 .build();
         // 是否开启http代理
-        if(setting.getOpenProxy() != null && setting.getOpenProxy()){
+        if (setting.getOpenProxy() != null && setting.getOpenProxy()) {
             HttpConfig httpConfig = HttpConfig.builder()
-                    .proxy(new Proxy(Proxy.Type.HTTP,new InetSocketAddress(setting.getProxyHost(),setting.getProxyPort())))
+                    .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(setting.getProxyHost(), setting.getProxyPort())))
                     .build();
             authConfig.setHttpConfig(httpConfig);
         }
@@ -292,10 +297,11 @@ public class CloudExternalAuthSourceService {
 
     /**
      * 添加一个认证源
+     *
      * @param cloudOauthProviderSetting
      * @return
      */
-    public CloudExternalAuthSource add(CloudExternalAuthSource cloudOauthProviderSetting){
+    public CloudExternalAuthSource add(CloudExternalAuthSource cloudOauthProviderSetting) {
         //判断是否复合
         validateProviderSetting(cloudOauthProviderSetting);
         cloudOauthProviderSetting.setCreateTime(Calendar.getInstance().getTime());
@@ -307,118 +313,122 @@ public class CloudExternalAuthSourceService {
 
     /**
      * 校验认证源参数
+     *
      * @param setting
      */
-    private void validateProviderSetting(CloudExternalAuthSource setting){
-        if(!StringUtils.hasText(setting.getDisplayName()))
+    private void validateProviderSetting(CloudExternalAuthSource setting) {
+        if (!StringUtils.hasText(setting.getDisplayName()))
             CloudException.throwException("auth provider displayName required!");
-        if(!StringUtils.hasText(setting.getClientId()))
+        if (!StringUtils.hasText(setting.getClientId()))
             CloudException.throwException("auth provider clientId required!");
-        if(!StringUtils.hasText(setting.getClientSecret()))
+        if (!StringUtils.hasText(setting.getClientSecret()))
             CloudException.throwException("auth provider clientSecret required!");
-        if(!StringUtils.hasText(setting.getClientType()))
+        if (!StringUtils.hasText(setting.getClientType()))
             CloudException.throwException("auth provider clientType required!");
         boolean support = Arrays.stream(AuthDefaultSource.values()).filter(authDefaultSource -> authDefaultSource.name().equals(setting.getClientType())).count() > 0;
-        if(!support)
+        if (!support)
             CloudException.throwException("auth provider clientType not support!");
-        if(!StringUtils.hasText(setting.getRedirectUri()))
+        if (!StringUtils.hasText(setting.getRedirectUri()))
             CloudException.throwException("auth provider redirectUri required!");
-        if(setting.getEnable() == null)
+        if (setting.getEnable() == null)
             CloudException.throwException("auth provider enable required!");
         String clientType = setting.getClientType();
         // 支付宝
-        if(AuthDefaultSource.ALIPAY.name().equals(clientType)){
-            if(!StringUtils.hasText(setting.getAlipayPublicKey()))
+        if (AuthDefaultSource.ALIPAY.name().equals(clientType)) {
+            if (!StringUtils.hasText(setting.getAlipayPublicKey()))
                 CloudException.throwException("Alipay provider alipayPublicKey required!");
         }
         //stack_overflow
-        if(AuthDefaultSource.STACK_OVERFLOW.name().equals(clientType)){
-            if(!StringUtils.hasText(setting.getStackOverflowKey()))
+        if (AuthDefaultSource.STACK_OVERFLOW.name().equals(clientType)) {
+            if (!StringUtils.hasText(setting.getStackOverflowKey()))
                 CloudException.throwException("Stackoverflow provider stackOverflowKey required!");
         }
         //企业微信 内部登录
-        if(AuthDefaultSource.WECHAT_ENTERPRISE.name().equals(clientType)){
-            if(!StringUtils.hasText(setting.getAgentId()))
+        if (AuthDefaultSource.WECHAT_ENTERPRISE.name().equals(clientType)) {
+            if (!StringUtils.hasText(setting.getAgentId()))
                 CloudException.throwException("Wechat enterprise provider agentId required!");
         }
         //企业微信扫码
-        if(AuthDefaultSource.WECHAT_ENTERPRISE_QRCODE_THIRD.name().equals(clientType)){
-            if(!StringUtils.hasText(setting.getUserType()))
+        if (AuthDefaultSource.WECHAT_ENTERPRISE_QRCODE_THIRD.name().equals(clientType)) {
+            if (!StringUtils.hasText(setting.getUserType()))
                 CloudException.throwException("wechat enterprise qrcode third provider userType required!");
         }
 
-        if(AuthDefaultSource.CODING.name().equals(clientType) || AuthDefaultSource.OKTA.name().equals(clientType)){
-            if(!StringUtils.hasText(setting.getDomainPrefix()))
+        if (AuthDefaultSource.CODING.name().equals(clientType) || AuthDefaultSource.OKTA.name().equals(clientType)) {
+            if (!StringUtils.hasText(setting.getDomainPrefix()))
                 CloudException.throwException("provider domainPrefix required!");
         }
 
-        if(AuthDefaultSource.XMLY.name().equals(clientType)){
-            if(!StringUtils.hasText(setting.getDeviceId()))
+        if (AuthDefaultSource.XMLY.name().equals(clientType)) {
+            if (!StringUtils.hasText(setting.getDeviceId()))
                 CloudException.throwException("provider deviceId required!");
         }
 
-        if(AuthDefaultSource.OKTA.name().equals(clientType) && !StringUtils.hasText(setting.getAuthServerId()))
+        if (AuthDefaultSource.OKTA.name().equals(clientType) && !StringUtils.hasText(setting.getAuthServerId()))
             setting.setAuthServerId("defalut");
 
-        if(AuthDefaultSource.OIDC.name().equals(clientType)){
-            if(!StringUtils.hasText(setting.getAuthUri()))
+        if (AuthDefaultSource.OIDC.name().equals(clientType)) {
+            if (!StringUtils.hasText(setting.getAuthUri()))
                 CloudException.throwException("provider authUri required!");
-            if(!StringUtils.hasText(setting.getTokenUri()))
+            if (!StringUtils.hasText(setting.getTokenUri()))
                 CloudException.throwException("provider tokenUri required!");
-            if(!StringUtils.hasText(setting.getUserInfoUri()))
+            if (!StringUtils.hasText(setting.getUserInfoUri()))
                 CloudException.throwException("provider userInfoUri required!");
         }
     }
 
     /**
      * 根据认证源来获取外部用户
+     *
      * @param externalSecurityRequest 请求体
      */
-    public AuthUser getAuthUser(ExternalSecurityRequest externalSecurityRequest){
+    public AuthUser getAuthUser(ExternalSecurityRequest externalSecurityRequest) {
         String sourceId = Base64.decodeStr(externalSecurityRequest.getState());
         CloudExternalAuthSource setting = cloudExternalAuthSourceMapper.selectByPrimaryKey(sourceId);
-        if(setting == null)
+        if (setting == null)
             SecurityException.throwException("Provider not found!");
-        if(!setting.getEnable())
+        if (!setting.getEnable())
             SecurityException.throwException("Provider not enable!");
-        AuthDefaultSource source = Arrays.stream(AuthDefaultSource.values()).filter(defaultSource->defaultSource.name().equals(setting.getClientType())).findFirst().orElse(null);
-        if(source == null)
+        AuthDefaultSource source = Arrays.stream(AuthDefaultSource.values()).filter(defaultSource -> defaultSource.name().equals(setting.getClientType())).findFirst().orElse(null);
+        if (source == null)
             SecurityException.throwException("provider not support!");
-        AuthDefaultRequest authDefaultRequest = getRequestBySource(source,setting);
+        AuthDefaultRequest authDefaultRequest = getRequestBySource(source, setting);
         AuthResponse authResponse = authDefaultRequest.login(externalSecurityRequest);
-        if(!authResponse.ok())
+        if (!authResponse.ok())
             SecurityException.throwException(authResponse.getMsg());
-        return (AuthUser)authResponse.getData();
+        return (AuthUser) authResponse.getData();
     }
 
     /**
      * 绑定第三方用户
-     * @param state state 对应的是provider sourceId
+     *
+     * @param state    state 对应的是provider sourceId
      * @param authUser 第三方用户
      * @param authUser
      */
-    public void bindUser(String state,AuthUser authUser){
+    public void bindUser(String state, AuthUser authUser) {
         String sourceId = Base64.decodeStr(state);
         LocalUser localUser = (LocalUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(localUser == null)
+        if (localUser == null)
             SecurityException.throwException("User not found!");
         //查询用户是否是可用
         CloudUser cloudUser = cloudUserMapper.selectByPrimaryKey(localUser.getUserId());
-        if(cloudUser == null)
+        if (cloudUser == null)
             SecurityException.throwException("User not found!");
-        if(!cloudUser.getEnabled())
+        if (!cloudUser.getEnabled())
             SecurityException.throwException("User has disabled!");
         CloudUserAuthSourceRelationKey cloudUserAuthSourceRelationKey = new CloudUserAuthSourceRelationKey();
         cloudUserAuthSourceRelationKey.setAuthSourceId(sourceId);
         cloudUserAuthSourceRelationKey.setAuthUserUuid(authUser.getUuid());
         CloudUserAuthSourceRelation cloudUserAuthSourceRelation = cloudUserAuthSourceRelationMapper.selectByPrimaryKey(cloudUserAuthSourceRelationKey);
-        if(cloudUserAuthSourceRelation != null)
+        if (cloudUserAuthSourceRelation != null)
             SecurityException.throwException("Auth User has binded!");
         addUserRelation(authUser, sourceId, localUser.getUserId());
     }
 
     /**
      * 添加用户与认证的关系
+     *
      * @param authUser
      * @param sourceId
      * @param userId
@@ -442,17 +452,18 @@ public class CloudExternalAuthSourceService {
 
     /**
      * 登录的逻辑在这里
+     *
      * @param authUser
      * @param state
      */
-    public CloudUser loginUser(AuthUser authUser,String state){
+    public CloudUser loginUser(AuthUser authUser, String state) {
         String sourceId = Base64.decodeStr(state);
         //查询对应的数据 如果没有查到就直接返回就行了
         CloudUserAuthSourceRelationKey cloudUserAuthSourceRelationKey = new CloudUserAuthSourceRelationKey();
         cloudUserAuthSourceRelationKey.setAuthSourceId(sourceId);
         cloudUserAuthSourceRelationKey.setAuthUserUuid(authUser.getUuid());
         CloudUserAuthSourceRelation cloudUserAuthSourceRelation = cloudUserAuthSourceRelationMapper.selectByPrimaryKey(cloudUserAuthSourceRelationKey);
-        if(cloudUserAuthSourceRelation == null || !StringUtils.hasText(cloudUserAuthSourceRelation.getUserId())){
+        if (cloudUserAuthSourceRelation == null || !StringUtils.hasText(cloudUserAuthSourceRelation.getUserId())) {
             //创建一个空的记录 但是他会抛出异常 所以他无法插入
             SecurityException.throwException("User not found!");
         }
@@ -463,33 +474,35 @@ public class CloudExternalAuthSourceService {
 
     /**
      * 保存一下这个信息
+     *
      * @param authUser
      * @param state
      */
-    public void saveUser(AuthUser authUser,String state){
+    public void saveUser(AuthUser authUser, String state) {
         String sourceId = Base64.decodeStr(state);
         CloudUserAuthSourceRelationKey cloudUserAuthSourceRelationKey = new CloudUserAuthSourceRelationKey();
         cloudUserAuthSourceRelationKey.setAuthSourceId(sourceId);
         cloudUserAuthSourceRelationKey.setAuthUserUuid(authUser.getUuid());
         CloudUserAuthSourceRelation cloudUserAuthSourceRelation = cloudUserAuthSourceRelationMapper.selectByPrimaryKey(cloudUserAuthSourceRelationKey);
-        if(cloudUserAuthSourceRelation == null){
-            addUserRelation(authUser,sourceId,null);
+        if (cloudUserAuthSourceRelation == null) {
+            addUserRelation(authUser, sourceId, null);
         }
     }
 
     /**
      * 如果这个第三方已经绑定直接报错
+     *
      * @param userId
      * @param sourceId
      * @param uuid
      */
-    public void bindUserRelation(String userId,String sourceId,String uuid){
+    public void bindUserRelation(String userId, String sourceId, String uuid) {
         //最好判断一下是不是已经绑定了
         CloudUserAuthSourceRelationKey cloudUserAuthSourceRelationKey = new CloudUserAuthSourceRelationKey();
         cloudUserAuthSourceRelationKey.setAuthSourceId(sourceId);
         cloudUserAuthSourceRelationKey.setAuthUserUuid(uuid);
         CloudUserAuthSourceRelation cloudUserAuthSourceRelation = cloudUserAuthSourceRelationMapper.selectByPrimaryKey(cloudUserAuthSourceRelationKey);
-        if(StringUtils.hasText(cloudUserAuthSourceRelation.getUserId()))
+        if (StringUtils.hasText(cloudUserAuthSourceRelation.getUserId()))
             SecurityException.throwException("external user has bind!");
         cloudUserAuthSourceRelation.setUserId(userId);
         cloudUserAuthSourceRelation.setUpdateTime(Calendar.getInstance().getTime());

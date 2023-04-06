@@ -26,6 +26,7 @@ public class CustomSessionInformation extends SessionInformation {
 
     /**
      * 解析一下把
+     *
      * @param session
      * @return
      */

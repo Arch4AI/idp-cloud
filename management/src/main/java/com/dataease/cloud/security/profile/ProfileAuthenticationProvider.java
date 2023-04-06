@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
  * 用户更信息
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/8 9:54 AM
@@ -19,20 +20,20 @@ public class ProfileAuthenticationProvider implements AuthenticationProvider {
 
     private UserDetailsService userDetailsService;
 
-    public ProfileAuthenticationProvider(UserDetailsService userDetailsService){
+    public ProfileAuthenticationProvider(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         //强制转换
-        ProfileAuthenticationToken proflieAuthenticationToken = (ProfileAuthenticationToken)authentication;
-        if(proflieAuthenticationToken.getPrincipal() == null)
+        ProfileAuthenticationToken proflieAuthenticationToken = (ProfileAuthenticationToken) authentication;
+        if (proflieAuthenticationToken.getPrincipal() == null)
             SecurityException.throwException("update user profile request parameter error!");
-        String username = (String)proflieAuthenticationToken.getPrincipal();
+        String username = (String) proflieAuthenticationToken.getPrincipal();
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         //设置token
-        ProfileAuthenticationToken token = new ProfileAuthenticationToken(userDetails,userDetails.getAuthorities());
+        ProfileAuthenticationToken token = new ProfileAuthenticationToken(userDetails, userDetails.getAuthorities());
         token.setDetails(authentication.getDetails());
         return token;
     }

@@ -5,10 +5,11 @@ import lombok.Getter;
 
 /**
  * OIDC的作用域
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/13 2:39 PM
-**/
+ **/
 @Getter
 @AllArgsConstructor
 public enum OIDCScope implements AuthScope {

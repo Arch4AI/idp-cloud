@@ -8,8 +8,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Set;
 
 /**
- *
  * 一般认为userId 一致 就是一个用户 就要把那个人挤出去？ 只适用于本地
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/7 5:09 PM

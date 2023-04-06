@@ -25,17 +25,17 @@ public class CommonConfig {
     @Bean
     public SystemInit systemInit(CloudUserMapper cloudUserMapper,
                                  CloudUserRoleMapper cloudUserRoleMapper,
-                                 CloudExternalAuthSourceService cloudOauthProviderSettingService){
-        return new SystemInit(cloudUserMapper,cloudUserRoleMapper,cloudOauthProviderSettingService);
+                                 CloudExternalAuthSourceService cloudOauthProviderSettingService) {
+        return new SystemInit(cloudUserMapper, cloudUserRoleMapper, cloudOauthProviderSettingService);
     }
 
     @Bean
-    public CommonBeanFactory commonBeanFactory(){
+    public CommonBeanFactory commonBeanFactory() {
         return new CommonBeanFactory();
     }
 
     @Bean
-    public GlobalConfigurations globalConfigurations(Environment environment){
+    public GlobalConfigurations globalConfigurations(Environment environment) {
         return new GlobalConfigurations(environment);
     }
 }

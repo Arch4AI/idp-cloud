@@ -24,20 +24,22 @@ public class AuthController {
 
     /**
      * 获取可用的提供商
+     *
      * @return
      */
     @GetMapping("providers")
-    public Result listActiveProviders(){
+    public Result listActiveProviders() {
         return Result.success(cloudExternalAuthSourceService.listActive());
     }
 
     /**
      * 根据ID获取跳转路径
+     *
      * @param id
      * @return
      */
     @GetMapping("providers/{id}")
-    public Result redirectUri(@PathVariable("id") String id){
+    public Result redirectUri(@PathVariable("id") String id) {
         return Result.success(cloudExternalAuthSourceService.getSettingById(id));
     }
 }

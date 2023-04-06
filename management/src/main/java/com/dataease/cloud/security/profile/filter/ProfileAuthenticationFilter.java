@@ -94,7 +94,7 @@ public class ProfileAuthenticationFilter extends AbstractAuthenticationProcessin
                 LocalUser u = cloudUserService.updateProfile(req);
                 //更新当前用户的信息 稍等一会在执行
                 SecurityContext context = SecurityContextHolder.getContext();
-                ProfileAuthenticationToken token = new ProfileAuthenticationToken(localUser,localUser.getAuthorities());
+                ProfileAuthenticationToken token = new ProfileAuthenticationToken(localUser, localUser.getAuthorities());
                 token.setDetails(authentication.getDetails());
                 context.setAuthentication(token);
                 //这个配置试试先
@@ -103,6 +103,7 @@ public class ProfileAuthenticationFilter extends AbstractAuthenticationProcessin
                 response.setCharacterEncoding(StandardCharsets.UTF_8.name());
                 response.setContentType(MediaType.APPLICATION_JSON.toString());
                 PrintWriter out = response.getWriter();
+                u.setPassword(null);
                 out.write(objectMapper.writeValueAsString(Result.success(u)));
                 out.flush();
                 out.close();
@@ -119,8 +120,8 @@ public class ProfileAuthenticationFilter extends AbstractAuthenticationProcessin
         //这里相当于是注册
         user = cloudUserService.registerUserByProfile(req);
         //如果是传递进来了 就绑定一下第三方的 这个绑定的意思就是这个已经存在才可以绑定
-        if(StringUtils.hasText(req.getSourceId()) && StringUtils.hasText(req.getUuid())){
-            cloudExternalAuthSourceService.bindUserRelation(user.getUserId(),req.getSourceId(),req.getUuid());
+        if (StringUtils.hasText(req.getSourceId()) && StringUtils.hasText(req.getUuid())) {
+            cloudExternalAuthSourceService.bindUserRelation(user.getUserId(), req.getSourceId(), req.getUuid());
         }
 
         //创建一个token 传入获取到的用户request

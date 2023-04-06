@@ -73,6 +73,7 @@ class Request {
       }
     )
   }
+
   request<T>(config: RequestConfig<T>): Promise<T> {
     return new Promise((resolve, reject) => {
       // 如果我们为单个请求设置拦截器，这里使用单个请求的拦截器
@@ -102,6 +103,7 @@ class Request {
       // .finally(() => {})
     })
   }
+
   /**
    * 取消全部请求
    */
@@ -111,6 +113,7 @@ class Request {
     }
     this.abortControllerMap.clear()
   }
+
   /*
    * 取消指定的请求
    * @param url 待取消的请求URL

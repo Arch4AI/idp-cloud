@@ -20,7 +20,7 @@ public class LocalDetailsService implements UserDetailsService {
     @Resource
     private CloudUserService cloudUserService;
 
-    public LocalDetailsService(CloudUserService cloudUserService){
+    public LocalDetailsService(CloudUserService cloudUserService) {
         this.cloudUserService = cloudUserService;
     }
 
@@ -28,7 +28,7 @@ public class LocalDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try {
             return cloudUserService.getUserById(username);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new UsernameNotFoundException(e.getLocalizedMessage());
         }
     }

@@ -21,22 +21,22 @@ public class PhoneAuthenticationProvider implements AuthenticationProvider {
 
     private UserDetailsService userDetailsService;
 
-    public PhoneAuthenticationProvider(UserDetailsService userDetailsService){
+    public PhoneAuthenticationProvider(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         //强制转换
-        PhoneAuthenticationToken phoneAuthenticationToken = (PhoneAuthenticationToken)authentication;
+        PhoneAuthenticationToken phoneAuthenticationToken = (PhoneAuthenticationToken) authentication;
         //获取用户信息
         UserDetails userDetails = userDetailsService.loadUserByUsername((String) phoneAuthenticationToken.getPrincipal());
-        if(userDetails == null)
+        if (userDetails == null)
             throw new UsernameNotFoundException("user not found!");
-        if(!userDetails.isEnabled())
+        if (!userDetails.isEnabled())
             throw new DisabledException("user disabled!");
         //设置token
-        PhoneAuthenticationToken token = new PhoneAuthenticationToken(userDetails,userDetails.getAuthorities());
+        PhoneAuthenticationToken token = new PhoneAuthenticationToken(userDetails, userDetails.getAuthorities());
         token.setDetails(authentication.getDetails());
         return token;
     }

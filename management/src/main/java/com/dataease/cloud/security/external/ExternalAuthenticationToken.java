@@ -8,6 +8,7 @@ import java.util.Collection;
 
 /**
  * 外部认证Token
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/7 3:13 PM
@@ -19,7 +20,7 @@ public class ExternalAuthenticationToken extends AbstractAuthenticationToken {
     private Object principal;
     private Object credentials;
 
-    public ExternalAuthenticationToken(){
+    public ExternalAuthenticationToken() {
         super(null);
     }
 

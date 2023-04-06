@@ -15,6 +15,7 @@ import java.security.spec.X509EncodedKeySpec;
 
 /**
  * 获取固定的RSA加密
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/16 5:32 PM
@@ -30,9 +31,10 @@ public class RSAUtils {
 
     /**
      * 生成RSA-key 固定的
+     *
      * @return
      */
-    public static RSAKey generateRsa(){
+    public static RSAKey generateRsa() {
         try {
             RSAPublicKey publicKey = getPublicKey(PUBLIC_KEY);
             RSAPrivateKey privateKey = getPrivateKey(PRIVATE_KEY);
@@ -40,8 +42,8 @@ public class RSAUtils {
                     .privateKey(privateKey)
                     .keyID(key)
                     .build();
-        }catch (Exception e){
-            log.error("generate fix rsa key:",e);
+        } catch (Exception e) {
+            log.error("generate fix rsa key:", e);
         }
         return Jwks.generateRsa();
     }
@@ -49,7 +51,8 @@ public class RSAUtils {
 
     /**
      * 得到公钥
-     * @param publicKey  密钥字符串（经过base64编码）
+     *
+     * @param publicKey 密钥字符串（经过base64编码）
      * @throws Exception
      */
     private static RSAPublicKey getPublicKey(String publicKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
@@ -62,7 +65,8 @@ public class RSAUtils {
 
     /**
      * 得到私钥
-     * @param privateKey  密钥字符串（经过base64编码）
+     *
+     * @param privateKey 密钥字符串（经过base64编码）
      * @throws Exception
      */
     private static RSAPrivateKey getPrivateKey(String privateKey) throws NoSuchAlgorithmException, InvalidKeySpecException {

@@ -28,6 +28,7 @@ import org.springframework.security.web.context.SecurityContextRepository;
 
 /**
  * 自定义的安全管理器
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/14 10:04 AM
@@ -59,28 +60,29 @@ public class CustomSecurityConfigurerAdapter extends SecurityConfigurerAdapter<D
         http.authenticationProvider(new PasswordAuthenticationProvider(localDetailsService))
                 .addFilterAfter(getPasswordAuthenticationFilter(http), UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(new PhoneAuthenticationProvider(localDetailsService))
-                .addFilterAfter(getPhoneAuthenticationFilter(http),UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(getPhoneAuthenticationFilter(http), UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(new RegisterAuthenticationProvider(localDetailsService))
-                .addFilterAfter(getRegisterAuthenticationFilter(http),UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(getRegisterAuthenticationFilter(http), UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(new ProfileAuthenticationProvider(localDetailsService))
-                .addFilterAfter(getProfileAuthenticationFilter(http),UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(getProfileAuthenticationFilter(http), UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(new ExternalAuthenticationProvider(localDetailsService))
-                .addFilterAfter(getExternalAuthenticationFilter(http),UsernamePasswordAuthenticationFilter.class);
+                .addFilterAfter(getExternalAuthenticationFilter(http), UsernamePasswordAuthenticationFilter.class);
     }
 
     /**
      * 外部认证
+     *
      * @param http
      * @return
      */
-    private ExternalAuthenticationFilter getExternalAuthenticationFilter(HttpSecurity http){
+    private ExternalAuthenticationFilter getExternalAuthenticationFilter(HttpSecurity http) {
         SessionAuthenticationStrategy sessionAuthenticationStrategy = http
                 .getSharedObject(SessionAuthenticationStrategy.class);
         AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
         RememberMeServices rememberMeServices = http.getSharedObject(RememberMeServices.class);
         SecurityContextRepository repository = http.getSharedObject(SecurityContextRepository.class);
 
-        ExternalAuthenticationFilter externalAuthenticationFilter = new ExternalAuthenticationFilter(authenticationManager,cloudExternalAuthSourceService);
+        ExternalAuthenticationFilter externalAuthenticationFilter = new ExternalAuthenticationFilter(authenticationManager, cloudExternalAuthSourceService);
         // 如果未设置这个会导致redis session中没有数据 需要将用户信息存储到httpSession中
         externalAuthenticationFilter.setSecurityContextRepository(repository);
         // 设置记住我
@@ -95,17 +97,18 @@ public class CustomSecurityConfigurerAdapter extends SecurityConfigurerAdapter<D
 
     /**
      * 获取更新信息的Filter
+     *
      * @param http
      * @return
      */
-    private ProfileAuthenticationFilter getProfileAuthenticationFilter(HttpSecurity http){
+    private ProfileAuthenticationFilter getProfileAuthenticationFilter(HttpSecurity http) {
         SessionAuthenticationStrategy sessionAuthenticationStrategy = http
                 .getSharedObject(SessionAuthenticationStrategy.class);
         AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
         RememberMeServices rememberMeServices = http.getSharedObject(RememberMeServices.class);
         SecurityContextRepository repository = http.getSharedObject(SecurityContextRepository.class);
 
-        ProfileAuthenticationFilter profileAuthenticationFilter = new ProfileAuthenticationFilter(authenticationManager,cloudUserService,cloudExternalAuthSourceService);
+        ProfileAuthenticationFilter profileAuthenticationFilter = new ProfileAuthenticationFilter(authenticationManager, cloudUserService, cloudExternalAuthSourceService);
         // 如果未设置这个会导致redis session中没有数据 需要将用户信息存储到httpSession中
         profileAuthenticationFilter.setSecurityContextRepository(repository);
         // 设置记住我
@@ -121,16 +124,17 @@ public class CustomSecurityConfigurerAdapter extends SecurityConfigurerAdapter<D
 
     /**
      * 获取注册过滤器
+     *
      * @return
      */
-    private RegisterAuthenticationFilter getRegisterAuthenticationFilter(HttpSecurity http){
+    private RegisterAuthenticationFilter getRegisterAuthenticationFilter(HttpSecurity http) {
         SessionAuthenticationStrategy sessionAuthenticationStrategy = http
                 .getSharedObject(SessionAuthenticationStrategy.class);
         AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
         RememberMeServices rememberMeServices = http.getSharedObject(RememberMeServices.class);
         SecurityContextRepository repository = http.getSharedObject(SecurityContextRepository.class);
         // 配置一个Filter 默认使用已经存在的authenticationManager
-        RegisterAuthenticationFilter registerAuthenticationFilter = new RegisterAuthenticationFilter(authenticationManager,cloudUserService,cloudExternalAuthSourceService);
+        RegisterAuthenticationFilter registerAuthenticationFilter = new RegisterAuthenticationFilter(authenticationManager, cloudUserService, cloudExternalAuthSourceService);
         // 如果未设置这个会导致redis session中没有数据 需要将用户信息存储到httpSession中
         registerAuthenticationFilter.setSecurityContextRepository(repository);
         // 设置记住我
@@ -145,17 +149,18 @@ public class CustomSecurityConfigurerAdapter extends SecurityConfigurerAdapter<D
 
     /**
      * 获取手机登录的过滤器
+     *
      * @param http
      * @return
      */
-    private PhoneAuthenticationFilter getPhoneAuthenticationFilter(HttpSecurity http){
+    private PhoneAuthenticationFilter getPhoneAuthenticationFilter(HttpSecurity http) {
         SessionAuthenticationStrategy sessionAuthenticationStrategy = http
                 .getSharedObject(SessionAuthenticationStrategy.class);
         AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
         RememberMeServices rememberMeServices = http.getSharedObject(RememberMeServices.class);
         SecurityContextRepository repository = http.getSharedObject(SecurityContextRepository.class);
         // 配置一个Filter 默认使用已经存在的authenticationManager
-        PhoneAuthenticationFilter phoneAuthenticationFilter = new PhoneAuthenticationFilter(authenticationManager,stringRedisTemplate,cloudUserService,cloudExternalAuthSourceService);
+        PhoneAuthenticationFilter phoneAuthenticationFilter = new PhoneAuthenticationFilter(authenticationManager, stringRedisTemplate, cloudUserService, cloudExternalAuthSourceService);
         // 如果未设置这个会导致redis session中没有数据 需要将用户信息存储到httpSession中
         phoneAuthenticationFilter.setSecurityContextRepository(repository);
         // 设置记住我
@@ -170,6 +175,7 @@ public class CustomSecurityConfigurerAdapter extends SecurityConfigurerAdapter<D
 
     /**
      * 密码登录的过滤器
+     *
      * @param http
      * @return
      */
@@ -180,7 +186,7 @@ public class CustomSecurityConfigurerAdapter extends SecurityConfigurerAdapter<D
         RememberMeServices rememberMeServices = http.getSharedObject(RememberMeServices.class);
         SecurityContextRepository repository = http.getSharedObject(SecurityContextRepository.class);
         // 配置一个Filter 默认使用已经存在的authenticationManager
-        PasswordAuthenticationFilter passwordAuthenticationFilter = new PasswordAuthenticationFilter(authenticationManager,cloudUserService,cloudExternalAuthSourceService);
+        PasswordAuthenticationFilter passwordAuthenticationFilter = new PasswordAuthenticationFilter(authenticationManager, cloudUserService, cloudExternalAuthSourceService);
         // 如果未设置这个会导致redis session中没有数据 需要将用户信息存储到httpSession中
         passwordAuthenticationFilter.setSecurityContextRepository(repository);
         //记住我

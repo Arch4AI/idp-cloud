@@ -15,14 +15,17 @@ export interface RequestInterceptors<T> {
   responseInterceptors?: (config: T) => T
   responseInterceptorsCatch?: (err: any) => any
 }
+
 // 自定义传入的参数
 export interface CreateRequestConfig<T = AxiosResponse>
   extends CreateAxiosDefaults {
   interceptors?: RequestInterceptors<T>
 }
+
 export interface RequestConfig<T = AxiosResponse> extends AxiosRequestConfig {
   interceptors?: RequestInterceptors<T>
 }
+
 export interface CancelRequestSource {
   [index: string]: () => void
 }

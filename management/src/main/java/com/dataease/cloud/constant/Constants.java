@@ -61,4 +61,9 @@ public class Constants {
      * 前端访问的路径
      */
     public static final String UI_URI = "/ui/**";
+
+    /**
+     * 保存用户信息
+     */
+    public static final String REQ_USER_ATTRIBUTE="user_attr";
 }

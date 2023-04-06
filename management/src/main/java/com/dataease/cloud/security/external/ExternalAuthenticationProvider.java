@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
  * 外部认证
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/8 9:54 AM
@@ -19,20 +20,20 @@ public class ExternalAuthenticationProvider implements AuthenticationProvider {
 
     private UserDetailsService userDetailsService;
 
-    public ExternalAuthenticationProvider(UserDetailsService userDetailsService){
+    public ExternalAuthenticationProvider(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         //强制转换
-        ExternalAuthenticationToken externalAuthenticationToken = (ExternalAuthenticationToken)authentication;
-        if(externalAuthenticationToken.getPrincipal() == null)
+        ExternalAuthenticationToken externalAuthenticationToken = (ExternalAuthenticationToken) authentication;
+        if (externalAuthenticationToken.getPrincipal() == null)
             SecurityException.throwException("External Auth Parameter error!");
-        String userId = (String)externalAuthenticationToken.getPrincipal();
+        String userId = (String) externalAuthenticationToken.getPrincipal();
         UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
         //设置token
-        ExternalAuthenticationToken token = new ExternalAuthenticationToken(userDetails,userDetails.getAuthorities());
+        ExternalAuthenticationToken token = new ExternalAuthenticationToken(userDetails, userDetails.getAuthorities());
         token.setDetails(authentication.getDetails());
         return token;
     }

@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 /**
  * 密码登录请求体
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/14 4:18 PM

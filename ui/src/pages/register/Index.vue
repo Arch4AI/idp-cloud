@@ -3,7 +3,12 @@ import { computed, onMounted, reactive, ref, onBeforeUnmount, Ref } from 'vue'
 import { MessagePlugin, SubmitContext } from 'tdesign-vue-next'
 import { sendSms, checkCode } from '@/api/sms/sms'
 import { register } from '@/api/login/login'
-import { checkPhone,checkEmail,checkPassword,checkUserName } from '@/utils/common'
+import {
+  checkPhone,
+  checkEmail,
+  checkPassword,
+  checkUserName
+} from '@/utils/common'
 import router from '@/router'
 import SlideVerify, { SlideVerifyInstance } from 'vue3-slide-verify'
 import 'vue3-slide-verify/dist/style.css'
@@ -23,8 +28,8 @@ const formData: UserRegisterReq = reactive({
   language: 'ZH_CN',
   code: '',
   confirmPassword: '',
-  uuid:stroeExternalInfo.info.uuid,
-  sourceId:stroeExternalInfo.info.sourceId
+  uuid: stroeExternalInfo.info.uuid,
+  sourceId: stroeExternalInfo.info.sourceId
 })
 
 // 判断手机号码
@@ -49,35 +54,48 @@ const validateCode = async (val: string) => {
 }
 
 // 判断邮箱地址
-const validateEmail = (val:string)=>{
-  if(!checkEmail(val)){
+const validateEmail = (val: string) => {
+  if (!checkEmail(val)) {
     return { result: false, message: '邮箱地址格式不对', type: 'error' }
   }
   return { result: true }
 }
 
 // 校验用户名
-const validateUserName = (val:string)=>{
-  if(!checkUserName(val)){
-    return { result: false, message: '用户名格式必须是4到16位(字母、数字、_、-)', type: 'error' }
+const validateUserName = (val: string) => {
+  if (!checkUserName(val)) {
+    return {
+      result: false,
+      message: '用户名格式必须是4到16位(字母、数字、_、-)',
+      type: 'error'
+    }
   }
   return { result: true }
 }
 
 //校验密码
-const validatePassword = (val:string)=>{
-  if(!checkPassword(val)){
-    return { result: false, message: '密码最少6位,1个小写字母包括至少1个大写字母、1个数字、1个特殊字符', type: 'error' }
+const validatePassword = (val: string) => {
+  if (!checkPassword(val)) {
+    return {
+      result: false,
+      message:
+        '密码最少6位,1个小写字母包括至少1个大写字母、1个数字、1个特殊字符',
+      type: 'error'
+    }
   }
   return { result: true }
 }
 
 // 校验密码是否一致
-const checkConfirmPassword = (val:string)=>{
-  if(formData.password === formData.confirmPassword){
+const checkConfirmPassword = (val: string) => {
+  if (formData.password === formData.confirmPassword) {
     return { result: true }
   }
-  return { result: false, message: '密码最少6位,1个小写字母包括至少1个大写字母、1个数字、1个特殊字符', type: 'error' }
+  return {
+    result: false,
+    message: '密码最少6位,1个小写字母包括至少1个大写字母、1个数字、1个特殊字符',
+    type: 'error'
+  }
 }
 
 const rules = {
@@ -294,7 +312,9 @@ const onChange = (val: string) => {
 <template>
   <div class="login-container">
     <div class="login-form">
-      <t-divider><h2>注册</h2></t-divider>
+      <t-divider>
+        <h2>注册</h2>
+      </t-divider>
       <t-form
         :data="formData"
         label-align="right"
@@ -304,7 +324,11 @@ const onChange = (val: string) => {
         @reset="onReset"
       >
         <t-form-item label="手机号" name="phone">
-          <t-input autocomplete="off" placeholder="请输入手机号码" v-model="formData.phone"></t-input>
+          <t-input
+            autocomplete="off"
+            placeholder="请输入手机号码"
+            v-model="formData.phone"
+          ></t-input>
         </t-form-item>
         <t-form-item v-show="showVerify">
           <slide-verify
@@ -323,7 +347,7 @@ const onChange = (val: string) => {
             autocomplete="off"
             v-model="formData.code"
             placeholder="请输入验证码"
-            :disabled="!formData.phone"
+            :disabled="showSendBtn"
             class="phoneCode"
           >
             <template #suffix>
@@ -337,13 +361,25 @@ const onChange = (val: string) => {
           >
         </t-form-item>
         <t-form-item label="用户名" name="userName">
-          <t-input autocomplete="off" placeholder="请输入用户名,格式4到16位(字母,数字,下划线,减号)" v-model="formData.userName"></t-input>
+          <t-input
+            autocomplete="off"
+            placeholder="请输入用户名,格式4到16位(字母,数字,下划线,减号)"
+            v-model="formData.userName"
+          ></t-input>
         </t-form-item>
         <t-form-item label="邮箱" name="email">
-          <t-input autocomplete="off" placeholder="请输入邮箱" v-model="formData.email"></t-input>
+          <t-input
+            autocomplete="off"
+            placeholder="请输入邮箱"
+            v-model="formData.email"
+          ></t-input>
         </t-form-item>
         <t-form-item label="昵称" name="nickName">
-          <t-input autocomplete="off" placeholder="请输入昵称" v-model="formData.nickName"></t-input>
+          <t-input
+            autocomplete="off"
+            placeholder="请输入昵称"
+            v-model="formData.nickName"
+          ></t-input>
         </t-form-item>
         <t-form-item label="密码" name="password">
           <t-input

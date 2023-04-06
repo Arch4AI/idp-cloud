@@ -61,16 +61,16 @@ public class AuthLinkedinRequest extends AuthDefaultRequest {
         // 获取用户邮箱地址
         String email = this.getUserEmail(accessToken);
         return AuthUser.builder()
-            .rawUserInfo(userInfoObject)
-            .uuid(userInfoObject.getString("id"))
-            .username(userName)
-            .nickname(userName)
-            .avatar(avatar)
-            .email(email)
-            .token(authToken)
-            .gender(AuthUserGender.UNKNOWN)
-            .source(source.toString())
-            .build();
+                .rawUserInfo(userInfoObject)
+                .uuid(userInfoObject.getString("id"))
+                .username(userName)
+                .nickname(userName)
+                .avatar(avatar)
+                .email(email)
+                .token(authToken)
+                .gender(AuthUserGender.UNKNOWN)
+                .source(source.toString())
+                .build();
     }
 
     /**
@@ -139,8 +139,8 @@ public class AuthLinkedinRequest extends AuthDefaultRequest {
         httpHeader.add("Authorization", "Bearer " + accessToken);
 
         String emailResponse = new HttpUtils(config.getHttpConfig())
-            .get("https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))", null, httpHeader, false)
-            .getBody();
+                .get("https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))", null, httpHeader, false)
+                .getBody();
         JSONObject emailObj = JSONObject.parseObject(emailResponse);
 
         this.checkResponse(emailObj);
@@ -186,10 +186,10 @@ public class AuthLinkedinRequest extends AuthDefaultRequest {
         this.checkResponse(accessTokenObject);
 
         return AuthToken.builder()
-            .accessToken(accessTokenObject.getString("access_token"))
-            .expireIn(accessTokenObject.getIntValue("expires_in"))
-            .refreshToken(accessTokenObject.getString("refresh_token"))
-            .build();
+                .accessToken(accessTokenObject.getString("access_token"))
+                .expireIn(accessTokenObject.getIntValue("expires_in"))
+                .refreshToken(accessTokenObject.getString("refresh_token"))
+                .build();
     }
 
     /**
@@ -202,8 +202,8 @@ public class AuthLinkedinRequest extends AuthDefaultRequest {
     @Override
     public String authorize(String state) {
         return UrlBuilder.fromBaseUrl(super.authorize(state))
-            .queryParam("scope", this.getScopes(" ", false, AuthScopeUtils.getDefaultScopes(AuthLinkedinScope.values())))
-            .build();
+                .queryParam("scope", this.getScopes(" ", false, AuthScopeUtils.getDefaultScopes(AuthLinkedinScope.values())))
+                .build();
     }
 
     /**
@@ -215,7 +215,7 @@ public class AuthLinkedinRequest extends AuthDefaultRequest {
     @Override
     protected String userInfoUrl(AuthToken authToken) {
         return UrlBuilder.fromBaseUrl(source.userInfo())
-            .queryParam("projection", "(id,firstName,lastName,profilePicture(displayImage~:playableStreams))")
-            .build();
+                .queryParam("projection", "(id,firstName,lastName,profilePicture(displayImage~:playableStreams))")
+                .build();
     }
 }

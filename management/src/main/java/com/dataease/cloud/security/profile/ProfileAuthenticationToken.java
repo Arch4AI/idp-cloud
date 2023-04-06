@@ -9,6 +9,7 @@ import java.util.Collection;
 /**
  * 修改信息Token主要用于注册的时候更新的信息
  * 需要注意的是第三方注册也会到这里来
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/7 3:13 PM
@@ -20,7 +21,7 @@ public class ProfileAuthenticationToken extends AbstractAuthenticationToken {
     private Object principal;
     private Object credentials;
 
-    public ProfileAuthenticationToken(){
+    public ProfileAuthenticationToken() {
         super(null);
     }
 

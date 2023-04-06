@@ -20,7 +20,7 @@ public class RememberMeDetailsService implements UserDetailsService {
     @Resource
     private CloudUserService cloudUserService;
 
-    public RememberMeDetailsService(CloudUserService cloudUserService){
+    public RememberMeDetailsService(CloudUserService cloudUserService) {
         this.cloudUserService = cloudUserService;
     }
 

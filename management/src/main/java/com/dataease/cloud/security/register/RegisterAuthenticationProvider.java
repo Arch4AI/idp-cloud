@@ -20,20 +20,20 @@ public class RegisterAuthenticationProvider implements AuthenticationProvider {
 
     private UserDetailsService userDetailsService;
 
-    public RegisterAuthenticationProvider(UserDetailsService userDetailsService){
+    public RegisterAuthenticationProvider(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         //强制转换
-        RegisterAuthenticationToken registerAuthenticationToken = (RegisterAuthenticationToken)authentication;
-        if(registerAuthenticationToken.getPrincipal() == null)
+        RegisterAuthenticationToken registerAuthenticationToken = (RegisterAuthenticationToken) authentication;
+        if (registerAuthenticationToken.getPrincipal() == null)
             SecurityException.throwException("register request paramter error!");
-        String username = (String)registerAuthenticationToken.getPrincipal();
+        String username = (String) registerAuthenticationToken.getPrincipal();
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         //设置token
-        RegisterAuthenticationToken token = new RegisterAuthenticationToken(userDetails,userDetails.getAuthorities());
+        RegisterAuthenticationToken token = new RegisterAuthenticationToken(userDetails, userDetails.getAuthorities());
         token.setDetails(authentication.getDetails());
         return token;
     }

@@ -540,7 +540,9 @@ public enum AuthDefaultSource implements AuthSource {
         }
 
         @Override
-        public Class<? extends AuthDefaultRequest> getTargetClass() { return AuthMicrosoftCnRequest.class; }
+        public Class<? extends AuthDefaultRequest> getTargetClass() {
+            return AuthMicrosoftCnRequest.class;
+        }
     },
     /**
      * 小米

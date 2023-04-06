@@ -20,19 +20,19 @@ import java.util.List;
  * @date Created in 2020-04-29 15:59
  */
 public class DefaultProxySelector extends ProxySelector {
-	private HttpConfig httpConfig;
+    private HttpConfig httpConfig;
 
-	public DefaultProxySelector(HttpConfig httpConfig) {
-		this.httpConfig = httpConfig;
-	}
+    public DefaultProxySelector(HttpConfig httpConfig) {
+        this.httpConfig = httpConfig;
+    }
 
-	@Override
-	public List<Proxy> select(URI uri) {
-		return Collections.singletonList(httpConfig.getProxy());
-	}
+    @Override
+    public List<Proxy> select(URI uri) {
+        return Collections.singletonList(httpConfig.getProxy());
+    }
 
-	@Override
-	public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
-		throw new SimpleHttpException("Proxy connect failed!");
-	}
+    @Override
+    public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
+        throw new SimpleHttpException("Proxy connect failed!");
+    }
 }

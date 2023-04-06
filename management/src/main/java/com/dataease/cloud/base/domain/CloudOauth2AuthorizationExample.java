@@ -560,18 +560,18 @@ public class CloudOauth2AuthorizationExample {
             return (Criteria) this;
         }
 
-        public Criteria andAuthorizationCodeValueEqualTo(String value){
-            addCriterion("`authorization_code_value` =",value,"authorizationCodeValue");
+        public Criteria andAuthorizationCodeValueEqualTo(String value) {
+            addCriterion("`authorization_code_value` =", value, "authorizationCodeValue");
             return (Criteria) this;
         }
 
-        public Criteria andAccessTokenValueEqualTo(String value){
-            addCriterion("`access_token_value` =",value,"accessTokenValue");
+        public Criteria andAccessTokenValueEqualTo(String value) {
+            addCriterion("`access_token_value` =", value, "accessTokenValue");
             return (Criteria) this;
         }
 
-        public Criteria andRefreshTokenValueEqualTo(String value){
-            addCriterion("`refresh_token_value` =",value,"refreshTokenValue");
+        public Criteria andRefreshTokenValueEqualTo(String value) {
+            addCriterion("`refresh_token_value` =", value, "refreshTokenValue");
             return (Criteria) this;
         }
 

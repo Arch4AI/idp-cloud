@@ -46,10 +46,11 @@ import java.time.Duration;
 /**
  * oauth server的配置 非RX的写法 RX需要自己在webFilter里面去实现
  * 这2个暂时没接入sessionManager
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/2/24 4:08 PM
-**/
+ **/
 @Configuration(proxyBeanMethods = false)
 @Slf4j
 public class AuthServerConfig {
@@ -57,10 +58,11 @@ public class AuthServerConfig {
     /**
      * 具体的实现都在OAuth2AuthorizationServerConfiguration
      * 这里如果要实现前后端分离 需要自定义登录的方式 目前支持的是跳转到loginForm
-     * @see {@link SecurityConfig}
+     *
      * @param http
      * @return
      * @throws Exception
+     * @see {@link SecurityConfig}
      */
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -70,8 +72,8 @@ public class AuthServerConfig {
                                                                       CloudUserService cloudUserService) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-                        .oidc(oidcConfigurer -> oidcConfigurer.userInfoEndpoint(oidcUserInfoEndpointConfigurer ->
-                                oidcUserInfoEndpointConfigurer.userInfoMapper(new CustomUserInfoMapper(cloudUserService))));
+                .oidc(oidcConfigurer -> oidcConfigurer.userInfoEndpoint(oidcUserInfoEndpointConfigurer ->
+                        oidcUserInfoEndpointConfigurer.userInfoMapper(new CustomUserInfoMapper(cloudUserService))));
         http
                 .exceptionHandling()
                 .authenticationEntryPoint(customAuthenticationEntryPoint)
@@ -85,8 +87,8 @@ public class AuthServerConfig {
     }
 
     @Bean
-    @Order(Ordered.HIGHEST_PRECEDENCE+1)
-    public SecurityFilterChain resourceServerSecurityFilterChain(HttpSecurity http) throws Exception{
+    @Order(Ordered.HIGHEST_PRECEDENCE + 1)
+    public SecurityFilterChain resourceServerSecurityFilterChain(HttpSecurity http) throws Exception {
         http.securityMatcher("/oauth2/resource/**")
                 .oauth2ResourceServer(httpSecurityOAuth2ResourceServerConfigurer -> {
                     httpSecurityOAuth2ResourceServerConfigurer.jwt();
@@ -96,7 +98,7 @@ public class AuthServerConfig {
                     httpSecurityExceptionHandlingConfigurer.accessDeniedHandler((request, response, accessDeniedException) -> {
                         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
                         response.setContentType(MediaType.APPLICATION_JSON.toString());
-                        response.getWriter().write(ObjectMapperUtils.simpleObjectMapper.writeValueAsString(Result.error(HttpStatus.UNAUTHORIZED,"您无权限访问")));
+                        response.getWriter().write(ObjectMapperUtils.simpleObjectMapper.writeValueAsString(Result.error(HttpStatus.UNAUTHORIZED, "您无权限访问")));
                     });
                 });
         return http.build();
@@ -106,6 +108,7 @@ public class AuthServerConfig {
      * 自定义实现的RegisteredClientRepository 这里就可以通过Mybatis的方式去查询
      * 参考第三方的设计 不过这里可以匹配多个 意味着一个client理论上可以同时被多个应用使用
      * 目前使用的是默认的PasswordEncoder 后续如果指定的话 需要改动其余的都需要改动
+     *
      * @param cloudOauth2RegisteredClientMapper
      * @return
      */
@@ -115,7 +118,7 @@ public class AuthServerConfig {
         CustomRegisteredClientRepository registeredClientRepository = new CustomRegisteredClientRepository(cloudOauth2RegisteredClientMapper);
         RegisteredClient client = registeredClientRepository.findByClientId(clientId);
         String id = IdUtil.randomUUID();
-        if(client != null) {
+        if (client != null) {
             id = client.getId();
         }
 
@@ -151,13 +154,14 @@ public class AuthServerConfig {
 
     /**
      * 可以自己通过数据库去实现 也可以是No-DB
+     *
      * @param cloudOauth2AuthorizationMapper
      * @param registeredClientRepository
      * @return
      */
     @Bean
     public CustomOAuth2AuthorizationService authorizationService(CloudOauth2AuthorizationMapper cloudOauth2AuthorizationMapper, RegisteredClientRepository registeredClientRepository) {
-        return new CustomOAuth2AuthorizationService(cloudOauth2AuthorizationMapper,registeredClientRepository);
+        return new CustomOAuth2AuthorizationService(cloudOauth2AuthorizationMapper, registeredClientRepository);
     }
 
     /***
@@ -191,6 +195,7 @@ public class AuthServerConfig {
     /**
      * 配置端点 一般直接默认即可 当然也可以做成自定义的 切记这个是固定的 在服务器启动的时候生效 因为要写入Filter的PathMatcher
      * 建议做成配置文件
+     *
      * @return
      */
     @Bean

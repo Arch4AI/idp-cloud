@@ -55,213 +55,213 @@ import java.util.stream.Collectors;
  * @date Created in 2019/12/25 09:24
  */
 public class HttpClientImpl extends AbstractHttp {
-	private final CloseableHttpClient httpClient;
+    private final CloseableHttpClient httpClient;
 
-	public HttpClientImpl() {
-		this(HttpClients.createDefault(), new HttpConfig());
-	}
+    public HttpClientImpl() {
+        this(HttpClients.createDefault(), new HttpConfig());
+    }
 
-	public HttpClientImpl(HttpConfig httpConfig) {
-		this(HttpClients.createDefault(), httpConfig);
-	}
+    public HttpClientImpl(HttpConfig httpConfig) {
+        this(HttpClients.createDefault(), httpConfig);
+    }
 
-	public HttpClientImpl(CloseableHttpClient httpClient, HttpConfig httpConfig) {
-		super(httpConfig);
-		this.httpClient = httpClient;
-	}
+    public HttpClientImpl(CloseableHttpClient httpClient, HttpConfig httpConfig) {
+        super(httpConfig);
+        this.httpClient = httpClient;
+    }
 
-	private SimpleHttpResponse exec(HttpRequestBase request) {
-		this.addHeader(request);
-		// 设置超时时长
-		RequestConfig.Builder configBuilder = RequestConfig.custom().setConnectTimeout(httpConfig.getTimeout()).setSocketTimeout(httpConfig.getTimeout()).setConnectionRequestTimeout(httpConfig.getTimeout());
-		// 设置代理
-		if (null != httpConfig.getProxy()) {
-			Proxy proxy = httpConfig.getProxy();
-			InetSocketAddress address = (InetSocketAddress) proxy.address();
-			HttpHost host = new HttpHost(address.getHostName(), address.getPort(), proxy.type().name().toLowerCase());
-			configBuilder.setProxy(host);
-		}
+    private SimpleHttpResponse exec(HttpRequestBase request) {
+        this.addHeader(request);
+        // 设置超时时长
+        RequestConfig.Builder configBuilder = RequestConfig.custom().setConnectTimeout(httpConfig.getTimeout()).setSocketTimeout(httpConfig.getTimeout()).setConnectionRequestTimeout(httpConfig.getTimeout());
+        // 设置代理
+        if (null != httpConfig.getProxy()) {
+            Proxy proxy = httpConfig.getProxy();
+            InetSocketAddress address = (InetSocketAddress) proxy.address();
+            HttpHost host = new HttpHost(address.getHostName(), address.getPort(), proxy.type().name().toLowerCase());
+            configBuilder.setProxy(host);
+        }
 
-		request.setConfig(configBuilder.build());
+        request.setConfig(configBuilder.build());
 
-		try (CloseableHttpResponse response = this.httpClient.execute(request)) {
+        try (CloseableHttpResponse response = this.httpClient.execute(request)) {
 
-			StringBuffer body = new StringBuffer();
-			if (response.getEntity() != null) {
-				body.append(EntityUtils.toString(response.getEntity(), Constants.DEFAULT_ENCODING));
-			}
+            StringBuffer body = new StringBuffer();
+            if (response.getEntity() != null) {
+                body.append(EntityUtils.toString(response.getEntity(), Constants.DEFAULT_ENCODING));
+            }
 
-			int code = response.getStatusLine().getStatusCode();
-			boolean successful = isSuccess(response);
-			Map<String, List<String>> headers = Arrays.stream(response.getAllHeaders()).collect(Collectors.toMap(Header::getName, (value) -> {
-				ArrayList<String> headerValue = new ArrayList<>();
-				headerValue.add(value.getValue());
-				return headerValue;
-			}, (oldValue, newValue) -> newValue));
-			return new SimpleHttpResponse(successful, code, headers, body.toString(), null);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new SimpleHttpResponse(false, 500, null, null, e.getMessage());
-		}
-	}
+            int code = response.getStatusLine().getStatusCode();
+            boolean successful = isSuccess(response);
+            Map<String, List<String>> headers = Arrays.stream(response.getAllHeaders()).collect(Collectors.toMap(Header::getName, (value) -> {
+                ArrayList<String> headerValue = new ArrayList<>();
+                headerValue.add(value.getValue());
+                return headerValue;
+            }, (oldValue, newValue) -> newValue));
+            return new SimpleHttpResponse(successful, code, headers, body.toString(), null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new SimpleHttpResponse(false, 500, null, null, e.getMessage());
+        }
+    }
 
 
-	/**
-	 * 添加request header
-	 *
-	 * @param request HttpRequestBase
-	 */
-	private void addHeader(HttpRequestBase request) {
-		String ua = Constants.USER_AGENT;
-		Header[] headers = request.getHeaders(ua);
-		if (null == headers || headers.length == 0) {
-			request.addHeader(ua, Constants.USER_AGENT_DATA);
-		}
-	}
+    /**
+     * 添加request header
+     *
+     * @param request HttpRequestBase
+     */
+    private void addHeader(HttpRequestBase request) {
+        String ua = Constants.USER_AGENT;
+        Header[] headers = request.getHeaders(ua);
+        if (null == headers || headers.length == 0) {
+            request.addHeader(ua, Constants.USER_AGENT_DATA);
+        }
+    }
 
-	private boolean isSuccess(CloseableHttpResponse response) {
-		if (response == null) {
-			return false;
-		}
-		if (response.getStatusLine() == null) {
-			return false;
-		}
-		return response.getStatusLine().getStatusCode() >= 200 && response.getStatusLine().getStatusCode() < 300;
-	}
+    private boolean isSuccess(CloseableHttpResponse response) {
+        if (response == null) {
+            return false;
+        }
+        if (response.getStatusLine() == null) {
+            return false;
+        }
+        return response.getStatusLine().getStatusCode() >= 200 && response.getStatusLine().getStatusCode() < 300;
+    }
 
-	/**
-	 * GET 请求
-	 *
-	 * @param url URL
-	 * @return 结果
-	 */
-	@Override
-	public SimpleHttpResponse get(String url) {
-		return this.get(url, null, false);
-	}
+    /**
+     * GET 请求
+     *
+     * @param url URL
+     * @return 结果
+     */
+    @Override
+    public SimpleHttpResponse get(String url) {
+        return this.get(url, null, false);
+    }
 
-	/**
-	 * GET 请求
-	 *
-	 * @param url    URL
-	 * @param params 参数
-	 * @param encode 是否需要 url encode
-	 * @return 结果
-	 */
-	@Override
-	public SimpleHttpResponse get(String url, Map<String, String> params, boolean encode) {
-		return this.get(url, params, null, encode);
-	}
+    /**
+     * GET 请求
+     *
+     * @param url    URL
+     * @param params 参数
+     * @param encode 是否需要 url encode
+     * @return 结果
+     */
+    @Override
+    public SimpleHttpResponse get(String url, Map<String, String> params, boolean encode) {
+        return this.get(url, params, null, encode);
+    }
 
-	/**
-	 * GET 请求
-	 *
-	 * @param url    URL
-	 * @param params 参数
-	 * @param header 请求头
-	 * @param encode 是否需要 url encode
-	 * @return 结果
-	 */
-	@Override
-	public SimpleHttpResponse get(String url, Map<String, String> params, HttpHeader header, boolean encode) {
-		String baseUrl = StringUtil.appendIfNotContain(url, "?", "&");
-		url = baseUrl + MapUtil.parseMapToString(params, encode);
+    /**
+     * GET 请求
+     *
+     * @param url    URL
+     * @param params 参数
+     * @param header 请求头
+     * @param encode 是否需要 url encode
+     * @return 结果
+     */
+    @Override
+    public SimpleHttpResponse get(String url, Map<String, String> params, HttpHeader header, boolean encode) {
+        String baseUrl = StringUtil.appendIfNotContain(url, "?", "&");
+        url = baseUrl + MapUtil.parseMapToString(params, encode);
 
-		HttpGet httpGet = new HttpGet(url);
+        HttpGet httpGet = new HttpGet(url);
 
-		if (header != null) {
-			MapUtil.forEach(header.getHeaders(), httpGet::addHeader);
-		}
+        if (header != null) {
+            MapUtil.forEach(header.getHeaders(), httpGet::addHeader);
+        }
 
-		return exec(httpGet);
-	}
+        return exec(httpGet);
+    }
 
-	/**
-	 * POST 请求
-	 *
-	 * @param url URL
-	 * @return 结果
-	 */
-	@Override
-	public SimpleHttpResponse post(String url) {
-		HttpPost httpPost = new HttpPost(url);
-		return this.exec(httpPost);
-	}
+    /**
+     * POST 请求
+     *
+     * @param url URL
+     * @return 结果
+     */
+    @Override
+    public SimpleHttpResponse post(String url) {
+        HttpPost httpPost = new HttpPost(url);
+        return this.exec(httpPost);
+    }
 
-	/**
-	 * POST 请求
-	 *
-	 * @param url  URL
-	 * @param data JSON 参数
-	 * @return 结果
-	 */
-	@Override
-	public SimpleHttpResponse post(String url, String data) {
-		return this.post(url, data, null);
-	}
+    /**
+     * POST 请求
+     *
+     * @param url  URL
+     * @param data JSON 参数
+     * @return 结果
+     */
+    @Override
+    public SimpleHttpResponse post(String url, String data) {
+        return this.post(url, data, null);
+    }
 
-	/**
-	 * POST 请求
-	 *
-	 * @param url    URL
-	 * @param data   JSON 参数
-	 * @param header 请求头
-	 * @return 结果
-	 */
-	@Override
-	public SimpleHttpResponse post(String url, String data, HttpHeader header) {
-		HttpPost httpPost = new HttpPost(url);
+    /**
+     * POST 请求
+     *
+     * @param url    URL
+     * @param data   JSON 参数
+     * @param header 请求头
+     * @return 结果
+     */
+    @Override
+    public SimpleHttpResponse post(String url, String data, HttpHeader header) {
+        HttpPost httpPost = new HttpPost(url);
 
-		if (StringUtil.isNotEmpty(data)) {
-			StringEntity entity = new StringEntity(data, Constants.DEFAULT_ENCODING);
-			entity.setContentEncoding(Constants.DEFAULT_ENCODING.displayName());
-			entity.setContentType(Constants.CONTENT_TYPE_JSON);
-			httpPost.setEntity(entity);
-		}
+        if (StringUtil.isNotEmpty(data)) {
+            StringEntity entity = new StringEntity(data, Constants.DEFAULT_ENCODING);
+            entity.setContentEncoding(Constants.DEFAULT_ENCODING.displayName());
+            entity.setContentType(Constants.CONTENT_TYPE_JSON);
+            httpPost.setEntity(entity);
+        }
 
-		if (header != null) {
-			MapUtil.forEach(header.getHeaders(), httpPost::addHeader);
-		}
+        if (header != null) {
+            MapUtil.forEach(header.getHeaders(), httpPost::addHeader);
+        }
 
-		return this.exec(httpPost);
-	}
+        return this.exec(httpPost);
+    }
 
-	/**
-	 * POST 请求
-	 *
-	 * @param url    URL
-	 * @param params form 参数
-	 * @param encode 是否需要 url encode
-	 * @return 结果
-	 */
-	@Override
-	public SimpleHttpResponse post(String url, Map<String, String> params, boolean encode) {
-		return this.post(url, params, null, encode);
-	}
+    /**
+     * POST 请求
+     *
+     * @param url    URL
+     * @param params form 参数
+     * @param encode 是否需要 url encode
+     * @return 结果
+     */
+    @Override
+    public SimpleHttpResponse post(String url, Map<String, String> params, boolean encode) {
+        return this.post(url, params, null, encode);
+    }
 
-	/**
-	 * POST 请求
-	 *
-	 * @param url    URL
-	 * @param params form 参数
-	 * @param header 请求头
-	 * @param encode 是否需要 url encode
-	 * @return 结果
-	 */
-	@Override
-	public SimpleHttpResponse post(String url, Map<String, String> params, HttpHeader header, boolean encode) {
-		HttpPost httpPost = new HttpPost(url);
+    /**
+     * POST 请求
+     *
+     * @param url    URL
+     * @param params form 参数
+     * @param header 请求头
+     * @param encode 是否需要 url encode
+     * @return 结果
+     */
+    @Override
+    public SimpleHttpResponse post(String url, Map<String, String> params, HttpHeader header, boolean encode) {
+        HttpPost httpPost = new HttpPost(url);
 
-		if (MapUtil.isNotEmpty(params)) {
-			List<NameValuePair> form = new ArrayList<>();
-			MapUtil.forEach(params, (k, v) -> form.add(new BasicNameValuePair(k, v)));
-			httpPost.setEntity(new UrlEncodedFormEntity(form, Constants.DEFAULT_ENCODING));
-		}
+        if (MapUtil.isNotEmpty(params)) {
+            List<NameValuePair> form = new ArrayList<>();
+            MapUtil.forEach(params, (k, v) -> form.add(new BasicNameValuePair(k, v)));
+            httpPost.setEntity(new UrlEncodedFormEntity(form, Constants.DEFAULT_ENCODING));
+        }
 
-		if (header != null) {
-			MapUtil.forEach(header.getHeaders(), httpPost::addHeader);
-		}
+        if (header != null) {
+            MapUtil.forEach(header.getHeaders(), httpPost::addHeader);
+        }
 
-		return this.exec(httpPost);
-	}
+        return this.exec(httpPost);
+    }
 }

@@ -17,7 +17,7 @@ import java.util.Date;
 
 /**
  * 重写记住我的方法
- *
+ * <p>
  * 因为默认有记住我 所以每次都会进来这里面
  *
  * @author ShrChang.Liu
@@ -32,7 +32,7 @@ public class CustomTokenBasedRememberMeServices extends TokenBasedRememberMeServ
     private RememberMeTokenAlgorithm matchingAlgorithm = DEFAULT_MATCHING_ALGORITHM;
     private int maxInactiveInterval;
 
-    public CustomTokenBasedRememberMeServices(String key, UserDetailsService userDetailsService,int maxInactiveInterval) {
+    public CustomTokenBasedRememberMeServices(String key, UserDetailsService userDetailsService, int maxInactiveInterval) {
         super(key, userDetailsService);
         this.maxInactiveInterval = maxInactiveInterval;
     }
@@ -92,8 +92,7 @@ public class CustomTokenBasedRememberMeServices extends TokenBasedRememberMeServ
     private long getTokenExpiryTime(String[] cookieTokens) {
         try {
             return new Long(cookieTokens[1]);
-        }
-        catch (NumberFormatException nfe) {
+        } catch (NumberFormatException nfe) {
             throw new InvalidCookieException(
                     "Cookie token[1] did not contain a valid number (contained '" + cookieTokens[1] + "')");
         }
@@ -106,6 +105,6 @@ public class CustomTokenBasedRememberMeServices extends TokenBasedRememberMeServ
         //这里面再去做一些操作？
         // 是否要去检查一下最大的那个值？我暂时还未知
         // 最好去检查一些session是否有多余的？
-        log.info("sessionId:{},user:{}",request.getRequestedSessionId(),successfulAuthentication.getName());
+        log.info("sessionId:{},user:{}", request.getRequestedSessionId(), successfulAuthentication.getName());
     }
 }

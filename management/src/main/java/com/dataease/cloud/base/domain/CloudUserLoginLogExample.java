@@ -525,6 +525,346 @@ public class CloudUserLoginLogExample {
             return (Criteria) this;
         }
 
+        public Criteria andLoginLocationIsNull() {
+            addCriterion("login_location is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoginLocationIsNotNull() {
+            addCriterion("login_location is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoginLocationEqualTo(String value) {
+            addCriterion("login_location =", value, "loginLocation");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoginLocationNotEqualTo(String value) {
+            addCriterion("login_location <>", value, "loginLocation");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoginLocationGreaterThan(String value) {
+            addCriterion("login_location >", value, "loginLocation");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoginLocationGreaterThanOrEqualTo(String value) {
+            addCriterion("login_location >=", value, "loginLocation");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoginLocationLessThan(String value) {
+            addCriterion("login_location <", value, "loginLocation");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoginLocationLessThanOrEqualTo(String value) {
+            addCriterion("login_location <=", value, "loginLocation");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoginLocationLike(String value) {
+            addCriterion("login_location like", value, "loginLocation");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoginLocationNotLike(String value) {
+            addCriterion("login_location not like", value, "loginLocation");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoginLocationIn(List<String> values) {
+            addCriterion("login_location in", values, "loginLocation");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoginLocationNotIn(List<String> values) {
+            addCriterion("login_location not in", values, "loginLocation");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoginLocationBetween(String value1, String value2) {
+            addCriterion("login_location between", value1, value2, "loginLocation");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoginLocationNotBetween(String value1, String value2) {
+            addCriterion("login_location not between", value1, value2, "loginLocation");
+            return (Criteria) this;
+        }
+
+        public Criteria andBrowserIsNull() {
+            addCriterion("browser is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andBrowserIsNotNull() {
+            addCriterion("browser is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andBrowserEqualTo(String value) {
+            addCriterion("browser =", value, "browser");
+            return (Criteria) this;
+        }
+
+        public Criteria andBrowserNotEqualTo(String value) {
+            addCriterion("browser <>", value, "browser");
+            return (Criteria) this;
+        }
+
+        public Criteria andBrowserGreaterThan(String value) {
+            addCriterion("browser >", value, "browser");
+            return (Criteria) this;
+        }
+
+        public Criteria andBrowserGreaterThanOrEqualTo(String value) {
+            addCriterion("browser >=", value, "browser");
+            return (Criteria) this;
+        }
+
+        public Criteria andBrowserLessThan(String value) {
+            addCriterion("browser <", value, "browser");
+            return (Criteria) this;
+        }
+
+        public Criteria andBrowserLessThanOrEqualTo(String value) {
+            addCriterion("browser <=", value, "browser");
+            return (Criteria) this;
+        }
+
+        public Criteria andBrowserLike(String value) {
+            addCriterion("browser like", value, "browser");
+            return (Criteria) this;
+        }
+
+        public Criteria andBrowserNotLike(String value) {
+            addCriterion("browser not like", value, "browser");
+            return (Criteria) this;
+        }
+
+        public Criteria andBrowserIn(List<String> values) {
+            addCriterion("browser in", values, "browser");
+            return (Criteria) this;
+        }
+
+        public Criteria andBrowserNotIn(List<String> values) {
+            addCriterion("browser not in", values, "browser");
+            return (Criteria) this;
+        }
+
+        public Criteria andBrowserBetween(String value1, String value2) {
+            addCriterion("browser between", value1, value2, "browser");
+            return (Criteria) this;
+        }
+
+        public Criteria andBrowserNotBetween(String value1, String value2) {
+            addCriterion("browser not between", value1, value2, "browser");
+            return (Criteria) this;
+        }
+
+        public Criteria andOsIsNull() {
+            addCriterion("os is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOsIsNotNull() {
+            addCriterion("os is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOsEqualTo(String value) {
+            addCriterion("os =", value, "os");
+            return (Criteria) this;
+        }
+
+        public Criteria andOsNotEqualTo(String value) {
+            addCriterion("os <>", value, "os");
+            return (Criteria) this;
+        }
+
+        public Criteria andOsGreaterThan(String value) {
+            addCriterion("os >", value, "os");
+            return (Criteria) this;
+        }
+
+        public Criteria andOsGreaterThanOrEqualTo(String value) {
+            addCriterion("os >=", value, "os");
+            return (Criteria) this;
+        }
+
+        public Criteria andOsLessThan(String value) {
+            addCriterion("os <", value, "os");
+            return (Criteria) this;
+        }
+
+        public Criteria andOsLessThanOrEqualTo(String value) {
+            addCriterion("os <=", value, "os");
+            return (Criteria) this;
+        }
+
+        public Criteria andOsLike(String value) {
+            addCriterion("os like", value, "os");
+            return (Criteria) this;
+        }
+
+        public Criteria andOsNotLike(String value) {
+            addCriterion("os not like", value, "os");
+            return (Criteria) this;
+        }
+
+        public Criteria andOsIn(List<String> values) {
+            addCriterion("os in", values, "os");
+            return (Criteria) this;
+        }
+
+        public Criteria andOsNotIn(List<String> values) {
+            addCriterion("os not in", values, "os");
+            return (Criteria) this;
+        }
+
+        public Criteria andOsBetween(String value1, String value2) {
+            addCriterion("os between", value1, value2, "os");
+            return (Criteria) this;
+        }
+
+        public Criteria andOsNotBetween(String value1, String value2) {
+            addCriterion("os not between", value1, value2, "os");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusIsNull() {
+            addCriterion("`status` is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusIsNotNull() {
+            addCriterion("`status` is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusEqualTo(Integer value) {
+            addCriterion("`status` =", value, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusNotEqualTo(Integer value) {
+            addCriterion("`status` <>", value, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusGreaterThan(Integer value) {
+            addCriterion("`status` >", value, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusGreaterThanOrEqualTo(Integer value) {
+            addCriterion("`status` >=", value, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusLessThan(Integer value) {
+            addCriterion("`status` <", value, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusLessThanOrEqualTo(Integer value) {
+            addCriterion("`status` <=", value, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusIn(List<Integer> values) {
+            addCriterion("`status` in", values, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusNotIn(List<Integer> values) {
+            addCriterion("`status` not in", values, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusBetween(Integer value1, Integer value2) {
+            addCriterion("`status` between", value1, value2, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusNotBetween(Integer value1, Integer value2) {
+            addCriterion("`status` not between", value1, value2, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andMsgIsNull() {
+            addCriterion("msg is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMsgIsNotNull() {
+            addCriterion("msg is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMsgEqualTo(String value) {
+            addCriterion("msg =", value, "msg");
+            return (Criteria) this;
+        }
+
+        public Criteria andMsgNotEqualTo(String value) {
+            addCriterion("msg <>", value, "msg");
+            return (Criteria) this;
+        }
+
+        public Criteria andMsgGreaterThan(String value) {
+            addCriterion("msg >", value, "msg");
+            return (Criteria) this;
+        }
+
+        public Criteria andMsgGreaterThanOrEqualTo(String value) {
+            addCriterion("msg >=", value, "msg");
+            return (Criteria) this;
+        }
+
+        public Criteria andMsgLessThan(String value) {
+            addCriterion("msg <", value, "msg");
+            return (Criteria) this;
+        }
+
+        public Criteria andMsgLessThanOrEqualTo(String value) {
+            addCriterion("msg <=", value, "msg");
+            return (Criteria) this;
+        }
+
+        public Criteria andMsgLike(String value) {
+            addCriterion("msg like", value, "msg");
+            return (Criteria) this;
+        }
+
+        public Criteria andMsgNotLike(String value) {
+            addCriterion("msg not like", value, "msg");
+            return (Criteria) this;
+        }
+
+        public Criteria andMsgIn(List<String> values) {
+            addCriterion("msg in", values, "msg");
+            return (Criteria) this;
+        }
+
+        public Criteria andMsgNotIn(List<String> values) {
+            addCriterion("msg not in", values, "msg");
+            return (Criteria) this;
+        }
+
+        public Criteria andMsgBetween(String value1, String value2) {
+            addCriterion("msg between", value1, value2, "msg");
+            return (Criteria) this;
+        }
+
+        public Criteria andMsgNotBetween(String value1, String value2) {
+            addCriterion("msg not between", value1, value2, "msg");
+            return (Criteria) this;
+        }
+
         public Criteria andLoginTimeIsNull() {
             addCriterion("login_time is null");
             return (Criteria) this;
@@ -582,66 +922,6 @@ public class CloudUserLoginLogExample {
 
         public Criteria andLoginTimeNotBetween(Date value1, Date value2) {
             addCriterion("login_time not between", value1, value2, "loginTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andLogoutTimeIsNull() {
-            addCriterion("logout_time is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andLogoutTimeIsNotNull() {
-            addCriterion("logout_time is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andLogoutTimeEqualTo(Date value) {
-            addCriterion("logout_time =", value, "logoutTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andLogoutTimeNotEqualTo(Date value) {
-            addCriterion("logout_time <>", value, "logoutTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andLogoutTimeGreaterThan(Date value) {
-            addCriterion("logout_time >", value, "logoutTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andLogoutTimeGreaterThanOrEqualTo(Date value) {
-            addCriterion("logout_time >=", value, "logoutTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andLogoutTimeLessThan(Date value) {
-            addCriterion("logout_time <", value, "logoutTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andLogoutTimeLessThanOrEqualTo(Date value) {
-            addCriterion("logout_time <=", value, "logoutTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andLogoutTimeIn(List<Date> values) {
-            addCriterion("logout_time in", values, "logoutTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andLogoutTimeNotIn(List<Date> values) {
-            addCriterion("logout_time not in", values, "logoutTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andLogoutTimeBetween(Date value1, Date value2) {
-            addCriterion("logout_time between", value1, value2, "logoutTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andLogoutTimeNotBetween(Date value1, Date value2) {
-            addCriterion("logout_time not between", value1, value2, "logoutTime");
             return (Criteria) this;
         }
     }

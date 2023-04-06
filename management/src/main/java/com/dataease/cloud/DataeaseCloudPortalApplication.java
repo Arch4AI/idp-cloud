@@ -1,9 +1,7 @@
 package com.dataease.cloud;
 
-import com.dataease.cloud.properties.IdpProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -12,7 +10,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @SpringBootApplication
 @EnableTransactionManagement
-@EnableMethodSecurity(prePostEnabled = true, securedEnabled=true)
+@EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class DataeaseCloudPortalApplication {
 
     public static void main(String[] args) {

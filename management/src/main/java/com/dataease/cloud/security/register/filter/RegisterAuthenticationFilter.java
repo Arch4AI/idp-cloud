@@ -31,6 +31,7 @@ import java.util.Objects;
  * 用户注册的过滤器
  * 需要注意的是这个地方手机号码的验证已经验证通过了才可以注册
  * 注册只管基本信息 不管手机验证码 如果是需要手机验证码的去调用/sms/check进行校验
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/7 3:17 PM
@@ -48,8 +49,8 @@ public class RegisterAuthenticationFilter extends AbstractAuthenticationProcessi
         super(new AntPathRequestMatcher(DEFAULT_FILTER_PROCESSES_URL, HttpMethod.POST.name()));
     }
 
-    public RegisterAuthenticationFilter(AuthenticationManager authenticationManager,CloudUserService cloudUserService,CloudExternalAuthSourceService cloudExternalAuthSourceService) {
-        super(new AntPathRequestMatcher(DEFAULT_FILTER_PROCESSES_URL, HttpMethod.POST.name()),authenticationManager);
+    public RegisterAuthenticationFilter(AuthenticationManager authenticationManager, CloudUserService cloudUserService, CloudExternalAuthSourceService cloudExternalAuthSourceService) {
+        super(new AntPathRequestMatcher(DEFAULT_FILTER_PROCESSES_URL, HttpMethod.POST.name()), authenticationManager);
         this.cloudUserService = cloudUserService;
         this.cloudExternalAuthSourceService = cloudExternalAuthSourceService;
     }
@@ -61,7 +62,7 @@ public class RegisterAuthenticationFilter extends AbstractAuthenticationProcessi
             throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
         }
         // 后面可能还有编码 默认UTF-8
-        if(!request.getHeader(Headers.CONTENT_TYPE_STRING).startsWith(MediaType.APPLICATION_JSON.toString())){
+        if (!request.getHeader(Headers.CONTENT_TYPE_STRING).startsWith(MediaType.APPLICATION_JSON.toString())) {
             SecurityException.throwException("register request paramter error!");
         }
         RegisterRequest req = null;
@@ -69,19 +70,19 @@ public class RegisterAuthenticationFilter extends AbstractAuthenticationProcessi
         try {
             String body = IoUtil.readUtf8(request.getInputStream());
             req = ObjectMapperUtils.simpleObjectMapper.readValue(body, RegisterRequest.class);
-        }catch (Exception e){
+        } catch (Exception e) {
             // 参数错误
             SecurityException.throwException("register request paramter error!");
         }
         LocalUser user = null;
         try {
             user = cloudUserService.registerUser(req);
-        }catch (Exception e){
+        } catch (Exception e) {
             SecurityException.throwException(e);
         }
         //如果是传递进来了 就绑定一下第三方的 这个绑定的意思就是这个已经存在才可以绑定
-        if(StringUtils.hasText(req.getSourceId()) && StringUtils.hasText(req.getUuid())){
-            cloudExternalAuthSourceService.bindUserRelation(user.getUserId(),req.getSourceId(),req.getUuid());
+        if (StringUtils.hasText(req.getSourceId()) && StringUtils.hasText(req.getUuid())) {
+            cloudExternalAuthSourceService.bindUserRelation(user.getUserId(), req.getSourceId(), req.getUuid());
         }
         //创建一个token 传入获取到的用户request
         RegisterAuthenticationToken authRequest = new RegisterAuthenticationToken(user.getUserId());

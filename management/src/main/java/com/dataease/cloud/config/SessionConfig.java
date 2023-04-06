@@ -18,6 +18,7 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 
 /**
  * 开启redis http session
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/6 11:25 AM
@@ -31,7 +32,7 @@ public class SessionConfig {
     private RedisProperties redisProperties;
 
     @Bean
-    public LettuceConnectionFactory lettuceConnectionFactory(){
+    public LettuceConnectionFactory lettuceConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setDatabase(redisProperties.getDatabase());
         redisStandaloneConfiguration.setHostName(redisProperties.getHost());
@@ -42,12 +43,12 @@ public class SessionConfig {
     }
 
     @Bean
-    public RedisSerializer<Object> springSessionDefaultRedisSerializer(){
+    public RedisSerializer<Object> springSessionDefaultRedisSerializer() {
         return new GenericJackson2JsonRedisSerializer(ObjectMapperUtils.objectMapper);
     }
 
     @Bean
-    public SessionRegistry sessionRegistry(SessionService sessionService){
+    public SessionRegistry sessionRegistry(SessionService sessionService) {
         return new CustomSessionRegistryImpl(sessionService);
     }
 }

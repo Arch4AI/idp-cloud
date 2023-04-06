@@ -16,6 +16,7 @@ import java.util.function.Function;
 
 /**
  * 返回用户信息
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/16 9:39 AM
@@ -24,7 +25,7 @@ public class CustomUserInfoMapper implements Function<OidcUserInfoAuthentication
 
     private CloudUserService cloudUserService;
 
-    public CustomUserInfoMapper(CloudUserService cloudUserService){
+    public CustomUserInfoMapper(CloudUserService cloudUserService) {
         this.cloudUserService = cloudUserService;
     }
 
@@ -49,10 +50,10 @@ public class CustomUserInfoMapper implements Function<OidcUserInfoAuthentication
         OAuth2Authorization authorization = authenticationContext.getAuthorization();
         OidcIdToken idToken = authorization.getToken(OidcIdToken.class).getToken();
         OAuth2AccessToken accessToken = authenticationContext.getAccessToken();
-        Map<String,Object> objectMap = idToken.getClaims();
+        Map<String, Object> objectMap = idToken.getClaims();
         String userId = authorization.getPrincipalName();
         LocalUser localUser = cloudUserService.getUserById(userId);
-        Map<String,Object> userMap = BeanUtil.beanToMap(localUser);
+        Map<String, Object> userMap = BeanUtil.beanToMap(localUser);
         userMap.putAll(objectMap);
         Map<String, Object> scopeRequestedClaims = getClaimsRequestedByScope(userMap,
                 accessToken.getScopes());

@@ -2,7 +2,6 @@ package com.dataease.cloud.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
@@ -32,4 +31,17 @@ public class IdpProperties {
      * vite的地址
      */
     private String viteAddr = "http://127.0.0.1:4000";
+
+    /**
+     * 开启地址
+     */
+    private static boolean addressEnabled = true;
+
+    public static boolean isAddressEnabled() {
+        return addressEnabled;
+    }
+
+    public static void setAddressEnabled(boolean addressEnabled) {
+        IdpProperties.addressEnabled = addressEnabled;
+    }
 }

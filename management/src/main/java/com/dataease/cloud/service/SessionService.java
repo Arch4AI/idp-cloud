@@ -71,8 +71,8 @@ public class SessionService {
     }
 
     /**
-     *
      * 只获取用户相关的session集合
+     *
      * @param userId
      * @return
      */
@@ -90,12 +90,12 @@ public class SessionService {
         if (session != null && session.getAttributeNames().contains(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY)) {
             SecurityContextImpl springSecurityContext = session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
             Object principal = springSecurityContext.getAuthentication().getPrincipal();
-            if(principal instanceof UserDetails) {
+            if (principal instanceof UserDetails) {
                 Duration duration = session.getMaxInactiveInterval();//存活时间间隔
                 Instant instant = session.getLastAccessedTime();//最后一次更新的时间
                 Instant expireInstant = instant.plusSeconds(duration.toSeconds());
                 CloudSession cloudSession = cloudSessionMapper.selectByPrimaryKey(sessionId);
-                if(cloudSession == null){
+                if (cloudSession == null) {
                     cloudSession = new CloudSession();
                     cloudSession.setSessionId(sessionId);
                     cloudSession.setUserId(((UserDetails) principal).getUsername());
@@ -104,7 +104,7 @@ public class SessionService {
                     cloudSession.setExpired(false);
                     cloudSession.setCreateTime(Calendar.getInstance().getTime());
                     cloudSessionMapper.insertSelective(cloudSession);
-                }else{
+                } else {
                     cloudSession.setUserId(((UserDetails) principal).getUsername());
                     cloudSession.setExpireTime(Date.from(expireInstant));
                     cloudSession.setLastQuestTime(Date.from(instant));
@@ -113,10 +113,10 @@ public class SessionService {
                 }
                 return session;
             }
-        }else{
+        } else {
             CloudSession cloudSession = cloudSessionMapper.selectByPrimaryKey(sessionId);
             // 设置已经过期
-            if(cloudSession != null){
+            if (cloudSession != null) {
                 cloudSession.setExpired(true);
                 cloudSession.setExpireTime(Calendar.getInstance().getTime());
                 cloudSessionMapper.updateByPrimaryKeySelective(cloudSession);
@@ -128,16 +128,17 @@ public class SessionService {
     /**
      * 刷新最后一次请求
      * 这个地方暂时未去校验？
+     *
      * @param sessionId
      */
-    public void refreshLastRequest(String sessionId){
+    public void refreshLastRequest(String sessionId) {
         Session session = sessionRepository.findById(sessionId);
-        if(session != null){
+        if (session != null) {
             CloudSession cloudSession = new CloudSession();
             cloudSession.setSessionId(sessionId);
             cloudSession.setLastQuestTime(Calendar.getInstance().getTime());
             cloudSessionMapper.updateByPrimaryKeySelective(cloudSession);
-        }else{
+        } else {
             CloudSession cloudSession = new CloudSession();
             cloudSession.setSessionId(sessionId);
             cloudSession.setExpired(true);
@@ -149,9 +150,10 @@ public class SessionService {
     /**
      * 直接设置超时
      * //TODO 这个是否直接删除比较合理？
+     *
      * @param sessionId
      */
-    public void expireNow(String sessionId){
+    public void expireNow(String sessionId) {
         sessionRepository.deleteById(sessionId);
         CloudSession cloudSession = new CloudSession();
         cloudSession.setSessionId(sessionId);
@@ -170,12 +172,12 @@ public class SessionService {
         if (session != null) {
             SecurityContextImpl springSecurityContext = session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
             Object principal = springSecurityContext.getAuthentication().getPrincipal();
-            if(principal instanceof UserDetails) {
+            if (principal instanceof UserDetails) {
                 Duration duration = session.getMaxInactiveInterval();//存活时间间隔
                 Instant instant = session.getLastAccessedTime();//最后一次更新的时间
                 Instant expireInstant = instant.plusSeconds(duration.toSeconds());
                 CloudSession cloudSession = cloudSessionMapper.selectByPrimaryKey(sessionId);
-                if(cloudSession == null){
+                if (cloudSession == null) {
                     cloudSession = new CloudSession();
                     cloudSession.setSessionId(sessionId);
                     cloudSession.setUserId(((UserDetails) principal).getUsername());
@@ -184,7 +186,7 @@ public class SessionService {
                     cloudSession.setExpired(false);
                     cloudSession.setCreateTime(Calendar.getInstance().getTime());
                     cloudSessionMapper.insertSelective(cloudSession);
-                }else{
+                } else {
                     cloudSession.setUserId(((UserDetails) principal).getUsername());
                     cloudSession.setExpireTime(Date.from(expireInstant));
                     cloudSession.setLastQuestTime(Date.from(instant));
@@ -197,9 +199,10 @@ public class SessionService {
 
     /**
      * 移除sessionId信息 或者直接改成已经没了？
+     *
      * @param sessionId
      */
-    public void removeSessionInformation(String sessionId){
+    public void removeSessionInformation(String sessionId) {
         CloudSession cloudSession = new CloudSession();
         cloudSession.setExpireTime(Calendar.getInstance().getTime());
         cloudSession.setSessionId(sessionId);
@@ -211,16 +214,17 @@ public class SessionService {
 
     /**
      * 添加或者更新session
+     *
      * @param session
      * @param userId
      */
-    public void addOrUpdateSessionRecord(HttpSession session, String userId){
+    public void addOrUpdateSessionRecord(HttpSession session, String userId) {
         CloudSession cloudSession = cloudSessionMapper.selectByPrimaryKey(session.getId());
-        if(cloudSession != null){
+        if (cloudSession != null) {
             cloudSession.setLastQuestTime(Calendar.getInstance().getTime());
             cloudSession.setUserId(userId);
             cloudSessionMapper.updateByPrimaryKeySelective(cloudSession);
-        }else{
+        } else {
             cloudSession = new CloudSession();
             int duration = session.getMaxInactiveInterval();//存活时间间隔
             Long instant = session.getLastAccessedTime();//最后一次更新的时间

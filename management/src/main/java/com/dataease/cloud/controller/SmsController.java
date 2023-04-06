@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 短信服务
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/7 3:42 PM
@@ -25,21 +26,23 @@ public class SmsController {
 
     /**
      * 发送短信
+     *
      * @param smsRequest
      * @return
      */
     @PostMapping("/send")
-    public Result<SmsCodeResponse> send(@RequestBody SmsRequest smsRequest){
+    public Result<SmsCodeResponse> send(@RequestBody SmsRequest smsRequest) {
         return Result.success(smsService.sendCode(smsRequest));
     }
 
     /**
      * 短信校验
+     *
      * @param smsRequest
      * @return
      */
     @PostMapping("/check")
-    public Result check(@RequestBody SmsRequest smsRequest){
+    public Result check(@RequestBody SmsRequest smsRequest) {
         smsService.checkCode(smsRequest);
         return Result.success("校验成功");
     }

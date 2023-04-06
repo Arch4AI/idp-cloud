@@ -40,8 +40,12 @@ CREATE TABLE cloud_user_login_log
     registered_client_id BIGINT COMMENT '注册客户端ID;外部登录的',
     session_id           VARCHAR(255) COMMENT 'sessionId;sessionId唯一',
     ip                   VARCHAR(255) COMMENT 'IP地址',
+    login_location       varchar(255) DEFAULT '' COMMENT '登录地点',
+    browser              varchar(50)  DEFAULT '' COMMENT '浏览器类型',
+    os                   varchar(50)  DEFAULT '' COMMENT '操作系统',
+    status               int(1) DEFAULT 0 COMMENT '登录状态（0失败 1成功）',
+    msg                  varchar(255) DEFAULT '' COMMENT '提示消息',
     login_time           DATETIME COMMENT '登录时间',
-    logout_time          DATETIME COMMENT '登出时间',
     PRIMARY KEY (id)
 ) COMMENT = '用户登录日志';
 

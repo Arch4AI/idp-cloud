@@ -17,9 +17,9 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 
 /**
- *
  * 权限不够处理
  * 默认返回401
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/7 9:04 PM
@@ -36,7 +36,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         response.setContentType(MediaType.APPLICATION_JSON.toString());
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         PrintWriter out = response.getWriter();
-        out.write(jacksonObjectMapper.writeValueAsString(Result.error(accessDeniedException,"权限不够无法访问！")));
+        out.write(jacksonObjectMapper.writeValueAsString(Result.error(accessDeniedException, "权限不够无法访问！")));
         out.flush();
         out.close();
     }

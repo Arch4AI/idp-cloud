@@ -34,7 +34,7 @@ public final class Jwks {
         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
         RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
         log.info("pk:{}", Base64.encode(publicKey.getEncoded()));
-        log.info("prk:{}",Base64.encode(privateKey.getEncoded()));
+        log.info("prk:{}", Base64.encode(privateKey.getEncoded()));
         // @formatter:off
         return new RSAKey.Builder(publicKey)
                 .privateKey(privateKey)

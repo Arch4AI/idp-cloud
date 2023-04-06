@@ -19,7 +19,7 @@ public class SecurityException extends AuthenticationException {
         super(msg);
     }
 
-    public static SecurityException throwException(String msg){
+    public static SecurityException throwException(String msg) {
         throw new SecurityException(msg);
     }
 

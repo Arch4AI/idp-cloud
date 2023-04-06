@@ -39,13 +39,12 @@ public class PhoneAuthenticationTokenDeserializer extends JsonDeserializer<Phone
         List<GrantedAuthority> authorities = mapper.readValue(readJsonNode(jsonNode, "authorities").traverse(mapper),
                 GRANTED_AUTHORITY_LIST);
         PhoneAuthenticationToken token = (!authenticated)
-                ? new PhoneAuthenticationToken(principal,credentials)
-                : new PhoneAuthenticationToken(principal,authorities);
+                ? new PhoneAuthenticationToken(principal, credentials)
+                : new PhoneAuthenticationToken(principal, authorities);
         JsonNode detailsNode = readJsonNode(jsonNode, "details");
         if (detailsNode.isNull() || detailsNode.isMissingNode()) {
             token.setDetails(null);
-        }
-        else {
+        } else {
             Object details = mapper.readValue(detailsNode.toString(), OBJECT);
             token.setDetails(details);
         }

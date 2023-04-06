@@ -8,7 +8,7 @@ import router from '@/router'
 import SlideVerify, { SlideVerifyInstance } from 'vue3-slide-verify'
 import 'vue3-slide-verify/dist/style.css'
 import userStore from '@/store/user'
-import { listActiveProviders,getProviderRedirectUri } from '@/api/auth/auth'
+import { listActiveProviders, getProviderRedirectUri } from '@/api/auth/auth'
 import ExternalLoginIcon from '@/components/ExternalLoginIcon.vue'
 import externalInfoStore from '@/store/externalUser'
 
@@ -19,15 +19,15 @@ const stroeExternalInfo = externalInfoStore()
 const formData: PasswordLoginReq = reactive({
   userName: '',
   password: '',
-  uuid:stroeExternalInfo.info.uuid,
-  sourceId:stroeExternalInfo.info.sourceId
+  uuid: stroeExternalInfo.info.uuid,
+  sourceId: stroeExternalInfo.info.sourceId
 })
 
-const phoneFormData:PhoneLoginReq = reactive({
+const phoneFormData: PhoneLoginReq = reactive({
   phone: '',
   code: '',
-  uuid:stroeExternalInfo.info.uuid,
-  sourceId:stroeExternalInfo.info.sourceId
+  uuid: stroeExternalInfo.info.uuid,
+  sourceId: stroeExternalInfo.info.sourceId
 })
 
 const phoneValidator = (val: string) => {
@@ -112,7 +112,7 @@ const loginPhone = (context: SubmitContext<FormData>) => {
   }
 }
 
-const providers:Ref<Array<ExternalAuthSource>> = ref([])
+const providers: Ref<Array<ExternalAuthSource>> = ref([])
 
 const storeUser = userStore()
 onMounted(async () => {
@@ -121,7 +121,7 @@ onMounted(async () => {
   if (user.enabled) {
     router.push('dashboard')
   }
-  listActiveProviders().then(res=>{
+  listActiveProviders().then((res) => {
     providers.value = res.data
   })
 })
@@ -210,11 +210,11 @@ const handlerChange = (newValue: string) => {
 }
 
 // 获取uri
-const getUri:Function = (id:string)=>{
-  getProviderRedirectUri(id).then(res=>{
-    if(res.code === 200){
+const getUri: Function = (id: string) => {
+  getProviderRedirectUri(id).then((res) => {
+    if (res.code === 200) {
       window.location.href = res.data.uri
-    }else{
+    } else {
       MessagePlugin.error(res.msg)
     }
   })
@@ -223,7 +223,9 @@ const getUri:Function = (id:string)=>{
 <template>
   <div class="login-container">
     <div class="login-form">
-      <t-divider><h2>Any Login</h2></t-divider>
+      <t-divider>
+        <h2>Any Login</h2>
+      </t-divider>
       <t-tabs :value="value" theme="normal" @change="handlerChange">
         <t-tab-panel value="phone">
           <template #label> 验证码登录 </template>
@@ -337,7 +339,12 @@ const getUri:Function = (id:string)=>{
       <div>
         <div class="external_login_card">
           <div v-for="p in providers" :key="p.id" class="external_login_div">
-            <external-login-icon @click="getUri(p.id)" :icon="p.providerIcon" :display-name="p.displayName" :type="p.clientType"/>
+            <external-login-icon
+              @click="getUri(p.id)"
+              :icon="p.providerIcon"
+              :display-name="p.displayName"
+              :type="p.clientType"
+            />
           </div>
         </div>
       </div>
@@ -410,11 +417,14 @@ const getUri:Function = (id:string)=>{
   text-align: center;
 }
 
-.external_login_card{
+.external_login_card {
   padding: 0px 20px;
 }
-.external_login_div{
-  display: inline-flex;
-  padding: 0px 5px;
+
+.external_login_div {
+  display: inline-block;
+  padding: 0 5px;
+  vertical-align: top;
+  height: 25px;
 }
 </style>

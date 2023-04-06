@@ -8,6 +8,7 @@ import java.util.Collection;
 
 /**
  * 手机验证码的token
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/7 3:13 PM
@@ -19,7 +20,7 @@ public class PhoneAuthenticationToken extends AbstractAuthenticationToken {
     private Object principal;
     private Object credentials;
 
-    public PhoneAuthenticationToken(){
+    public PhoneAuthenticationToken() {
         super(null);
     }
 
@@ -29,14 +30,14 @@ public class PhoneAuthenticationToken extends AbstractAuthenticationToken {
         setAuthenticated(false);
     }
 
-    public PhoneAuthenticationToken(Object principal,Object credentials) {
+    public PhoneAuthenticationToken(Object principal, Object credentials) {
         super(null);
         this.principal = principal;
         this.credentials = credentials;
         setAuthenticated(false);
     }
 
-    public PhoneAuthenticationToken(Object principal,Collection<? extends GrantedAuthority> authorities) {
+    public PhoneAuthenticationToken(Object principal, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.principal = principal;
         setAuthenticated(true);

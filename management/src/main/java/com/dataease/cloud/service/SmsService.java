@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 短信服务
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/9 12:10 PM
@@ -30,15 +31,15 @@ public class SmsService {
      * 发送短信
      * 可能这里到时会有第三方的captcha 需要校验 暂时待定
      */
-    public SmsCodeResponse sendCode(SmsRequest smsRequest){
-        if(!StringUtils.hasText(smsRequest.getPhone()))
+    public SmsCodeResponse sendCode(SmsRequest smsRequest) {
+        if (!StringUtils.hasText(smsRequest.getPhone()))
             CloudException.throwException("Phone num is Required!");
-        if(stringRedisTemplate.hasKey(smsRequest.getPhone()))
+        if (stringRedisTemplate.hasKey(smsRequest.getPhone()))
             CloudException.throwException("Code already exist");
         String code = RandomUtil.randomNumbers(6);
         Date offsetMinute = DateUtil.offsetMinute(new Date(), Constants.SMS_CODE_EXPIRE_TIME);
         //TODO 短信发送待定
-        stringRedisTemplate.opsForValue().set(smsRequest.getPhone(),code, Constants.SMS_CODE_EXPIRE_TIME, TimeUnit.MINUTES);
+        stringRedisTemplate.opsForValue().set(smsRequest.getPhone(), code, Constants.SMS_CODE_EXPIRE_TIME, TimeUnit.MINUTES);
         return SmsCodeResponse.builder()
                 .phone(smsRequest.getPhone())
                 .code(code)
@@ -49,20 +50,21 @@ public class SmsService {
     /**
      * 校验短信验证码是否正确
      * 正确后销毁redis中的短信
+     *
      * @param smsRequest
      */
-    public void checkCode(SmsRequest smsRequest){
+    public void checkCode(SmsRequest smsRequest) {
         //获取phone
-        if(!StringUtils.hasText(smsRequest.getPhone()))
+        if (!StringUtils.hasText(smsRequest.getPhone()))
             CloudException.throwException("Phone num is Required!");
-        if(!StringUtils.hasText(smsRequest.getCode()))
+        if (!StringUtils.hasText(smsRequest.getCode()))
             CloudException.throwException("Code is Required!");
-        if(!stringRedisTemplate.hasKey(smsRequest.getPhone()))
+        if (!stringRedisTemplate.hasKey(smsRequest.getPhone()))
             CloudException.throwException("Phone code is Lost,Please send again!");
         String code = stringRedisTemplate.opsForValue().get(smsRequest.getPhone());
-        if(!code.equals(smsRequest.getCode())){
+        if (!code.equals(smsRequest.getCode())) {
             CloudException.throwException("Code is not match!");
-        }else{
+        } else {
             //校验成功后销毁
             stringRedisTemplate.delete(smsRequest.getPhone());
         }

@@ -5,9 +5,11 @@ import com.dataease.cloud.base.mapper.CloudUserLoginLogMapper;
 import com.dataease.cloud.entity.response.Result;
 import com.dataease.cloud.security.LocalUser;
 import com.dataease.cloud.service.SessionService;
+import com.dataease.cloud.utils.AddressUtils;
 import com.dataease.cloud.utils.CommonUtils;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import eu.bitwalker.useragentutils.UserAgent;
 import jakarta.annotation.Resource;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -18,8 +20,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
-import org.springframework.security.web.DefaultRedirectStrategy;
-import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.savedrequest.DefaultSavedRequest;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
@@ -64,6 +64,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
         Object principal = authentication.getPrincipal();
         jacksonObjectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         // 设置登录日志 这个地方已经是登录后触发的 登出的暂时没有 需要监听
+        // 目前 是仅登录
         if (principal instanceof LocalUser) {
             //当用户登录成功后 将session的时间设置为1天
             request.getSession().setMaxInactiveInterval(86400);
@@ -72,34 +73,44 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
             CloudUserLoginLog cloudUserLoginLog = new CloudUserLoginLog();
             cloudUserLoginLog.setLoginTime(Calendar.getInstance().getTime());
             cloudUserLoginLog.setUserId(localUser.getUserId());
-            log.info("sessionId:{},IP:{}",request.getSession().getId(), CommonUtils.getIpAddress(request));
             cloudUserLoginLog.setSessionId(request.getSession().getId());
             cloudUserLoginLog.setIp(CommonUtils.getIpAddress(request));
+
+            UserAgent userAgent = UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
+            //还需要加其他的信息哦
+            cloudUserLoginLog.setStatus(1);
+            if (userAgent != null) {
+                cloudUserLoginLog.setBrowser(userAgent.getBrowser().getName());//浏览器
+                cloudUserLoginLog.setOs(userAgent.getOperatingSystem().getName());//操作系统
+            }
+            cloudUserLoginLog.setMsg("登录成功");
+            cloudUserLoginLog.setLoginLocation(AddressUtils.getRealAddressByIP(cloudUserLoginLog.getIp()));//登录地址
             cloudUserLoginLogMapper.insertSelective(cloudUserLoginLog);
-            // 添加信息
-            sessionService.addOrUpdateSessionRecord(request.getSession(),localUser.getUserId());
+            sessionService.addOrUpdateSessionRecord(request.getSession(), localUser.getUserId());
+
+            //判断是不是有oauth2.0登录的请求 直接重定向？
+            HttpSessionRequestCache cache = new HttpSessionRequestCache();
+            SavedRequest savedRequest = cache.getRequest(request, response);
+            // 测试这里理论上是可行的 但是开发环境因为跨域导致无法调试 暂时先不管这个？
+            if (savedRequest != null) {
+                // 理论上目前只去支持oauth2.0的回调,其余的回调参数不支持咯
+                if (savedRequest.getRedirectUrl().contains(authorizationServerSettings.getAuthorizationEndpoint())) {
+                    String uri = ((DefaultSavedRequest) savedRequest).getRequestURL();
+                    StringBuffer buffer = new StringBuffer(uri).append("?").append(((DefaultSavedRequest) savedRequest).getQueryString());
+                    String redirectUri = buffer.toString();
+                    //返回的数据还是那样
+                    response.setStatus(HttpStatus.OK.value());
+                    response.setContentType(MediaType.APPLICATION_JSON.toString());
+                    PrintWriter out = response.getWriter();
+                    out.write(jacksonObjectMapper.writeValueAsString(Result.error(HttpStatus.FOUND, redirectUri, principal)));
+                    out.flush();
+                    out.close();
+                    return;
+                }
+            }
+
         }
 
-        //判断是不是有oauth2.0登录的请求 直接重定向？
-        HttpSessionRequestCache cache = new HttpSessionRequestCache();
-        SavedRequest savedRequest = cache.getRequest(request,response);
-        // 测试这里理论上是可行的 但是开发环境因为跨域导致无法调试 暂时先不管这个？
-        if(savedRequest != null){
-            // 理论上目前只去支持oauth2.0的回调,其余的回调参数不支持咯
-            if(savedRequest.getRedirectUrl().contains(authorizationServerSettings.getAuthorizationEndpoint())){
-                String uri = ((DefaultSavedRequest)savedRequest).getRequestURL();
-                StringBuffer buffer = new StringBuffer(uri).append("?").append(((DefaultSavedRequest) savedRequest).getQueryString());
-                String redirectUri = buffer.toString();
-                //返回的数据还是那样
-                response.setStatus(HttpStatus.OK.value());
-                response.setContentType(MediaType.APPLICATION_JSON.toString());
-                PrintWriter out = response.getWriter();
-                out.write(jacksonObjectMapper.writeValueAsString(Result.error(HttpStatus.FOUND,redirectUri,principal)));
-                out.flush();
-                out.close();
-                return ;
-            }
-        }
         //默认返回200
         response.setStatus(HttpStatus.OK.value());
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());

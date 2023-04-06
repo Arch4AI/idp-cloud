@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * 匿名访问
  * 这个仅仅是测试请勿直接使用
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/8 4:20 PM
@@ -30,7 +31,7 @@ public class AnonymousController {
     private CloudUserService cloudUserService;
 
     @GetMapping("sessions")
-    public Result sessions(){
+    public Result sessions() {
 //        List<Object> principals = sessionRegistry.getAllPrincipals();
 //        principals.stream().forEach(p->{
 //            // 一个用户可能有几个session

@@ -55,8 +55,8 @@ public class PhoneAuthenticationFilter extends AbstractAuthenticationProcessingF
         super(new AntPathRequestMatcher(DEFAULT_FILTER_PROCESSES_URL, HttpMethod.POST.name()));
     }
 
-    public PhoneAuthenticationFilter(AuthenticationManager authenticationManager,StringRedisTemplate stringRedisTemplate,CloudUserService cloudUserService,CloudExternalAuthSourceService cloudExternalAuthSourceService) {
-        super(new AntPathRequestMatcher(DEFAULT_FILTER_PROCESSES_URL, HttpMethod.POST.name()),authenticationManager);
+    public PhoneAuthenticationFilter(AuthenticationManager authenticationManager, StringRedisTemplate stringRedisTemplate, CloudUserService cloudUserService, CloudExternalAuthSourceService cloudExternalAuthSourceService) {
+        super(new AntPathRequestMatcher(DEFAULT_FILTER_PROCESSES_URL, HttpMethod.POST.name()), authenticationManager);
         this.stringRedisTemplate = stringRedisTemplate;
         this.cloudUserService = cloudUserService;
         this.cloudExternalAuthSourceService = cloudExternalAuthSourceService;
@@ -68,7 +68,7 @@ public class PhoneAuthenticationFilter extends AbstractAuthenticationProcessingF
             throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
         }
         // 后面可能还有编码 默认UTF-8
-        if(!request.getHeader(Headers.CONTENT_TYPE_STRING).startsWith(MediaType.APPLICATION_JSON.toString())){
+        if (!request.getHeader(Headers.CONTENT_TYPE_STRING).startsWith(MediaType.APPLICATION_JSON.toString())) {
             SecurityException.throwException("Phone Auth Request Parameter error!");
         }
         ObjectMapper objectMapper = ObjectMapperUtils.simpleObjectMapper;
@@ -78,19 +78,19 @@ public class PhoneAuthenticationFilter extends AbstractAuthenticationProcessingF
             //使用jackson去转对象
             String body = IoUtil.readUtf8(request.getInputStream());
             phoneLoginRequest = objectMapper.readValue(body, PhoneLoginRequest.class);
-        }catch (Exception e){
+        } catch (Exception e) {
             // 参数错误
             SecurityException.throwException("Authentication parameter error!");
         }
-        if(!StringUtils.hasText(phoneLoginRequest.getPhone()))
+        if (!StringUtils.hasText(phoneLoginRequest.getPhone()))
             throw new UsernameNotFoundException("phone num required!");
-        if(!ReUtil.isMatch(PHONE_REGX,phoneLoginRequest.getPhone()))
+        if (!ReUtil.isMatch(PHONE_REGX, phoneLoginRequest.getPhone()))
             throw new AuthenticationServiceException("The format of the phone number is incorrect！");
-        if(!StringUtils.hasText(phoneLoginRequest.getPhone()))
+        if (!StringUtils.hasText(phoneLoginRequest.getPhone()))
             throw new BadCredentialsException("phone code required!");
         //判断用户信息
         LocalUser user = cloudUserService.getUserByPhone(phoneLoginRequest.getPhone());
-        if(!user.getEnabled())
+        if (!user.getEnabled())
             throw new DisabledException("user has disabled!");
         String redisCode = stringRedisTemplate.opsForValue().get(phoneLoginRequest.getPhone());
         if (!StringUtils.hasText(redisCode)) {
@@ -102,8 +102,11 @@ public class PhoneAuthenticationFilter extends AbstractAuthenticationProcessingF
         //移除这个key
         stringRedisTemplate.delete(phoneLoginRequest.getPhone());
         //如果是传递进来了 就绑定一下第三方的 这个绑定的意思就是这个已经存在才可以绑定
-        if(StringUtils.hasText(phoneLoginRequest.getSourceId()) && StringUtils.hasText(phoneLoginRequest.getUuid())){
-            cloudExternalAuthSourceService.bindUserRelation(user.getUserId(),phoneLoginRequest.getSourceId(),phoneLoginRequest.getUuid());
+        if (StringUtils.hasText(phoneLoginRequest.getSourceId()) && StringUtils.hasText(phoneLoginRequest.getUuid())) {
+            cloudExternalAuthSourceService.bindUserRelation(user.getUserId(), phoneLoginRequest.getSourceId(), phoneLoginRequest.getUuid());
+        }
+        if(user != null){
+            request.setAttribute(Constants.REQ_USER_ATTRIBUTE,user);
         }
         //创建一个token
         PhoneAuthenticationToken authRequest = new PhoneAuthenticationToken(user.getUserId());

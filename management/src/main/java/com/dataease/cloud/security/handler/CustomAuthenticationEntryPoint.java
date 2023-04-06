@@ -26,6 +26,7 @@ import java.nio.charset.StandardCharsets;
 /**
  * 没有验证默认返回这个 其实应该加一些其他的参数进来
  * 默认返回403
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/7 9:05 PM
@@ -47,22 +48,22 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         //这里应该还需要判断 是不是从oauth2.0访问过来的 如果是没有验证应该重定向到vue前端的登录界面去
         HttpSessionRequestCache cache = new HttpSessionRequestCache();
         RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
-        SavedRequest savedRequest = cache.getRequest(request,response);
-        if(savedRequest != null && savedRequest.getRedirectUrl().contains(authorizationServerSettings.getAuthorizationEndpoint())){
+        SavedRequest savedRequest = cache.getRequest(request, response);
+        if (savedRequest != null && savedRequest.getRedirectUrl().contains(authorizationServerSettings.getAuthorizationEndpoint())) {
             // 需要重定向到前端登录页面哦
             // 需要重定向到登录页面去
-            if(GlobalConfigurations.isReleaseMode()){
-                redirectStrategy.sendRedirect(request,response,"/login");
-            }else{
-                redirectStrategy.sendRedirect(request,response, idpProperties.getViteAddr()+"/login");
+            if (GlobalConfigurations.isReleaseMode()) {
+                redirectStrategy.sendRedirect(request, response, "/login");
+            } else {
+                redirectStrategy.sendRedirect(request, response, idpProperties.getViteAddr() + "/login");
             }
 
-        }else{
+        } else {
             response.setCharacterEncoding(StandardCharsets.UTF_8.name());
             response.setContentType(MediaType.APPLICATION_JSON.toString());
             response.setStatus(HttpStatus.FORBIDDEN.value());
             PrintWriter out = response.getWriter();
-            out.write(jacksonObjectMapper.writeValueAsString(Result.error(HttpStatus.FORBIDDEN,authException,"用户未登录无法访问！")));
+            out.write(jacksonObjectMapper.writeValueAsString(Result.error(HttpStatus.FORBIDDEN, authException, "用户未登录无法访问！")));
             out.flush();
             out.close();
         }

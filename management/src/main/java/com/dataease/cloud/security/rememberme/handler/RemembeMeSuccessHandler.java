@@ -13,9 +13,10 @@ import java.io.IOException;
 
 /**
  * 记住我,成功验证后触发的Handler
- * @Deprecated 暂时未用到 后续再说 目前无法通过这个去修改session的超时时间
+ *
  * @author ShrChang.Liu
  * @version v1.0
+ * @Deprecated 暂时未用到 后续再说 目前无法通过这个去修改session的超时时间
  * @date 2023/3/10 5:55 PM
  **/
 @Component
@@ -32,6 +33,6 @@ public class RemembeMeSuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         //设置httpsession的超时时间 1天
         log.info("*******************remeber me authentication success****************");
-        onAuthenticationSuccess(request,response,authentication);
+        onAuthenticationSuccess(request, response, authentication);
     }
 }

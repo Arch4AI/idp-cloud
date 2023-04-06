@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * 用户信息
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/8 6:40 PM

@@ -25,15 +25,15 @@ package com.fit2cloud.cloud.http.exception;
  * @date Created in 2019/12/25 17:40
  */
 public class SimpleHttpException extends RuntimeException {
-	public SimpleHttpException(Throwable cause) {
-		super(cause);
-	}
+    public SimpleHttpException(Throwable cause) {
+        super(cause);
+    }
 
-	public SimpleHttpException(String message) {
-		super(message);
-	}
+    public SimpleHttpException(String message) {
+        super(message);
+    }
 
-	public SimpleHttpException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public SimpleHttpException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

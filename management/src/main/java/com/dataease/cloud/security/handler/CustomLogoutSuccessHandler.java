@@ -1,10 +1,14 @@
 package com.dataease.cloud.security.handler;
 
-import com.dataease.cloud.base.domain.CloudUserLoginLogExample;
+import com.dataease.cloud.base.domain.CloudUserLoginLog;
 import com.dataease.cloud.base.mapper.CloudUserLoginLogMapper;
 import com.dataease.cloud.entity.response.Result;
+import com.dataease.cloud.security.LocalUser;
 import com.dataease.cloud.service.SessionService;
+import com.dataease.cloud.utils.AddressUtils;
+import com.dataease.cloud.utils.CommonUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import eu.bitwalker.useragentutils.UserAgent;
 import jakarta.annotation.Resource;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,16 +16,18 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
+import java.util.Calendar;
 
 /**
  * 登出成功Handler
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/7 9:28 PM
@@ -44,18 +50,29 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
 
         String sessionId = request.getSession().getId();
         // 获取客户端的sessionId
-        log.info("logout sessionId: {}",sessionId);
+        log.info("logout sessionId: {}", sessionId);
         // 获取认证信息里面的details
-        log.info("authentication details:{}",jacksonObjectMapper.writeValueAsString(authentication.getDetails()));
+        log.info("authentication details:{}", jacksonObjectMapper.writeValueAsString(authentication.getDetails()));
 
-        CloudUserLoginLogExample cloudUserLoginLogExample = new CloudUserLoginLogExample();
-        cloudUserLoginLogExample.createCriteria().andSessionIdEqualTo(sessionId);
+        if(authentication.getPrincipal() instanceof UserDetails){
+            UserDetails userDetails = (UserDetails)authentication.getPrincipal();
+            CloudUserLoginLog cloudUserLoginLog = new CloudUserLoginLog();
+            cloudUserLoginLog.setLoginTime(Calendar.getInstance().getTime());
+            cloudUserLoginLog.setUserId(userDetails.getUsername());
+            cloudUserLoginLog.setSessionId(request.getSession().getId());
+            cloudUserLoginLog.setIp(CommonUtils.getIpAddress(request));
+            UserAgent userAgent = UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
+            //还需要加其他的信息哦
+            cloudUserLoginLog.setStatus(1);
+            if (userAgent != null) {
+                cloudUserLoginLog.setBrowser(userAgent.getBrowser().getName());//浏览器
+                cloudUserLoginLog.setOs(userAgent.getOperatingSystem().getName());//操作系统
+            }
+            cloudUserLoginLog.setMsg("退出成功");
+            cloudUserLoginLog.setLoginLocation(AddressUtils.getRealAddressByIP(cloudUserLoginLog.getIp()));//登录地址
+            cloudUserLoginLogMapper.insertSelective(cloudUserLoginLog);
+        }
 
-        //如果有就这样吧
-        cloudUserLoginLogMapper.selectByExample(cloudUserLoginLogExample).stream().findFirst().ifPresent(cloudUserLoginLog -> {
-            cloudUserLoginLog.setLogoutTime(new Date());
-            cloudUserLoginLogMapper.updateByPrimaryKeySelective(cloudUserLoginLog);
-        });
 
         //设置sessionId过期
         sessionService.expireNow(request.getRequestedSessionId());

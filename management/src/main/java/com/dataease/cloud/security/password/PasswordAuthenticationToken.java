@@ -8,6 +8,7 @@ import java.util.Collection;
 
 /**
  * 带密码的token
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/7 3:13 PM

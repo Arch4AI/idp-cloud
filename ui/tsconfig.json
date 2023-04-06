@@ -25,5 +25,9 @@
     "src/**/*.vue",
     "node_modules/tdesign-vue-next/global.d.ts"
   ],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
 }

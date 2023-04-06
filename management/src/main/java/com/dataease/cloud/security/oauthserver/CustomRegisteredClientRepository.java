@@ -38,7 +38,7 @@ public class CustomRegisteredClientRepository implements RegisteredClientReposit
 
     private CloudOauth2RegisteredClientMapper cloudOauth2RegisteredClientMapper;
 
-    public CustomRegisteredClientRepository(CloudOauth2RegisteredClientMapper cloudOauth2RegisteredClientMapper){
+    public CustomRegisteredClientRepository(CloudOauth2RegisteredClientMapper cloudOauth2RegisteredClientMapper) {
         this.cloudOauth2RegisteredClientMapper = cloudOauth2RegisteredClientMapper;
     }
 
@@ -63,10 +63,10 @@ public class CustomRegisteredClientRepository implements RegisteredClientReposit
         client.setTokenSettings(writeMap(registeredClient.getTokenSettings().getSettings()));
         //判断是不是已经存在了 存在了就更新 否则新增
         CloudOauth2RegisteredClient existingClient = cloudOauth2RegisteredClientMapper.selectByPrimaryKey(registeredClient.getId());
-        if(existingClient == null){
+        if (existingClient == null) {
             assertUniqueIdentifiers(registeredClient);
             cloudOauth2RegisteredClientMapper.insertSelective(client);
-        }else{
+        } else {
             // 直接更新 这里也是很奇怪 为什么不校验 是不是已经存在了clientId和clientSecret呢 因为这2个默认不能修改的
             cloudOauth2RegisteredClientMapper.updateByPrimaryKeySelective(client);
         }
@@ -74,6 +74,7 @@ public class CustomRegisteredClientRepository implements RegisteredClientReposit
 
     /**
      * 校验一下
+     *
      * @param registeredClient
      */
     private void assertUniqueIdentifiers(RegisteredClient registeredClient) {
@@ -97,7 +98,7 @@ public class CustomRegisteredClientRepository implements RegisteredClientReposit
     public RegisteredClient findById(String id) {
         Assert.hasText(id, "id cannot be empty");
         CloudOauth2RegisteredClient client = cloudOauth2RegisteredClientMapper.selectByPrimaryKey(id);
-        if(client != null){
+        if (client != null) {
             return entityRow(client);
         }
         return null;
@@ -109,7 +110,7 @@ public class CustomRegisteredClientRepository implements RegisteredClientReposit
         CloudOauth2RegisteredClientExample example = new CloudOauth2RegisteredClientExample();
         example.createCriteria().andClientIdEqualTo(clientId);
         List<CloudOauth2RegisteredClient> clientList = cloudOauth2RegisteredClientMapper.selectByExample(example);
-        if(!clientList.isEmpty()){
+        if (!clientList.isEmpty()) {
             return entityRow(clientList.get(0));
         }
         return null;
@@ -117,10 +118,11 @@ public class CustomRegisteredClientRepository implements RegisteredClientReposit
 
     /**
      * 将对象互换
+     *
      * @param client
      * @return
      */
-    public RegisteredClient entityRow(CloudOauth2RegisteredClient client){
+    public RegisteredClient entityRow(CloudOauth2RegisteredClient client) {
         PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         Set<String> clientAuthenticationMethods = StringUtils.commaDelimitedListToSet(client.getClientAuthenticationMethods());
         Set<String> authorizationGrantTypes = StringUtils.commaDelimitedListToSet(client.getAuthorizationGrantTypes());
@@ -153,12 +155,14 @@ public class CustomRegisteredClientRepository implements RegisteredClientReposit
 
     /**
      * jackson转化
+     *
      * @param data
      * @return
      */
     private Map<String, Object> parseMap(String data) {
         try {
-            return this.objectMapper.readValue(data, new TypeReference<Map<String, Object>>() {});
+            return this.objectMapper.readValue(data, new TypeReference<Map<String, Object>>() {
+            });
         } catch (Exception ex) {
             throw new IllegalArgumentException(ex.getMessage(), ex);
         }
@@ -188,6 +192,7 @@ public class CustomRegisteredClientRepository implements RegisteredClientReposit
 
     /**
      * 使用jackson转成Map对象
+     *
      * @param data
      * @return
      */

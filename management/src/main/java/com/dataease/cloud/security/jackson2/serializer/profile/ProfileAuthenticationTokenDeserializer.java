@@ -39,13 +39,12 @@ public class ProfileAuthenticationTokenDeserializer extends JsonDeserializer<Pro
         List<GrantedAuthority> authorities = mapper.readValue(readJsonNode(jsonNode, "authorities").traverse(mapper),
                 GRANTED_AUTHORITY_LIST);
         ProfileAuthenticationToken token = (!authenticated)
-                ? new ProfileAuthenticationToken(principal,credentials)
-                : new ProfileAuthenticationToken(principal,authorities);
+                ? new ProfileAuthenticationToken(principal, credentials)
+                : new ProfileAuthenticationToken(principal, authorities);
         JsonNode detailsNode = readJsonNode(jsonNode, "details");
         if (detailsNode.isNull() || detailsNode.isMissingNode()) {
             token.setDetails(null);
-        }
-        else {
+        } else {
             Object details = mapper.readValue(detailsNode.toString(), OBJECT);
             token.setDetails(details);
         }

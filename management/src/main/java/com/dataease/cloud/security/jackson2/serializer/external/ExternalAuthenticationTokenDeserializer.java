@@ -39,13 +39,12 @@ public class ExternalAuthenticationTokenDeserializer extends JsonDeserializer<Ex
         List<GrantedAuthority> authorities = mapper.readValue(readJsonNode(jsonNode, "authorities").traverse(mapper),
                 GRANTED_AUTHORITY_LIST);
         ExternalAuthenticationToken token = (!authenticated)
-                ? new ExternalAuthenticationToken(principal,credentials)
-                : new ExternalAuthenticationToken(principal,authorities);
+                ? new ExternalAuthenticationToken(principal, credentials)
+                : new ExternalAuthenticationToken(principal, authorities);
         JsonNode detailsNode = readJsonNode(jsonNode, "details");
         if (detailsNode.isNull() || detailsNode.isMissingNode()) {
             token.setDetails(null);
-        }
-        else {
+        } else {
             Object details = mapper.readValue(detailsNode.toString(), OBJECT);
             token.setDetails(details);
         }

@@ -15,12 +15,13 @@ import java.util.Set;
 
 /**
  * 自定义redisSessionRegisteryImpl
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/17 2:13 PM
  **/
 @Slf4j
-public class CustomSessionRegistryImpl implements SessionRegistry , ApplicationListener<AbstractSessionEvent> {
+public class CustomSessionRegistryImpl implements SessionRegistry, ApplicationListener<AbstractSessionEvent> {
 
     private final SessionService sessionService;
 
@@ -36,10 +37,10 @@ public class CustomSessionRegistryImpl implements SessionRegistry , ApplicationL
 
     @Override
     public List<SessionInformation> getAllSessions(Object principal, boolean includeExpiredSessions) {
-        if(principal instanceof UserDetails){
+        if (principal instanceof UserDetails) {
             // 获取sessionId的集合
             Set<String> sessionsUsedByPrincipal = sessionService.getAllSessions(((UserDetails) principal).getUsername());
-            if(!sessionsUsedByPrincipal.isEmpty()){
+            if (!sessionsUsedByPrincipal.isEmpty()) {
                 List<SessionInformation> list = new ArrayList<>(sessionsUsedByPrincipal.size());
                 for (String sessionId : sessionsUsedByPrincipal) {
                     SessionInformation sessionInformation = getSessionInformation(sessionId);
@@ -61,8 +62,8 @@ public class CustomSessionRegistryImpl implements SessionRegistry , ApplicationL
     public SessionInformation getSessionInformation(String sessionId) {
         Assert.hasText(sessionId, "SessionId required as per interface contract");
         Session session = sessionService.getSessionInformation(sessionId);
-        if(session != null){
-            return new CustomSessionInformation(session,sessionService);
+        if (session != null) {
+            return new CustomSessionInformation(session, sessionService);
         }
         return null;
     }
@@ -108,17 +109,16 @@ public class CustomSessionRegistryImpl implements SessionRegistry , ApplicationL
 
     /**
      * //TODO 无法知道这个
+     *
      * @param event
      */
     @Override
     public void onApplicationEvent(AbstractSessionEvent event) {
         if (event instanceof SessionDestroyedEvent) {
             log.info("session destoryed");
-        }
-        else if(event instanceof SessionCreationEvent){
+        } else if (event instanceof SessionCreationEvent) {
             log.info("session created");
-        }
-        else if (event instanceof SessionIdChangedEvent) {
+        } else if (event instanceof SessionIdChangedEvent) {
             log.info("session id changed");
         }
 

@@ -28,7 +28,7 @@ public class CustomOAuth2AuthorizationConsentService implements OAuth2Authorizat
     private CloudOauth2AuthorizationConsentMapper cloudOauth2AuthorizationConsentMapper;
     private RegisteredClientRepository registeredClientRepository;
 
-    public CustomOAuth2AuthorizationConsentService(CloudOauth2AuthorizationConsentMapper cloudOauth2AuthorizationConsentMapper,RegisteredClientRepository registeredClientRepository){
+    public CustomOAuth2AuthorizationConsentService(CloudOauth2AuthorizationConsentMapper cloudOauth2AuthorizationConsentMapper, RegisteredClientRepository registeredClientRepository) {
         this.cloudOauth2AuthorizationConsentMapper = cloudOauth2AuthorizationConsentMapper;
         this.registeredClientRepository = registeredClientRepository;
     }
@@ -50,9 +50,9 @@ public class CustomOAuth2AuthorizationConsentService implements OAuth2Authorizat
         key.setPrincipalName(authorizationConsent.getPrincipalName());
         key.setRegisteredClientId(authorizationConsent.getRegisteredClientId());
         CloudOauth2AuthorizationConsent consent = cloudOauth2AuthorizationConsentMapper.selectByPrimaryKey(key);
-        if(consent == null){
+        if (consent == null) {
             cloudOauth2AuthorizationConsentMapper.insertSelective(cloudOauth2AuthorizationConsent);
-        } else{
+        } else {
             cloudOauth2AuthorizationConsentMapper.updateByPrimaryKeySelective(cloudOauth2AuthorizationConsent);
         }
     }
@@ -74,12 +74,12 @@ public class CustomOAuth2AuthorizationConsentService implements OAuth2Authorizat
         key.setPrincipalName(principalName);
         key.setRegisteredClientId(registeredClientId);
         CloudOauth2AuthorizationConsent consent = cloudOauth2AuthorizationConsentMapper.selectByPrimaryKey(key);
-        if(consent != null)
+        if (consent != null)
             return entityRow(consent);
         return null;
     }
 
-    private OAuth2AuthorizationConsent entityRow(CloudOauth2AuthorizationConsent consent){
+    private OAuth2AuthorizationConsent entityRow(CloudOauth2AuthorizationConsent consent) {
         String registeredClientId = consent.getRegisteredClientId();
         RegisteredClient registeredClient = this.registeredClientRepository.findById(registeredClientId);
         if (registeredClient == null) {

@@ -42,7 +42,7 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
     private static final String AUTHORITIES_SCOPE_PREFIX = "SCOPE_";
 
     public CustomOAuth2AuthorizationService(CloudOauth2AuthorizationMapper cloudOauth2AuthorizationMapper,
-                                            RegisteredClientRepository registeredClientRepository){
+                                            RegisteredClientRepository registeredClientRepository) {
         this.cloudOauth2AuthorizationMapper = cloudOauth2AuthorizationMapper;
         this.registeredClientRepository = registeredClientRepository;
     }
@@ -71,7 +71,7 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
         cloudOauth2AuthorizationWithBLOBs.setState(state);
         OAuth2Authorization.Token<OAuth2AuthorizationCode> authorizationCode =
                 authorization.getToken(OAuth2AuthorizationCode.class);
-        if(authorizationCode != null){
+        if (authorizationCode != null) {
             cloudOauth2AuthorizationWithBLOBs.setAuthorizationCodeValue(authorizationCode.getToken().getTokenValue());
             cloudOauth2AuthorizationWithBLOBs.setAuthorizationCodeIssuedAt(authorizationCode.getToken().getIssuedAt() != null ? Date.from(authorizationCode.getToken().getIssuedAt()) : null);
             cloudOauth2AuthorizationWithBLOBs.setAuthorizationCodeExpiresAt(authorizationCode.getToken().getExpiresAt() != null ? Date.from(authorizationCode.getToken().getExpiresAt()) : null);
@@ -80,7 +80,7 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
         }
         OAuth2Authorization.Token<OAuth2AccessToken> accessToken =
                 authorization.getToken(OAuth2AccessToken.class);
-        if(accessToken != null){
+        if (accessToken != null) {
             String accessTokenType = accessToken.getToken().getTokenType().getValue();
             String accessTokenScopes = null;
             if (!CollectionUtils.isEmpty(accessToken.getToken().getScopes())) {
@@ -96,7 +96,7 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
         }
 
         OAuth2Authorization.Token<OidcIdToken> oidcIdToken = authorization.getToken(OidcIdToken.class);
-        if(oidcIdToken != null){
+        if (oidcIdToken != null) {
             cloudOauth2AuthorizationWithBLOBs.setOidcIdTokenValue(oidcIdToken.getToken().getTokenValue());
             cloudOauth2AuthorizationWithBLOBs.setOidcIdTokenIssuedAt(oidcIdToken.getToken().getIssuedAt() != null ? Date.from(oidcIdToken.getToken().getIssuedAt()) : null);
             cloudOauth2AuthorizationWithBLOBs.setOidcIdTokenExpiresAt(oidcIdToken.getToken().getExpiresAt() != null ? Date.from(oidcIdToken.getToken().getExpiresAt()) : null);
@@ -105,7 +105,7 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
         }
 
         OAuth2Authorization.Token<OAuth2RefreshToken> refreshToken = authorization.getRefreshToken();
-        if(refreshToken != null){
+        if (refreshToken != null) {
             cloudOauth2AuthorizationWithBLOBs.setRefreshTokenValue(refreshToken.getToken().getTokenValue());
             cloudOauth2AuthorizationWithBLOBs.setRefreshTokenIssuedAt(refreshToken.getToken().getIssuedAt() != null ? Date.from(refreshToken.getToken().getIssuedAt()) : null);
             cloudOauth2AuthorizationWithBLOBs.setRefreshTokenExpiresAt(refreshToken.getToken().getExpiresAt() != null ? Date.from(refreshToken.getToken().getExpiresAt()) : null);
@@ -113,10 +113,10 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
             cloudOauth2AuthorizationWithBLOBs.setRefreshTokenMetadata(metadata);
         }
         //转化的整个内容
-        CloudOauth2AuthorizationWithBLOBs primaryKey  = cloudOauth2AuthorizationMapper.selectByPrimaryKey(cloudOauth2AuthorizationWithBLOBs.getId());
-        if(primaryKey == null){
+        CloudOauth2AuthorizationWithBLOBs primaryKey = cloudOauth2AuthorizationMapper.selectByPrimaryKey(cloudOauth2AuthorizationWithBLOBs.getId());
+        if (primaryKey == null) {
             cloudOauth2AuthorizationMapper.insertSelective(cloudOauth2AuthorizationWithBLOBs);
-        }else{
+        } else {
             cloudOauth2AuthorizationMapper.updateByPrimaryKeyWithBLOBs(cloudOauth2AuthorizationWithBLOBs);
         }
     }
@@ -144,31 +144,31 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
             example.or().andAccessTokenValueEqualTo(token);
             example.or().andRefreshTokenValueEqualTo(token);
             CloudOauth2AuthorizationWithBLOBs bloBs = cloudOauth2AuthorizationMapper.selectByExampleWithBLOBs(example).stream().findFirst().orElse(null);
-            if(bloBs != null){
+            if (bloBs != null) {
                 return entityRow(bloBs);
             }
         } else if (OAuth2ParameterNames.STATE.equals(tokenType.getValue())) {
             example.createCriteria().andStateEqualTo(token);
             CloudOauth2AuthorizationWithBLOBs bloBs = cloudOauth2AuthorizationMapper.selectByExampleWithBLOBs(example).stream().findFirst().orElse(null);
-            if(bloBs != null){
+            if (bloBs != null) {
                 return entityRow(bloBs);
             }
         } else if (OAuth2ParameterNames.CODE.equals(tokenType.getValue())) {
             example.createCriteria().andAuthorizationCodeValueEqualTo(token);
             CloudOauth2AuthorizationWithBLOBs bloBs = cloudOauth2AuthorizationMapper.selectByExampleWithBLOBs(example).stream().findFirst().orElse(null);
-            if(bloBs != null){
+            if (bloBs != null) {
                 return entityRow(bloBs);
             }
         } else if (OAuth2TokenType.ACCESS_TOKEN.equals(tokenType)) {
             example.createCriteria().andAccessTokenValueEqualTo(token);
             CloudOauth2AuthorizationWithBLOBs bloBs = cloudOauth2AuthorizationMapper.selectByExampleWithBLOBs(example).stream().findFirst().orElse(null);
-            if(bloBs != null){
+            if (bloBs != null) {
                 return entityRow(bloBs);
             }
         } else if (OAuth2TokenType.REFRESH_TOKEN.equals(tokenType)) {
             example.createCriteria().andRefreshTokenValueEqualTo(token);
             CloudOauth2AuthorizationWithBLOBs bloBs = cloudOauth2AuthorizationMapper.selectByExampleWithBLOBs(example).stream().findFirst().orElse(null);
-            if(bloBs != null){
+            if (bloBs != null) {
                 return entityRow(bloBs);
             }
         }
@@ -177,10 +177,11 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
 
     /**
      * 转换一下
+     *
      * @param bloBs
      * @return
      */
-    private OAuth2Authorization entityRow(CloudOauth2AuthorizationWithBLOBs bloBs){
+    private OAuth2Authorization entityRow(CloudOauth2AuthorizationWithBLOBs bloBs) {
         RegisteredClient registeredClient = this.registeredClientRepository.findById(bloBs.getRegisteredClientId());
         OAuth2Authorization.Builder builder = OAuth2Authorization.withRegisteredClient(registeredClient);
         Set<String> authorizedScopes = Collections.emptySet();
@@ -258,7 +259,8 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
 
     private Map<String, Object> parseMap(String data) {
         try {
-            return this.objectMapper.readValue(data, new TypeReference<Map<String, Object>>() {});
+            return this.objectMapper.readValue(data, new TypeReference<Map<String, Object>>() {
+            });
         } catch (Exception ex) {
             throw new IllegalArgumentException(ex.getMessage(), ex);
         }

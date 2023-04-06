@@ -21,12 +21,12 @@ import java.net.Proxy;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HttpConfig {
-	/**
-	 * 超时时长，单位毫秒
-	 */
-	private int timeout = Constants.DEFAULT_TIMEOUT;
-	/**
-	 * 代理配置
-	 */
-	private Proxy proxy;
+    /**
+     * 超时时长，单位毫秒
+     */
+    private int timeout = Constants.DEFAULT_TIMEOUT;
+    /**
+     * 代理配置
+     */
+    private Proxy proxy;
 }

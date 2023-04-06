@@ -17,6 +17,7 @@ import java.sql.*;
 public class StringBlobTypeHandler extends BaseTypeHandler<String> {
 
     private static final String DEFAULT_CHARSET = "utf-8";
+
     public void setNonNullParameter(PreparedStatement ps, int i, String parameter, JdbcType jdbcType)
             throws SQLException {
         ByteArrayInputStream bis;
@@ -48,6 +49,7 @@ public class StringBlobTypeHandler extends BaseTypeHandler<String> {
             throw new RuntimeException("Blob Encoding Error!");
         }
     }
+
     public String getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
         Blob blob = (Blob) cs.getBlob(columnIndex);
         byte[] returnValue = null;

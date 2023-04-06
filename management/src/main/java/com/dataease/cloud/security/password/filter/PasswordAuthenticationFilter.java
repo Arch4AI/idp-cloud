@@ -51,8 +51,8 @@ public class PasswordAuthenticationFilter extends AbstractAuthenticationProcessi
         super(new AntPathRequestMatcher(DEFAULT_FILTER_PROCESSES_URL, HttpMethod.POST.name()));
     }
 
-    public PasswordAuthenticationFilter(AuthenticationManager authenticationManager,CloudUserService cloudUserService,CloudExternalAuthSourceService cloudExternalAuthSourceService) {
-        super(new AntPathRequestMatcher(DEFAULT_FILTER_PROCESSES_URL, HttpMethod.POST.name()),authenticationManager);
+    public PasswordAuthenticationFilter(AuthenticationManager authenticationManager, CloudUserService cloudUserService, CloudExternalAuthSourceService cloudExternalAuthSourceService) {
+        super(new AntPathRequestMatcher(DEFAULT_FILTER_PROCESSES_URL, HttpMethod.POST.name()), authenticationManager);
         this.cloudUserService = cloudUserService;
         this.cloudExternalAuthSourceService = cloudExternalAuthSourceService;
     }
@@ -63,7 +63,7 @@ public class PasswordAuthenticationFilter extends AbstractAuthenticationProcessi
             throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
         }
         // 后面可能还有编码 默认UTF-8
-        if(!request.getHeader(Headers.CONTENT_TYPE_STRING).startsWith(MediaType.APPLICATION_JSON.toString())){
+        if (!request.getHeader(Headers.CONTENT_TYPE_STRING).startsWith(MediaType.APPLICATION_JSON.toString())) {
             SecurityException.throwException("Password Auth Request Parameter error!");
         }
         ObjectMapper objectMapper = ObjectMapperUtils.simpleObjectMapper;
@@ -73,27 +73,30 @@ public class PasswordAuthenticationFilter extends AbstractAuthenticationProcessi
             //使用jackson去转对象
             String body = IoUtil.readUtf8(request.getInputStream());
             passwordLoginRequest = objectMapper.readValue(body, PasswordLoginRequest.class);
-        }catch (Exception e){
+        } catch (Exception e) {
             // 参数错误
             SecurityException.throwException("Authentication parameter error!");
         }
-        if(!StringUtils.hasText(passwordLoginRequest.getUserName()))
+        if (!StringUtils.hasText(passwordLoginRequest.getUserName()))
             throw new UsernameNotFoundException("userName/phone/email is Required!");
-        if(!StringUtils.hasText(passwordLoginRequest.getPassword()))
+        if (!StringUtils.hasText(passwordLoginRequest.getPassword()))
             throw new BadCredentialsException("Password is Required!");
         //查询用户信息
         LocalUser user = cloudUserService.getUserByName(passwordLoginRequest.getUserName());
         //判断用户是否存在
-        if(user == null)
+        if (user == null)
             throw new UsernameNotFoundException("user not found!");
-        if(!user.isEnabled())
+        if (!user.isEnabled())
             throw new DisabledException("user disabled!");
         //如果是传递进来了 就绑定一下第三方的 这个绑定的意思就是这个已经存在才可以绑定
-        if(StringUtils.hasText(passwordLoginRequest.getSourceId()) && StringUtils.hasText(passwordLoginRequest.getUuid())){
-            cloudExternalAuthSourceService.bindUserRelation(user.getUserId(),passwordLoginRequest.getSourceId(),passwordLoginRequest.getUuid());
+        if (StringUtils.hasText(passwordLoginRequest.getSourceId()) && StringUtils.hasText(passwordLoginRequest.getUuid())) {
+            cloudExternalAuthSourceService.bindUserRelation(user.getUserId(), passwordLoginRequest.getSourceId(), passwordLoginRequest.getUuid());
+        }
+        if(user != null){
+            request.setAttribute(Constants.REQ_USER_ATTRIBUTE,user);
         }
         //创建一个token
-        PasswordAuthenticationToken authRequest = new PasswordAuthenticationToken(user.getUserId(),passwordLoginRequest.getPassword());
+        PasswordAuthenticationToken authRequest = new PasswordAuthenticationToken(user.getUserId(), passwordLoginRequest.getPassword());
         // 身份验证详细信息
         authRequest.setDetails(super.authenticationDetailsSource.buildDetails(request));
 

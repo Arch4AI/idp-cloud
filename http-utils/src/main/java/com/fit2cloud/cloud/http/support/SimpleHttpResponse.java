@@ -19,9 +19,9 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SimpleHttpResponse {
-	private boolean success;
-	private int code;
-	private Map<String, List<String>> headers;
-	private String body;
-	private String error;
+    private boolean success;
+    private int code;
+    private Map<String, List<String>> headers;
+    private String body;
+    private String error;
 }

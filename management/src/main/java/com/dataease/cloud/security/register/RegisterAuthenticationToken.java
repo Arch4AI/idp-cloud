@@ -8,6 +8,7 @@ import java.util.Collection;
 
 /**
  * 注册使用的Token
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/7 3:13 PM
@@ -19,7 +20,7 @@ public class RegisterAuthenticationToken extends AbstractAuthenticationToken {
     private Object principal;
     private Object credentials;
 
-    public RegisterAuthenticationToken(){
+    public RegisterAuthenticationToken() {
         super(null);
     }
 

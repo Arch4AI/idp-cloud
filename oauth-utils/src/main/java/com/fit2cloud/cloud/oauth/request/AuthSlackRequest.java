@@ -37,50 +37,50 @@ public class AuthSlackRequest extends AuthDefaultRequest {
     @Override
     protected AuthToken getAccessToken(AuthCallback authCallback) {
         HttpHeader header = new HttpHeader()
-            .add("Content-Type", "application/x-www-form-urlencoded");
+                .add("Content-Type", "application/x-www-form-urlencoded");
         String response = new HttpUtils(config.getHttpConfig())
-            .get(accessTokenUrl(authCallback.getCode()), null, header, false).getBody();
+                .get(accessTokenUrl(authCallback.getCode()), null, header, false).getBody();
         JSONObject accessTokenObject = JSONObject.parseObject(response);
         this.checkResponse(accessTokenObject);
         return AuthToken.builder()
-            .accessToken(accessTokenObject.getString("access_token"))
-            .scope(accessTokenObject.getString("scope"))
-            .tokenType(accessTokenObject.getString("token_type"))
-            .uid(accessTokenObject.getJSONObject("authed_user").getString("id"))
-            .build();
+                .accessToken(accessTokenObject.getString("access_token"))
+                .scope(accessTokenObject.getString("scope"))
+                .tokenType(accessTokenObject.getString("token_type"))
+                .uid(accessTokenObject.getJSONObject("authed_user").getString("id"))
+                .build();
     }
 
     @Override
     protected AuthUser getUserInfo(AuthToken authToken) {
         HttpHeader header = new HttpHeader()
-            .add("Content-Type", "application/x-www-form-urlencoded")
-            .add("Authorization", "Bearer ".concat(authToken.getAccessToken()));
+                .add("Content-Type", "application/x-www-form-urlencoded")
+                .add("Authorization", "Bearer ".concat(authToken.getAccessToken()));
         String userInfo = new HttpUtils(config.getHttpConfig())
-            .get(userInfoUrl(authToken), null, header, false).getBody();
+                .get(userInfoUrl(authToken), null, header, false).getBody();
         JSONObject object = JSONObject.parseObject(userInfo);
         this.checkResponse(object);
         JSONObject user = object.getJSONObject("user");
         JSONObject profile = user.getJSONObject("profile");
         return AuthUser.builder()
-            .rawUserInfo(user)
-            .uuid(user.getString("id"))
-            .username(user.getString("name"))
-            .nickname(user.getString("real_name"))
-            .avatar(profile.getString("image_original"))
-            .email(profile.getString("email"))
-            .gender(AuthUserGender.UNKNOWN)
-            .token(authToken)
-            .source(source.toString())
-            .build();
+                .rawUserInfo(user)
+                .uuid(user.getString("id"))
+                .username(user.getString("name"))
+                .nickname(user.getString("real_name"))
+                .avatar(profile.getString("image_original"))
+                .email(profile.getString("email"))
+                .gender(AuthUserGender.UNKNOWN)
+                .token(authToken)
+                .source(source.toString())
+                .build();
     }
 
     @Override
     public AuthResponse revoke(AuthToken authToken) {
         HttpHeader header = new HttpHeader()
-            .add("Content-Type", "application/x-www-form-urlencoded")
-            .add("Authorization", "Bearer ".concat(authToken.getAccessToken()));
+                .add("Content-Type", "application/x-www-form-urlencoded")
+                .add("Authorization", "Bearer ".concat(authToken.getAccessToken()));
         String userInfo = new HttpUtils(config.getHttpConfig())
-            .get(source.revoke(), null, header, false).getBody();
+                .get(source.revoke(), null, header, false).getBody();
         JSONObject object = JSONObject.parseObject(userInfo);
         this.checkResponse(object);
         // 返回1表示取消授权成功，否则失败
@@ -102,7 +102,7 @@ public class AuthSlackRequest extends AuthDefaultRequest {
                     //这个地方可能有问题
                     String[] objs = new String[array.size()];
                     array.toArray(objs);
-                    errorMsg += "; " + String.join(",",objs);
+                    errorMsg += "; " + String.join(",", objs);
                 }
             }
 
@@ -113,8 +113,8 @@ public class AuthSlackRequest extends AuthDefaultRequest {
     @Override
     public String userInfoUrl(AuthToken authToken) {
         return UrlBuilder.fromBaseUrl(source.userInfo())
-            .queryParam("user", authToken.getUid())
-            .build();
+                .queryParam("user", authToken.getUid())
+                .build();
     }
 
     /**
@@ -126,20 +126,20 @@ public class AuthSlackRequest extends AuthDefaultRequest {
     @Override
     public String authorize(String state) {
         return UrlBuilder.fromBaseUrl(source.authorize())
-            .queryParam("client_id", config.getClientId())
-            .queryParam("state", getRealState(state))
-            .queryParam("redirect_uri", config.getRedirectUri())
-            .queryParam("scope", this.getScopes(",", true, AuthScopeUtils.getDefaultScopes(AuthSlackScope.values())))
-            .build();
+                .queryParam("client_id", config.getClientId())
+                .queryParam("state", getRealState(state))
+                .queryParam("redirect_uri", config.getRedirectUri())
+                .queryParam("scope", this.getScopes(",", true, AuthScopeUtils.getDefaultScopes(AuthSlackScope.values())))
+                .build();
     }
 
     @Override
     protected String accessTokenUrl(String code) {
         return UrlBuilder.fromBaseUrl(source.accessToken())
-            .queryParam("code", code)
-            .queryParam("client_id", config.getClientId())
-            .queryParam("client_secret", config.getClientSecret())
-            .queryParam("redirect_uri", config.getRedirectUri())
-            .build();
+                .queryParam("code", code)
+                .queryParam("client_id", config.getClientId())
+                .queryParam("client_secret", config.getClientSecret())
+                .queryParam("redirect_uri", config.getRedirectUri())
+                .build();
     }
 }

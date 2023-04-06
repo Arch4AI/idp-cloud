@@ -1,5 +1,7 @@
 package com.dataease.cloud.test;
 
+import com.dataease.cloud.utils.AddressUtils;
+
 /**
  * [描述当前类是什么作用]
  *
@@ -9,7 +11,7 @@ package com.dataease.cloud.test;
  **/
 public class MyTest {
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
 //        ObjectMapper objectMapper = new ObjectMapper();
 //        List<Module> securityModules = SecurityJackson2Modules.getModules(MyTest.class.getClassLoader());
 //        objectMapper.registerModules(securityModules);
@@ -21,5 +23,6 @@ public class MyTest {
 //        System.out.println(objectMap.keySet().size());
 //        String puk = "panjiannneng";
 //        String prk = "shitouzhu";
+        System.out.println(AddressUtils.getRealAddressByIP("120.196.86.13"));
     }
 }

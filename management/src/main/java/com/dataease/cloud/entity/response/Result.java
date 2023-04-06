@@ -28,11 +28,12 @@ public class Result<T> implements Serializable {
 
     /**
      * 默认成功的返回
+     *
      * @param t
      * @param <T>
      * @return
      */
-    public static <T> Result<T> success(T t){
+    public static <T> Result<T> success(T t) {
         return (Result<T>) Result.builder()
                 .code(HttpStatus.OK.value())
                 .data(t)
@@ -41,52 +42,57 @@ public class Result<T> implements Serializable {
 
     /**
      * 默认的异常返回
+     *
      * @param e
      * @param <T>
      * @return
      */
-    public static <T> Result<T> error(Exception e){
+    public static <T> Result<T> error(Exception e) {
         return error(e.getLocalizedMessage());
     }
 
     /**
      * 默认的异常返回
+     *
      * @param e
      * @param <T>
      * @return
      */
-    public static <T> Result<T> error(Exception e,T t){
-        return error(HttpStatus.INTERNAL_SERVER_ERROR,e.getLocalizedMessage(),t);
+    public static <T> Result<T> error(Exception e, T t) {
+        return error(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage(), t);
     }
 
     /**
      * 默认的异常返回
+     *
      * @param e
      * @param <T>
      * @return
      */
-    public static <T> Result<T> error(HttpStatus httpStatus,Exception e,T t){
-        return error(httpStatus,e.getLocalizedMessage(),t);
+    public static <T> Result<T> error(HttpStatus httpStatus, Exception e, T t) {
+        return error(httpStatus, e.getLocalizedMessage(), t);
     }
 
     /**
      * 默认异常返回
+     *
      * @param message
      * @param <T>
      * @return
      */
-    public static <T> Result<T> error(String message){
-        return error(HttpStatus.INTERNAL_SERVER_ERROR,message);
+    public static <T> Result<T> error(String message) {
+        return error(HttpStatus.INTERNAL_SERVER_ERROR, message);
     }
 
     /**
      * 默认异常返回
+     *
      * @param status
      * @param message
      * @param <T>
      * @return
      */
-    public static <T> Result<T> error(HttpStatus status,String message){
+    public static <T> Result<T> error(HttpStatus status, String message) {
         return (Result<T>) Result.builder()
                 .code(status.value())
                 .msg(message)
@@ -95,12 +101,13 @@ public class Result<T> implements Serializable {
 
     /**
      * 默认异常返回
+     *
      * @param status
      * @param message
      * @param <T>
      * @return
      */
-    public static <T> Result<T> error(HttpStatus status,String message,T t){
+    public static <T> Result<T> error(HttpStatus status, String message, T t) {
         return (Result<T>) Result.builder()
                 .code(status.value())
                 .msg(message)

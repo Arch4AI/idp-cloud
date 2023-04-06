@@ -21,6 +21,7 @@ import java.util.Calendar;
 
 /**
  * 系统初始化
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/7 2:13 PM
@@ -33,14 +34,14 @@ public class SystemInit {
     private CloudExternalAuthSourceService cloudOauthProviderSettingService;
     private static final String DEFAULT_USER = "admin";
 
-    public SystemInit(CloudUserMapper cloudUserMapper, CloudUserRoleMapper cloudUserRoleMapper, CloudExternalAuthSourceService cloudOauthProviderSettingService){
+    public SystemInit(CloudUserMapper cloudUserMapper, CloudUserRoleMapper cloudUserRoleMapper, CloudExternalAuthSourceService cloudOauthProviderSettingService) {
         this.cloudUserMapper = cloudUserMapper;
         this.cloudUserRoleMapper = cloudUserRoleMapper;
         this.cloudOauthProviderSettingService = cloudOauthProviderSettingService;
     }
 
     @EventListener
-    public void initialize(ApplicationReadyEvent applicationReadyEvent){
+    public void initialize(ApplicationReadyEvent applicationReadyEvent) {
         // 创建admin
         initAdmin();
         // 创建一个keycloak的认证
@@ -50,9 +51,9 @@ public class SystemInit {
     /**
      * 初始化一个提供商
      */
-    private void initDefaultProvider(){
+    private void initDefaultProvider() {
         // 为空的时候才去注入
-        if(cloudOauthProviderSettingService.listAll().isEmpty()){
+        if (cloudOauthProviderSettingService.listAll().isEmpty()) {
             CloudExternalAuthSource setting = new CloudExternalAuthSource();
             setting.setId(IdUtil.randomUUID());
             setting.setDisplayName("MeterSphere Cloud Keycloak");
@@ -79,13 +80,13 @@ public class SystemInit {
                 .stream()
                 .findFirst()
                 .ifPresentOrElse(cloudUser -> {
-                    log.info("用户已经存在:{}",cloudUser);
-                },()->{
+                    log.info("用户已经存在:{}", cloudUser);
+                }, () -> {
                     // 添加用户
                     CloudUser cloudUser = new CloudUser();
                     cloudUser.setUserId(IdUtil.randomUUID());
                     cloudUser.setUserName(DEFAULT_USER);
-                    cloudUser.setEmail(DEFAULT_USER+"@cloud.io");
+                    cloudUser.setEmail(DEFAULT_USER + "@cloud.io");
                     cloudUser.setPhone("13168330000");
                     cloudUser.setEnabled(true);
                     cloudUser.setGender(GenderEnum.MAN.getKey());

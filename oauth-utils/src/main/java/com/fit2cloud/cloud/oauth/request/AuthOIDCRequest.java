@@ -23,10 +23,11 @@ import java.util.Map;
 
 /**
  * 支持OIDC协议的链接
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/13 2:29 PM
-**/
+ **/
 public class AuthOIDCRequest extends AuthDefaultRequest {
 
     public AuthOIDCRequest(AuthConfig config) {
@@ -48,8 +49,8 @@ public class AuthOIDCRequest extends AuthDefaultRequest {
         requetMap.put("redirect_uri", config.getRedirectUri());
         HttpHeader header = new HttpHeader();
         header.add(Constants.CONTENT_TYPE, "application/x-www-form-urlencoded;charset=UTF-8");
-        SimpleHttpResponse response = new HttpUtils(config.getHttpConfig()).post(config.getTokenUri(),requetMap,header,false).getHttpResponse();
-        if(response.getCode() == 200){
+        SimpleHttpResponse response = new HttpUtils(config.getHttpConfig()).post(config.getTokenUri(), requetMap, header, false).getHttpResponse();
+        if (response.getCode() == 200) {
             JSONObject jsonObject = JSON.parseObject(response.getBody());
             return AuthToken.builder()
                     .accessToken(jsonObject.getString("access_token"))
@@ -60,7 +61,7 @@ public class AuthOIDCRequest extends AuthDefaultRequest {
                     .idToken(jsonObject.getString("id_token"))
                     .scope(jsonObject.getString("scope"))
                     .build();
-        }else{
+        } else {
             throw new AuthException(AuthResponseStatus.ILLEGAL_TOKEN);
         }
     }
@@ -69,9 +70,9 @@ public class AuthOIDCRequest extends AuthDefaultRequest {
     protected AuthUser getUserInfo(AuthToken authToken) {
         //获取用户信息
         HttpHeader header = new HttpHeader();
-        header.add("Authorization","Bearer " + authToken.getAccessToken());
-        SimpleHttpResponse response = new HttpUtils(config.getHttpConfig()).get(config.getUserInfoUri(),null,header,false).getHttpResponse();
-        if(response.getCode() == 200){
+        header.add("Authorization", "Bearer " + authToken.getAccessToken());
+        SimpleHttpResponse response = new HttpUtils(config.getHttpConfig()).get(config.getUserInfoUri(), null, header, false).getHttpResponse();
+        if (response.getCode() == 200) {
             JSONObject jsonObject = JSONObject.parseObject(response.getBody());
             return AuthUser.builder()
                     .username(jsonObject.getString("preferred_username"))
@@ -82,7 +83,7 @@ public class AuthOIDCRequest extends AuthDefaultRequest {
                     .uuid(jsonObject.getString("sub"))
                     .rawUserInfo(jsonObject)
                     .build();
-        }else {
+        } else {
             throw new AuthException(AuthResponseStatus.ILLEGAL_TOKEN);
         }
     }

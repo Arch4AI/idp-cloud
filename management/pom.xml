@@ -157,6 +157,13 @@
             <artifactId>spring-security-oauth2-authorization-server</artifactId>
             <version>${oauth2-authorization-server.verison}</version>
         </dependency>
+
+        <!-- 获取请求对应的浏览器内容 -->
+        <dependency>
+            <groupId>eu.bitwalker</groupId>
+            <artifactId>UserAgentUtils</artifactId>
+            <version>1.21</version>
+        </dependency>
     </dependencies>
 
     <build>

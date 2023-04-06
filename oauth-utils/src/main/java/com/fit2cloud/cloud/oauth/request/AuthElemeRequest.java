@@ -54,11 +54,11 @@ public class AuthElemeRequest extends AuthDefaultRequest {
         this.checkResponse(object);
 
         return AuthToken.builder()
-            .accessToken(object.getString("access_token"))
-            .refreshToken(object.getString("refresh_token"))
-            .tokenType(object.getString("token_type"))
-            .expireIn(object.getIntValue("expires_in"))
-            .build();
+                .accessToken(object.getString("access_token"))
+                .refreshToken(object.getString("refresh_token"))
+                .tokenType(object.getString("token_type"))
+                .expireIn(object.getIntValue("expires_in"))
+                .build();
     }
 
     @Override
@@ -73,7 +73,7 @@ public class AuthElemeRequest extends AuthDefaultRequest {
         metasHashMap.put("app_key", config.getClientId());
         metasHashMap.put("timestamp", timestamp);
         String signature = GlobalAuthUtils.generateElemeSignature(config.getClientId(), config.getClientSecret(), timestamp, action, authToken
-            .getAccessToken(), parameters);
+                .getAccessToken(), parameters);
 
         String requestId = this.getRequestId();
 
@@ -102,14 +102,14 @@ public class AuthElemeRequest extends AuthDefaultRequest {
         JSONObject result = object.getJSONObject("result");
 
         return AuthUser.builder()
-            .rawUserInfo(result)
-            .uuid(result.getString("userId"))
-            .username(result.getString("userName"))
-            .nickname(result.getString("userName"))
-            .gender(AuthUserGender.UNKNOWN)
-            .token(authToken)
-            .source(source.toString())
-            .build();
+                .rawUserInfo(result)
+                .uuid(result.getString("userId"))
+                .username(result.getString("userName"))
+                .nickname(result.getString("userName"))
+                .gender(AuthUserGender.UNKNOWN)
+                .token(authToken)
+                .source(source.toString())
+                .build();
     }
 
     @Override
@@ -126,14 +126,14 @@ public class AuthElemeRequest extends AuthDefaultRequest {
         this.checkResponse(object);
 
         return AuthResponse.builder()
-            .code(AuthResponseStatus.SUCCESS.getCode())
-            .data(AuthToken.builder()
-                .accessToken(object.getString("access_token"))
-                .refreshToken(object.getString("refresh_token"))
-                .tokenType(object.getString("token_type"))
-                .expireIn(object.getIntValue("expires_in"))
-                .build())
-            .build();
+                .code(AuthResponseStatus.SUCCESS.getCode())
+                .data(AuthToken.builder()
+                        .accessToken(object.getString("access_token"))
+                        .refreshToken(object.getString("refresh_token"))
+                        .tokenType(object.getString("token_type"))
+                        .expireIn(object.getIntValue("expires_in"))
+                        .build())
+                .build();
     }
 
     @Override
