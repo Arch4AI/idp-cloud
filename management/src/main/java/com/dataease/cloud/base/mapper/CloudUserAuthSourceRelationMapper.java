@@ -3,10 +3,9 @@ package com.dataease.cloud.base.mapper;
 import com.dataease.cloud.base.domain.CloudUserAuthSourceRelation;
 import com.dataease.cloud.base.domain.CloudUserAuthSourceRelationExample;
 import com.dataease.cloud.base.domain.CloudUserAuthSourceRelationKey;
+import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 @Mapper
 public interface CloudUserAuthSourceRelationMapper {
