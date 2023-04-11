@@ -1,12 +1,20 @@
 package com.dataease.cloud.controller;
 
+import com.dataease.cloud.constant.Constants;
 import com.dataease.cloud.entity.response.Result;
-import com.dataease.cloud.service.CloudUserService;
+import com.dataease.cloud.exception.CloudException;
+import com.dataease.cloud.utils.CaptchaDto;
+import com.dataease.cloud.utils.SliderCaptchaUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * 匿名访问
@@ -21,29 +29,48 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class AnonymousController {
 
-//    @Resource
-//    private SessionRegistry sessionRegistry;
-
-//    @Resource
-//    private RedisSessionRepository sessionRepository;
-
     @Resource
-    private CloudUserService cloudUserService;
+    private StringRedisTemplate stringRedisTemplate;
 
-    @GetMapping("sessions")
-    public Result sessions() {
-//        List<Object> principals = sessionRegistry.getAllPrincipals();
-//        principals.stream().forEach(p->{
-//            // 一个用户可能有几个session
-//            List<SessionInformation> sessions = sessionRegistry.getAllSessions(p,false);
-//            //打印一下
-//            log.info("sessions:{}", JSON.toJSONString(sessions));
-//        });
-//        Set<String> keys = sessionRepository.getSessionRedisOperations().keys(RedisSessionRepository.DEFAULT_KEY_NAMESPACE + ":sessions*");
-//        keys.forEach(key->{
-//            Map<String, Object> entries = sessionRepository.getSessionRedisOperations().<String,Object>opsForHash().entries(key);
-//            log.info(JSON.toJSONString(entries));
-//        });
-        return Result.success("666");
+    /**
+     * 获取滑动验证码的信息
+     * @param captchaDto
+     * @return
+     */
+    @PostMapping("captcha")
+    public Result<CaptchaDto> getCaptchaImg(@RequestBody CaptchaDto captchaDto){
+        //获取验证码
+        CaptchaDto dto = SliderCaptchaUtils.getCaptcha(captchaDto);
+        //设置redis 五分钟到期
+        stringRedisTemplate.opsForValue().set(Constants.SLIDER_CAPTCHA_REDIS_KEY+dto.getTicket(),String.valueOf(dto.getBlockX()),5, TimeUnit.MINUTES);
+        //返回一个对象
+        CaptchaDto rt = new CaptchaDto();
+        rt.setTicket(dto.getTicket());
+        rt.setBlockWidth(dto.getBlockWidth());
+        rt.setBlockHeight(dto.getBlockHeight());
+        rt.setCanvasWidth(dto.getCanvasWidth());
+        rt.setCanvasHeight(dto.getCanvasHeight());
+        rt.setBlockSrc(dto.getBlockSrc());
+        rt.setCanvasSrc(dto.getCanvasSrc());
+        rt.setBlockY(dto.getBlockY());
+        return Result.success(rt);
     }
+
+    /**
+     * 校验滑动验证码
+     * @param request
+     * @return
+     */
+    @PostMapping("captcha/validate")
+    public Result validateCaptcha(@RequestBody CaptchaDto request){
+        if(!stringRedisTemplate.hasKey(request.getTicket()))
+            CloudException.throwException("Captcha Code not exist");
+        String redisValue = stringRedisTemplate.opsForValue().get(Constants.SLIDER_CAPTCHA_REDIS_KEY+request.getTicket());
+        if(Math.abs(Integer.valueOf(redisValue) - request.getBlockX()) > Constants.SLIDER_CAPTCHA_ALLOW_DEVIATION)
+            CloudException.throwException("Please slide to the specified position.");
+        //移除key
+        stringRedisTemplate.delete(Constants.SLIDER_CAPTCHA_REDIS_KEY+request.getTicket());
+        return Result.success("validate success");
+    }
+
 }

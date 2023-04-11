@@ -66,4 +66,14 @@ public class Constants {
      * 保存用户信息
      */
     public static final String REQ_USER_ATTRIBUTE="user_attr";
+
+    /**
+     * 滑动用的Key
+     */
+    public static final String SLIDER_CAPTCHA_REDIS_KEY = "slider_captcha_key::";
+
+    /**
+     * x轴允许的偏移值
+     */
+    public static final Integer SLIDER_CAPTCHA_ALLOW_DEVIATION = 5;
 }
