@@ -1,0 +1,133 @@
+{
+  "groups": [
+    {
+      "name": "cloud.common",
+      "type": "com.dataease.cloud.properties.CommonProperties",
+      "sourceType": "com.dataease.cloud.properties.CommonProperties"
+    },
+    {
+      "name": "cloud.sms",
+      "type": "com.dataease.cloud.properties.SmsProperties",
+      "sourceType": "com.dataease.cloud.properties.SmsProperties"
+    },
+    {
+      "name": "cloud.sms.aliyun",
+      "type": "com.dataease.cloud.properties.AliyunSmsProperties",
+      "sourceType": "com.dataease.cloud.properties.SmsProperties"
+    },
+    {
+      "name": "cloud.sms.tencent",
+      "type": "com.dataease.cloud.properties.TencentSmsProperties",
+      "sourceType": "com.dataease.cloud.properties.SmsProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "cloud.common.remember-token-key",
+      "type": "java.lang.String",
+      "description": "记住我的token-key",
+      "sourceType": "com.dataease.cloud.properties.CommonProperties",
+      "defaultValue": "idp_cloud"
+    },
+    {
+      "name": "cloud.common.session-time-out",
+      "type": "java.lang.Long",
+      "description": "会话超时时间",
+      "sourceType": "com.dataease.cloud.properties.CommonProperties",
+      "defaultValue": 86400
+    },
+    {
+      "name": "cloud.common.vite-addr",
+      "type": "java.lang.String",
+      "description": "前端地址",
+      "sourceType": "com.dataease.cloud.properties.CommonProperties",
+      "defaultValue": "http://127.0.0.1:4000"
+    },
+    {
+      "name": "cloud.common.address-enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否开启IP地址归属查询",
+      "sourceType": "com.dataease.cloud.properties.CommonProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "cloud.sms.provider",
+      "type": "com.dataease.cloud.constant.SmsProvider",
+      "description": "短信提供商",
+      "sourceType": "com.dataease.cloud.properties.SmsProperties",
+      "defaultValue": "aliyun"
+    },
+    {
+      "name": "cloud.sms.aliyun.region-id",
+      "type": "java.lang.String",
+      "description": "阿里云regionId",
+      "sourceType": "com.dataease.cloud.properties.AliyunSmsProperties"
+    },
+    {
+      "name": "cloud.sms.aliyun.access-key",
+      "type": "java.lang.String",
+      "description": "阿里云ak",
+      "sourceType": "com.dataease.cloud.properties.AliyunSmsProperties"
+    },
+    {
+      "name": "cloud.sms.aliyun.secret-key",
+      "type": "java.lang.String",
+      "description": "阿里云sk",
+      "sourceType": "com.dataease.cloud.properties.AliyunSmsProperties"
+    },
+    {
+      "name": "cloud.sms.aliyun.sign-name",
+      "type": "java.lang.String",
+      "description": "阿里云短信签名",
+      "sourceType": "com.dataease.cloud.properties.AliyunSmsProperties"
+    },
+    {
+      "name": "cloud.sms.aliyun.defalut-template",
+      "type": "java.lang.String",
+      "description": "阿里云默认短信模版",
+      "sourceType": "com.dataease.cloud.properties.AliyunSmsProperties"
+    },
+    {
+      "name": "cloud.sms.aliyun.template",
+      "type": "java.util.Map<com.dataease.cloud.constant.SmsSendType,java.lang.String>",
+      "description": "阿里云短信模版集合,需要与SmsSendType的枚举一致",
+      "sourceType": "com.dataease.cloud.properties.AliyunSmsProperties"
+    },
+    {
+      "name": "cloud.sms.tencent.access-key",
+      "type": "java.lang.String",
+      "description": "腾讯云ak",
+      "sourceType": "com.dataease.cloud.properties.TencentSmsProperties"
+    },
+    {
+      "name": "cloud.sms.tencent.secret-key",
+      "type": "java.lang.String",
+      "description": "腾讯云sk",
+      "sourceType": "com.dataease.cloud.properties.TencentSmsProperties"
+    },
+    {
+      "name": "cloud.sms.tencent.app-id",
+      "type": "java.lang.String",
+      "description": "腾讯云短信应用ID",
+      "sourceType": "com.dataease.cloud.properties.TencentSmsProperties"
+    },
+    {
+      "name": "cloud.sms.tencent.sign-name",
+      "type": "java.lang.String",
+      "description": "腾讯云短信签名",
+      "sourceType": "com.dataease.cloud.properties.TencentSmsProperties"
+    },
+    {
+      "name": "cloud.sms.tencent.defalut-template",
+      "type": "java.lang.String",
+      "description": "腾讯云短信默认模版",
+      "sourceType": "com.dataease.cloud.properties.TencentSmsProperties"
+    },
+    {
+      "name": "cloud.sms.tencent.template",
+      "type": "java.util.Map<com.dataease.cloud.constant.SmsSendType,java.lang.String>",
+      "description": "腾讯云短信模版集合,需要与SmsSendType的枚举一致",
+      "sourceType": "com.dataease.cloud.properties.TencentSmsProperties"
+    }
+  ]
+}

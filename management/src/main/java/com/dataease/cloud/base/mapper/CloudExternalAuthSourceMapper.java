@@ -2,9 +2,10 @@ package com.dataease.cloud.base.mapper;
 
 import com.dataease.cloud.base.domain.CloudExternalAuthSource;
 import com.dataease.cloud.base.domain.CloudExternalAuthSourceExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 @Mapper
 public interface CloudExternalAuthSourceMapper {

@@ -3,7 +3,6 @@ package com.dataease.cloud.security.handler;
 import com.dataease.cloud.base.domain.CloudUserLoginLog;
 import com.dataease.cloud.base.mapper.CloudUserLoginLogMapper;
 import com.dataease.cloud.entity.response.Result;
-import com.dataease.cloud.security.LocalUser;
 import com.dataease.cloud.service.SessionService;
 import com.dataease.cloud.utils.AddressUtils;
 import com.dataease.cloud.utils.CommonUtils;
@@ -54,8 +53,8 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
         // 获取认证信息里面的details
         log.info("authentication details:{}", jacksonObjectMapper.writeValueAsString(authentication.getDetails()));
 
-        if(authentication.getPrincipal() instanceof UserDetails){
-            UserDetails userDetails = (UserDetails)authentication.getPrincipal();
+        if (authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             CloudUserLoginLog cloudUserLoginLog = new CloudUserLoginLog();
             cloudUserLoginLog.setLoginTime(Calendar.getInstance().getTime());
             cloudUserLoginLog.setUserId(userDetails.getUsername());

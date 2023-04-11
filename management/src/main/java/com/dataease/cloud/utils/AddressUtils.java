@@ -1,7 +1,7 @@
 package com.dataease.cloud.utils;
 
 import com.alibaba.fastjson.JSONObject;
-import com.dataease.cloud.properties.IdpProperties;
+import com.dataease.cloud.properties.CommonProperties;
 import com.fit2cloud.cloud.http.HttpUtil;
 import com.fit2cloud.cloud.http.support.SimpleHttpResponse;
 import org.slf4j.Logger;
@@ -29,7 +29,7 @@ public class AddressUtils {
         if (IpUtils.internalIp(ip)) {
             return "局域网";
         }
-        if (IdpProperties.isAddressEnabled()) {
+        if (CommonProperties.isAddressEnabled()) {
             try {
                 SimpleHttpResponse simpleHttpResponse = HttpUtil.get(String.format("%s?ip=%s&json=true", IP_URL, ip));
                 String rspStr = simpleHttpResponse.getBody();

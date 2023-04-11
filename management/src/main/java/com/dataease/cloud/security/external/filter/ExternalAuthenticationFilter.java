@@ -133,8 +133,8 @@ public class ExternalAuthenticationFilter extends AbstractAuthenticationProcessi
             SecurityException.throwException("user not found!");
         if (!user.getEnabled())
             SecurityException.throwException("user has disabled!");
-        if(user != null){
-            request.setAttribute(Constants.REQ_USER_ATTRIBUTE,user);
+        if (user != null) {
+            request.setAttribute(Constants.REQ_USER_ATTRIBUTE, user);
         }
         //创建一个token 最好传入的是userId 否则直接在这里就报错出去
         ExternalAuthenticationToken authRequest = new ExternalAuthenticationToken(user.getUserId());

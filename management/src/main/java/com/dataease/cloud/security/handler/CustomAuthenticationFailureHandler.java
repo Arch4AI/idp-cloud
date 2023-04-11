@@ -62,8 +62,8 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
         cloudUserLoginLog.setLoginLocation(AddressUtils.getRealAddressByIP(cloudUserLoginLog.getIp()));//登录地址
 
         Object reqUser = request.getAttribute(Constants.REQ_USER_ATTRIBUTE);
-        if(!ObjectUtils.isEmpty(reqUser)){
-            if(reqUser instanceof LocalUser){
+        if (!ObjectUtils.isEmpty(reqUser)) {
+            if (reqUser instanceof LocalUser) {
                 cloudUserLoginLog.setUserId(((LocalUser) reqUser).getUserId());
             }
         }

@@ -65,7 +65,7 @@ public class Constants {
     /**
      * 保存用户信息
      */
-    public static final String REQ_USER_ATTRIBUTE="user_attr";
+    public static final String REQ_USER_ATTRIBUTE = "user_attr";
 
     /**
      * 滑动用的Key

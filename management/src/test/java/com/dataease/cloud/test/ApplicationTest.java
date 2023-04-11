@@ -2,14 +2,14 @@ package com.dataease.cloud.test;
 
 import cn.hutool.core.util.IdUtil;
 import com.dataease.cloud.base.domain.CloudExternalAuthSource;
+import com.dataease.cloud.properties.AliyunSmsProperties;
+import com.dataease.cloud.properties.SmsProperties;
 import com.dataease.cloud.service.CloudExternalAuthSourceService;
 import com.dataease.cloud.utils.GlobalConfigurations;
 import com.fit2cloud.cloud.oauth.config.AuthDefaultSource;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.Calendar;
 
 /**
  * [描述当前类是什么作用]
@@ -24,13 +24,16 @@ public class ApplicationTest {
     @Resource
     private CloudExternalAuthSourceService cloudOauthProviderSettingService;
 
+    @Resource
+    private SmsProperties smsProperties;
+
     @Test
     public void testGetModile() {
         System.out.println(GlobalConfigurations.isReleaseMode());
     }
 
     @Test
-    public void addGithub(){
+    public void addGithub() {
         CloudExternalAuthSource cloudExternalAuthSource = new CloudExternalAuthSource();
         cloudExternalAuthSource.setId(IdUtil.randomUUID());
         cloudExternalAuthSource.setDisplayName("GitHub");
@@ -43,6 +46,20 @@ public class ApplicationTest {
         cloudOauthProviderSettingService.add(cloudExternalAuthSource);
     }
 
+
+    @Test
+    public void getSmsConfig() {
+//       Map<SmsSendType,String> map =  smsProperties.getAliyun().getTemplate();
+//       if(!map.isEmpty()){
+//          String value = map.get(SmsSendType.forget);
+//          System.out.println(value);
+//       }
+        AliyunSmsProperties aliyunSmsProperties = smsProperties.getAliyun();
+        if (aliyunSmsProperties == null)
+            System.out.println("is null");
+        else
+            System.out.println("not null");
+    }
 
 
 }

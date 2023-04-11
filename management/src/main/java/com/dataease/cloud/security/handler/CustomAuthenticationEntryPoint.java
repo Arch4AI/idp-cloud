@@ -1,7 +1,7 @@
 package com.dataease.cloud.security.handler;
 
 import com.dataease.cloud.entity.response.Result;
-import com.dataease.cloud.properties.IdpProperties;
+import com.dataease.cloud.properties.CommonProperties;
 import com.dataease.cloud.utils.GlobalConfigurations;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
@@ -41,7 +41,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     private AuthorizationServerSettings authorizationServerSettings;
 
     @Resource
-    private IdpProperties idpProperties;
+    private CommonProperties idpProperties;
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {

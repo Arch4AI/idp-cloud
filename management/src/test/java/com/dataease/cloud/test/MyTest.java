@@ -1,6 +1,14 @@
 package com.dataease.cloud.test;
 
-import com.dataease.cloud.utils.AddressUtils;
+import org.mybatis.generator.api.MyBatisGenerator;
+import org.mybatis.generator.api.ProgressCallback;
+import org.mybatis.generator.config.Configuration;
+import org.mybatis.generator.config.xml.ConfigurationParser;
+import org.mybatis.generator.internal.DefaultShellCallback;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * [描述当前类是什么作用]
@@ -23,6 +31,24 @@ public class MyTest {
 //        System.out.println(objectMap.keySet().size());
 //        String puk = "panjiannneng";
 //        String prk = "shitouzhu";
-        System.out.println(AddressUtils.getRealAddressByIP("120.196.86.13"));
+//        System.out.println(AddressUtils.getRealAddressByIP("120.196.86.13"));
+        generator();
+    }
+
+    private static void generator() throws Exception {
+        File configFile = new File("/Users/liuchangchang/Code/cloud/idp-cloud/management/src/main/resources/mybatis-generator.xml");
+        List<String> warnings = new ArrayList<>();
+        ConfigurationParser cp = new ConfigurationParser(warnings);
+        Configuration config = cp.parseConfiguration(configFile);
+        DefaultShellCallback callback = new DefaultShellCallback(true);
+        MyBatisGenerator myBatisGenerator = new MyBatisGenerator(config, callback, warnings);
+        myBatisGenerator.generate(new ProgressCallback() {
+            @Override
+            public void done() {
+                System.out.println("aaaa");
+                ProgressCallback.super.done();
+            }
+        });
+        System.out.println("代码生成完毕>>>>>>>>>>>>");
     }
 }

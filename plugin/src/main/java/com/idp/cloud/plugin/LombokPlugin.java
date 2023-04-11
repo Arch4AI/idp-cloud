@@ -38,7 +38,7 @@ public class LombokPlugin extends PluginAdapter {
         topLevelClass.addAnnotation("@Data");
         topLevelClass.addJavaDocLine("/**");
         topLevelClass.addJavaDocLine("* 表说明:");
-        topLevelClass.addJavaDocLine("*  "+ introspectedTable.getRemarks());
+        topLevelClass.addJavaDocLine("*  " + introspectedTable.getRemarks());
         topLevelClass.addJavaDocLine("* ");
         topLevelClass.addJavaDocLine("* 表名:" + introspectedTable.getTableConfiguration().getTableName());
         topLevelClass.addJavaDocLine("* Date: " + this.date2Str(new Date()));
@@ -53,7 +53,7 @@ public class LombokPlugin extends PluginAdapter {
         topLevelClass.addJavaDocLine("/**");
         topLevelClass.addJavaDocLine("* 大字段实体");
         topLevelClass.addJavaDocLine("* 表说明:");
-        topLevelClass.addJavaDocLine("*  "+ introspectedTable.getRemarks());
+        topLevelClass.addJavaDocLine("*  " + introspectedTable.getRemarks());
         topLevelClass.addJavaDocLine("* ");
         topLevelClass.addJavaDocLine("* 表名:" + introspectedTable.getTableConfiguration().getTableName());
         topLevelClass.addJavaDocLine("* Date: " + this.date2Str(new Date()));
@@ -68,7 +68,7 @@ public class LombokPlugin extends PluginAdapter {
         topLevelClass.addJavaDocLine("/**");
         topLevelClass.addJavaDocLine("* 表主键对象");
         topLevelClass.addJavaDocLine("* 表说明:");
-        topLevelClass.addJavaDocLine("*  "+ introspectedTable.getRemarks());
+        topLevelClass.addJavaDocLine("*  " + introspectedTable.getRemarks());
         topLevelClass.addJavaDocLine("* ");
         topLevelClass.addJavaDocLine("* 表名:" + introspectedTable.getTableConfiguration().getTableName());
         topLevelClass.addJavaDocLine("* Date: " + this.date2Str(new Date()));
@@ -81,18 +81,17 @@ public class LombokPlugin extends PluginAdapter {
         CommentGenerator commentGenerator = context.getCommentGenerator();
         boolean suppressAllComments = isTrue(properties.getProperty(PropertyRegistry.COMMENT_GENERATOR_SUPPRESS_ALL_COMMENTS));
         // 如果没有开通且支持自定义内容的时候就set进去
-        if(commentGenerator == null || suppressAllComments){
+        if (commentGenerator == null || suppressAllComments) {
             field.addJavaDocLine("/**");
             field.addJavaDocLine("* 字段说明:");
             field.addJavaDocLine("* " + introspectedColumn.getRemarks());
             field.addJavaDocLine("* ");
-            field.addJavaDocLine("* 对应表中的列: "+introspectedTable.getTableConfiguration().getTableName()+"."+introspectedColumn.getActualColumnName());
+            field.addJavaDocLine("* 对应表中的列: " + introspectedTable.getTableConfiguration().getTableName() + "." + introspectedColumn.getActualColumnName());
             field.addJavaDocLine("* ");
             field.addJavaDocLine("*/ ");
         }
         return true;
     }
-
 
 
     @Override

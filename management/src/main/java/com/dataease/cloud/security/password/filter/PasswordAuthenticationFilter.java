@@ -92,8 +92,8 @@ public class PasswordAuthenticationFilter extends AbstractAuthenticationProcessi
         if (StringUtils.hasText(passwordLoginRequest.getSourceId()) && StringUtils.hasText(passwordLoginRequest.getUuid())) {
             cloudExternalAuthSourceService.bindUserRelation(user.getUserId(), passwordLoginRequest.getSourceId(), passwordLoginRequest.getUuid());
         }
-        if(user != null){
-            request.setAttribute(Constants.REQ_USER_ATTRIBUTE,user);
+        if (user != null) {
+            request.setAttribute(Constants.REQ_USER_ATTRIBUTE, user);
         }
         //创建一个token
         PasswordAuthenticationToken authRequest = new PasswordAuthenticationToken(user.getUserId(), passwordLoginRequest.getPassword());

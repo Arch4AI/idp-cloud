@@ -105,8 +105,8 @@ public class PhoneAuthenticationFilter extends AbstractAuthenticationProcessingF
         if (StringUtils.hasText(phoneLoginRequest.getSourceId()) && StringUtils.hasText(phoneLoginRequest.getUuid())) {
             cloudExternalAuthSourceService.bindUserRelation(user.getUserId(), phoneLoginRequest.getSourceId(), phoneLoginRequest.getUuid());
         }
-        if(user != null){
-            request.setAttribute(Constants.REQ_USER_ATTRIBUTE,user);
+        if (user != null) {
+            request.setAttribute(Constants.REQ_USER_ATTRIBUTE, user);
         }
         //创建一个token
         PhoneAuthenticationToken authRequest = new PhoneAuthenticationToken(user.getUserId());

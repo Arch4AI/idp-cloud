@@ -18,10 +18,11 @@ import java.util.Random;
 
 /**
  * 滑块验证码
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/4/10 4:19 PM
-**/
+ **/
 @Slf4j
 public class SliderCaptchaUtils {
 

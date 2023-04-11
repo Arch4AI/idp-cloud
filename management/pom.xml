@@ -18,6 +18,12 @@
         <mysql-connector.version>8.0.32</mysql-connector.version>
         <hutool.version>5.8.14</hutool.version>
         <oauth2-authorization-server.verison>1.0.1</oauth2-authorization-server.verison>
+        <aliyun-sdk-core.version>4.6.3</aliyun-sdk-core.version>
+        <mybatis.version>3.0.0</mybatis.version>
+        <pagehelper.version>1.4.6</pagehelper.version>
+        <user-agent.version>1.21</user-agent.version>
+        <mybatis-generator.version>1.4.2</mybatis-generator.version>
+        <tencent-cloud-sdk.version>3.1.732</tencent-cloud-sdk.version>
     </properties>
 
     <dependencies>
@@ -57,13 +63,13 @@
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>3.0.0</version>
+            <version>${mybatis.version}</version>
         </dependency>
         <!-- mybatis分页插件 -->
         <dependency>
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper-spring-boot-starter</artifactId>
-            <version>1.4.6</version>
+            <version>${pagehelper.version}</version>
         </dependency>
 
         <!-- 加入spring redis session -->
@@ -127,7 +133,7 @@
         <dependency>
             <groupId>org.mybatis.generator</groupId>
             <artifactId>mybatis-generator-core</artifactId>
-            <version>1.4.2</version>
+            <version>${mybatis-generator.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -162,12 +168,44 @@
         <dependency>
             <groupId>eu.bitwalker</groupId>
             <artifactId>UserAgentUtils</artifactId>
-            <version>1.21</version>
+            <version>${user-agent.version}</version>
+        </dependency>
+
+        <!-- 阿里云基本sdk -->
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-core</artifactId>
+            <version>${aliyun-sdk-core.version}</version>
+        </dependency>
+
+        <!-- 腾讯云sdk -->
+        <dependency>
+            <groupId>com.tencentcloudapi</groupId>
+            <artifactId>tencentcloud-sdk-java</artifactId>
+            <version>${tencent-cloud-sdk.version}</version>
         </dependency>
     </dependencies>
 
     <build>
         <finalName>dataease-cloud-management</finalName>
+        <!-- 资源管理器 -->
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -190,6 +228,27 @@
                     <execution>
                         <goals>
                             <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>properties-replace</id>
+                        <phase>prepare-package</phase>
+                        <configuration>
+                            <target>
+                                <move file="${project.build.directory}/classes/properties/release/global.properties"
+                                      overwrite="true"
+                                      tofile="${project.build.directory}/classes/properties/global.properties"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
                         </goals>
                     </execution>
                 </executions>

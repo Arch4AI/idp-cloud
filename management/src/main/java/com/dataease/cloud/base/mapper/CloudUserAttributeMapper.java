@@ -3,9 +3,10 @@ package com.dataease.cloud.base.mapper;
 import com.dataease.cloud.base.domain.CloudUserAttribute;
 import com.dataease.cloud.base.domain.CloudUserAttributeExample;
 import com.dataease.cloud.base.domain.CloudUserAttributeKey;
-import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 @Mapper
 public interface CloudUserAttributeMapper {

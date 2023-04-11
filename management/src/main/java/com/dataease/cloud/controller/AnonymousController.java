@@ -7,7 +7,6 @@ import com.dataease.cloud.utils.CaptchaDto;
 import com.dataease.cloud.utils.SliderCaptchaUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,15 +33,16 @@ public class AnonymousController {
 
     /**
      * 获取滑动验证码的信息
+     *
      * @param captchaDto
      * @return
      */
     @PostMapping("captcha")
-    public Result<CaptchaDto> getCaptchaImg(@RequestBody CaptchaDto captchaDto){
+    public Result<CaptchaDto> getCaptchaImg(@RequestBody CaptchaDto captchaDto) {
         //获取验证码
         CaptchaDto dto = SliderCaptchaUtils.getCaptcha(captchaDto);
         //设置redis 五分钟到期
-        stringRedisTemplate.opsForValue().set(Constants.SLIDER_CAPTCHA_REDIS_KEY+dto.getTicket(),String.valueOf(dto.getBlockX()),5, TimeUnit.MINUTES);
+        stringRedisTemplate.opsForValue().set(Constants.SLIDER_CAPTCHA_REDIS_KEY + dto.getTicket(), String.valueOf(dto.getBlockX()), 5, TimeUnit.MINUTES);
         //返回一个对象
         CaptchaDto rt = new CaptchaDto();
         rt.setTicket(dto.getTicket());
@@ -58,18 +58,19 @@ public class AnonymousController {
 
     /**
      * 校验滑动验证码
+     *
      * @param request
      * @return
      */
     @PostMapping("captcha/validate")
-    public Result validateCaptcha(@RequestBody CaptchaDto request){
-        if(!stringRedisTemplate.hasKey(request.getTicket()))
+    public Result validateCaptcha(@RequestBody CaptchaDto request) {
+        if (!stringRedisTemplate.hasKey(request.getTicket()))
             CloudException.throwException("Captcha Code not exist");
-        String redisValue = stringRedisTemplate.opsForValue().get(Constants.SLIDER_CAPTCHA_REDIS_KEY+request.getTicket());
-        if(Math.abs(Integer.valueOf(redisValue) - request.getBlockX()) > Constants.SLIDER_CAPTCHA_ALLOW_DEVIATION)
+        String redisValue = stringRedisTemplate.opsForValue().get(Constants.SLIDER_CAPTCHA_REDIS_KEY + request.getTicket());
+        if (Math.abs(Integer.valueOf(redisValue) - request.getBlockX()) > Constants.SLIDER_CAPTCHA_ALLOW_DEVIATION)
             CloudException.throwException("Please slide to the specified position.");
         //移除key
-        stringRedisTemplate.delete(Constants.SLIDER_CAPTCHA_REDIS_KEY+request.getTicket());
+        stringRedisTemplate.delete(Constants.SLIDER_CAPTCHA_REDIS_KEY + request.getTicket());
         return Result.success("validate success");
     }
 
