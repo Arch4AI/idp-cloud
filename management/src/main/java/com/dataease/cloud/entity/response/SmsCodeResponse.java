@@ -20,6 +20,5 @@ import java.util.Date;
 @NoArgsConstructor
 public class SmsCodeResponse {
     private String phone;
-    private String code;
     private Date expireTime;//到期时间
 }

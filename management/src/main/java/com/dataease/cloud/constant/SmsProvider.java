@@ -15,5 +15,5 @@ public enum SmsProvider {
     /**
      * 腾讯云短信
      */
-    tencent
+    tencent;
 }

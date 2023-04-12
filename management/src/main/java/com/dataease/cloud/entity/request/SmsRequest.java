@@ -1,5 +1,7 @@
 package com.dataease.cloud.entity.request;
 
+import com.dataease.cloud.constant.SmsSendType;
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -14,4 +16,5 @@ public class SmsRequest {
 
     private String phone;
     private String code;
+    private SmsSendType sendType = SmsSendType.login;
 }

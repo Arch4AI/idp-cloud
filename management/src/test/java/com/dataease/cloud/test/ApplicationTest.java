@@ -5,14 +5,16 @@ import com.dataease.cloud.base.domain.CloudExternalAuthSource;
 import com.dataease.cloud.properties.AliyunSmsProperties;
 import com.dataease.cloud.properties.SmsProperties;
 import com.dataease.cloud.service.CloudExternalAuthSourceService;
+import com.dataease.cloud.service.sms.MessageService;
 import com.dataease.cloud.utils.GlobalConfigurations;
 import com.fit2cloud.cloud.oauth.config.AuthDefaultSource;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 /**
- * [描述当前类是什么作用]
+ * 单元测试类
  *
  * @author ShrChang.Liu
  * @version v1.0
@@ -26,6 +28,10 @@ public class ApplicationTest {
 
     @Resource
     private SmsProperties smsProperties;
+
+//    @Autowired(required = false)
+    @Resource
+    private MessageService messageService;
 
     @Test
     public void testGetModile() {
@@ -49,16 +55,10 @@ public class ApplicationTest {
 
     @Test
     public void getSmsConfig() {
-//       Map<SmsSendType,String> map =  smsProperties.getAliyun().getTemplate();
-//       if(!map.isEmpty()){
-//          String value = map.get(SmsSendType.forget);
-//          System.out.println(value);
-//       }
-        AliyunSmsProperties aliyunSmsProperties = smsProperties.getAliyun();
-        if (aliyunSmsProperties == null)
-            System.out.println("is null");
-        else
-            System.out.println("not null");
+        if(messageService == null)
+            System.out.println("message not init");
+        String simpleName = messageService.getClass().getSimpleName();
+        System.out.println("message provider:"+simpleName);
     }
 
 

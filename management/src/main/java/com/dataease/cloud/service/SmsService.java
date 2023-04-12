@@ -6,6 +6,8 @@ import com.dataease.cloud.constant.Constants;
 import com.dataease.cloud.entity.request.SmsRequest;
 import com.dataease.cloud.entity.response.SmsCodeResponse;
 import com.dataease.cloud.exception.CloudException;
+import com.dataease.cloud.service.sms.MessageService;
+import com.dataease.cloud.utils.GlobalConfigurations;
 import jakarta.annotation.Resource;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,9 @@ public class SmsService {
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
+    @Resource
+    private MessageService messageService;
+
     /**
      * 发送短信
      * 可能这里到时会有第三方的captcha 需要校验 暂时待定
@@ -38,11 +43,11 @@ public class SmsService {
             CloudException.throwException("Code already exist");
         String code = RandomUtil.randomNumbers(6);
         Date offsetMinute = DateUtil.offsetMinute(new Date(), Constants.SMS_CODE_EXPIRE_TIME);
-        //TODO 短信发送待定
+        //发送短信
+        messageService.sendCode(smsRequest.getSendType(), smsRequest.getPhone(), code);
         stringRedisTemplate.opsForValue().set(smsRequest.getPhone(), code, Constants.SMS_CODE_EXPIRE_TIME, TimeUnit.MINUTES);
         return SmsCodeResponse.builder()
                 .phone(smsRequest.getPhone())
-                .code(code)
                 .expireTime(offsetMinute)
                 .build();
     }

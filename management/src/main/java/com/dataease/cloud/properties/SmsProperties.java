@@ -20,7 +20,7 @@ public class SmsProperties {
     /**
      * 短信类型
      */
-    private SmsProvider provider = SmsProvider.aliyun;
+    private SmsProvider provider;
 
     /**
      * 阿里云短信的配置

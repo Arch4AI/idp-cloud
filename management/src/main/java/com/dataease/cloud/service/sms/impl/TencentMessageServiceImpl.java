@@ -14,6 +14,7 @@ import com.tencentcloudapi.sms.v20210111.models.SendSmsResponse;
 import com.tencentcloudapi.sms.v20210111.models.SendStatus;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,8 +26,9 @@ import org.springframework.stereotype.Service;
  * @version v1.0
  * @date 2023/4/11 4:19 PM
  **/
-@Service
 @Slf4j
+@Service
+@ConditionalOnProperty(prefix = "cloud.sms",name = "provider",havingValue = "tencent")
 public class TencentMessageServiceImpl implements MessageService {
 
     @Resource

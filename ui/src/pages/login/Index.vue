@@ -146,7 +146,7 @@ const onSuccess = (times: number) => {
   sendSms({ phone: phoneFormData.phone })
     .then((res) => {
       if (res.code == 200) {
-        phoneFormData.code = res.data.code
+        // phoneFormData.code = res.data.code
         //开启倒计时
         showIntervel.value = true
         //去发送一个短信验证码 并且后面的那个发送的时间需要改成一个倒计时
@@ -230,22 +230,10 @@ const getUri: Function = (id: string) => {
         <t-tab-panel value="phone">
           <template #label> 验证码登录 </template>
           <p style="padding: 15px">
-            <t-form
-              class="form"
-              ref="phoneForm"
-              :data="phoneFormData"
-              :rules="phoneRules"
-              :colon="true"
-              :label-width="0"
-              @submit="loginPhone"
-              @reset="onReset"
-            >
+            <t-form class="form" ref="phoneForm" :data="phoneFormData" :rules="phoneRules" :colon="true" :label-width="0"
+              @submit="loginPhone" @reset="onReset">
               <t-form-item name="phone">
-                <t-input
-                  v-model="phoneFormData.phone"
-                  clearable
-                  placeholder="请输入手机号"
-                >
+                <t-input v-model="phoneFormData.phone" clearable placeholder="请输入手机号">
                   <template #prefix-icon>
                     <t-icon name="mobile" />
                   </template>
@@ -253,34 +241,17 @@ const getUri: Function = (id: string) => {
               </t-form-item>
 
               <t-form-item v-show="showVerify">
-                <slide-verify
-                  ref="block"
-                  slider-text="向右滑动"
-                  w="400"
-                  :imgs="imgs"
-                  accuracy="5"
-                  @again="onAgain"
-                  @success="onSuccess"
-                  @fail="onFail"
-                ></slide-verify>
+                <slide-verify ref="block" slider-text="向右滑动" w="400" :imgs="imgs" accuracy="5" @again="onAgain"
+                  @success="onSuccess" @fail="onFail"></slide-verify>
               </t-form-item>
 
               <t-form-item name="code" v-show="!showVerify">
-                <t-input
-                  class="phoneCode"
-                  v-model="phoneFormData.code"
-                  placeholder="请输入验证码"
-                >
+                <t-input class="phoneCode" v-model="phoneFormData.code" placeholder="请输入验证码">
                   <template #prefix-icon>
                     <t-icon name="mail" />
                   </template>
                   <template #suffix>
-                    <t-button
-                      class="send-btn"
-                      :disabled="showSendBtn"
-                      @click="showVerifyCode"
-                      >{{ text }}</t-button
-                    >
+                    <t-button class="send-btn" :disabled="showSendBtn" @click="showVerifyCode">{{ text }}</t-button>
                   </template>
                 </t-input>
               </t-form-item>
@@ -294,22 +265,10 @@ const getUri: Function = (id: string) => {
         <t-tab-panel value="password">
           <template #label> 密码登录 </template>
           <p style="padding: 15px">
-            <t-form
-              ref="form"
-              class="form"
-              :data="formData"
-              :colon="true"
-              :rules="passwordRules"
-              :label-width="0"
-              @reset="onReset"
-              @submit="loginPassword"
-            >
+            <t-form ref="form" class="form" :data="formData" :colon="true" :rules="passwordRules" :label-width="0"
+              @reset="onReset" @submit="loginPassword">
               <t-form-item name="userName">
-                <t-input
-                  v-model="formData.userName"
-                  clearable
-                  placeholder="请输入账户名/手机号码/邮箱地址"
-                >
+                <t-input v-model="formData.userName" clearable placeholder="请输入账户名/手机号码/邮箱地址">
                   <template #prefix-icon>
                     <t-icon name="user" />
                   </template>
@@ -317,12 +276,7 @@ const getUri: Function = (id: string) => {
               </t-form-item>
 
               <t-form-item name="password">
-                <t-input
-                  v-model="formData.password"
-                  type="password"
-                  clearable
-                  placeholder="请输入密码"
-                >
+                <t-input v-model="formData.password" type="password" clearable placeholder="请输入密码">
                   <template #prefix-icon>
                     <t-icon name="lock-on" />
                   </template>
@@ -339,20 +293,14 @@ const getUri: Function = (id: string) => {
       <div>
         <div class="external_login_card">
           <div v-for="p in providers" :key="p.id" class="external_login_div">
-            <external-login-icon
-              @click="getUri(p.id)"
-              :icon="p.providerIcon"
-              :display-name="p.displayName"
-              :type="p.clientType"
-            />
+            <external-login-icon @click="getUri(p.id)" :icon="p.providerIcon" :display-name="p.displayName"
+              :type="p.clientType" />
           </div>
         </div>
       </div>
       <div class="link">
         <t-space>
-          <t-link theme="primary" block
-            ><router-link to="register">没有账号?点击注册</router-link></t-link
-          >
+          <t-link theme="primary" block><router-link to="register">没有账号?点击注册</router-link></t-link>
         </t-space>
       </div>
     </div>
@@ -366,8 +314,7 @@ const getUri: Function = (id: string) => {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: url('@/assets/images/background-image.jpg') no-repeat center
-    center fixed;
+  background: url('@/assets/images/background-image.jpg') no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -397,7 +344,7 @@ const getUri: Function = (id: string) => {
   width: 100%;
 }
 
-.login-container >>> .t-tabs__nav-scroll {
+.login-container>>>.t-tabs__nav-scroll {
   justify-content: center !important;
 }
 

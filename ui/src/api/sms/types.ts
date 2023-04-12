@@ -6,7 +6,7 @@ interface SmsSendReq {
 // 发送短信回复的
 interface SmsSendResp {
   phone: string
-  code: string
+  // code: string
   expireTime: Date
 }
 

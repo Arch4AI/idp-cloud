@@ -54,8 +54,7 @@
       "name": "cloud.sms.provider",
       "type": "com.dataease.cloud.constant.SmsProvider",
       "description": "短信提供商",
-      "sourceType": "com.dataease.cloud.properties.SmsProperties",
-      "defaultValue": "aliyun"
+      "sourceType": "com.dataease.cloud.properties.SmsProperties"
     },
     {
       "name": "cloud.sms.aliyun.region-id",

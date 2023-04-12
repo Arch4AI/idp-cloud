@@ -17,6 +17,7 @@ import com.dataease.cloud.properties.SmsProperties;
 import com.dataease.cloud.service.sms.MessageService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -28,8 +29,9 @@ import org.springframework.util.StringUtils;
  * @version v1.0
  * @date 2023/4/11 3:00 PM
  **/
-@Service
 @Slf4j
+@Service
+@ConditionalOnProperty(prefix = "cloud.sms",name = "provider",havingValue = "aliyun")
 public class AliyunMessageServiceImpl implements MessageService {
 
     @Resource
