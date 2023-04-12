@@ -9,7 +9,7 @@ import com.dataease.cloud.security.exception.SecurityException;
 import com.dataease.cloud.security.external.ExternalAuthenticationToken;
 import com.dataease.cloud.security.external.request.ExternalSecurityRequest;
 import com.dataease.cloud.security.external.response.ExternalSecurityResponse;
-import com.dataease.cloud.service.CloudExternalAuthSourceService;
+import com.dataease.cloud.service.ExternalAuthSourceService;
 import com.dataease.cloud.utils.ObjectMapperUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fit2cloud.cloud.oauth.model.AuthUser;
@@ -47,15 +47,15 @@ public class ExternalAuthenticationFilter extends AbstractAuthenticationProcessi
 
     private static final String DEFAULT_FILTER_PROCESSES_URL = Constants.EXTERNAL_LOGIN_URI;
 
-    private CloudExternalAuthSourceService cloudExternalAuthSourceService;
+    private ExternalAuthSourceService externalAuthSourceService;
 
     public ExternalAuthenticationFilter() {
         super(new AntPathRequestMatcher(DEFAULT_FILTER_PROCESSES_URL, HttpMethod.POST.name()));
     }
 
-    public ExternalAuthenticationFilter(AuthenticationManager authenticationManager, CloudExternalAuthSourceService cloudExternalAuthSourceService) {
+    public ExternalAuthenticationFilter(AuthenticationManager authenticationManager, ExternalAuthSourceService externalAuthSourceService) {
         super(new AntPathRequestMatcher(DEFAULT_FILTER_PROCESSES_URL, HttpMethod.POST.name()), authenticationManager);
-        this.cloudExternalAuthSourceService = cloudExternalAuthSourceService;
+        this.externalAuthSourceService = externalAuthSourceService;
     }
 
 
@@ -83,7 +83,7 @@ public class ExternalAuthenticationFilter extends AbstractAuthenticationProcessi
         if (externalSecurityRequest == null)
             SecurityException.throwException("Authentication parameter not supported!");
         //获取第三方用户
-        AuthUser authUser = cloudExternalAuthSourceService.getAuthUser(externalSecurityRequest);
+        AuthUser authUser = externalAuthSourceService.getAuthUser(externalSecurityRequest);
         //根据第三方用户是否已经绑定了用户本身
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         //说明已经登录了开始绑定第三方用户
@@ -91,7 +91,7 @@ public class ExternalAuthenticationFilter extends AbstractAuthenticationProcessi
             //判断这个用户是不是已经被绑定了 绑定了就不能在被绑定
             //否则绑定这个用户
             try {
-                cloudExternalAuthSourceService.bindUser(externalSecurityRequest.getState(), authUser);
+                externalAuthSourceService.bindUser(externalSecurityRequest.getState(), authUser);
                 response.setCharacterEncoding(StandardCharsets.UTF_8.name());
                 response.setContentType(MediaType.APPLICATION_JSON.toString());
                 PrintWriter out = response.getWriter();
@@ -111,10 +111,10 @@ public class ExternalAuthenticationFilter extends AbstractAuthenticationProcessi
         //下面就是登录的逻辑的 判断是否已经绑定了用户 绑定了用户直接返回用户直接登录
         CloudUser user = null;
         try {
-            user = cloudExternalAuthSourceService.loginUser(authUser, externalSecurityRequest.getState());
+            user = externalAuthSourceService.loginUser(authUser, externalSecurityRequest.getState());
         } catch (Exception e) {
             // 如果是退出了也保存一下这个信息
-            cloudExternalAuthSourceService.saveUser(authUser, externalSecurityRequest.getState());
+            externalAuthSourceService.saveUser(authUser, externalSecurityRequest.getState());
             String sourceId = Base64.decodeStr(externalSecurityRequest.getState());
             response.setCharacterEncoding(StandardCharsets.UTF_8.name());
             response.setContentType(MediaType.APPLICATION_JSON.toString());

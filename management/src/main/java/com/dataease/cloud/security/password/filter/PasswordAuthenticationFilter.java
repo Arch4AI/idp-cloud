@@ -6,8 +6,8 @@ import com.dataease.cloud.security.LocalUser;
 import com.dataease.cloud.security.exception.SecurityException;
 import com.dataease.cloud.security.password.PasswordAuthenticationToken;
 import com.dataease.cloud.security.password.request.PasswordLoginRequest;
-import com.dataease.cloud.service.CloudExternalAuthSourceService;
-import com.dataease.cloud.service.CloudUserService;
+import com.dataease.cloud.service.ExternalAuthSourceService;
+import com.dataease.cloud.service.UserService;
 import com.dataease.cloud.utils.ObjectMapperUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.undertow.util.Headers;
@@ -43,18 +43,18 @@ public class PasswordAuthenticationFilter extends AbstractAuthenticationProcessi
 
     private static final String DEFAULT_FILTER_PROCESSES_URL = Constants.PASSWORD_LOGIN_URI;
 
-    private CloudUserService cloudUserService;
+    private UserService userService;
 
-    private CloudExternalAuthSourceService cloudExternalAuthSourceService;
+    private ExternalAuthSourceService externalAuthSourceService;
 
     public PasswordAuthenticationFilter() {
         super(new AntPathRequestMatcher(DEFAULT_FILTER_PROCESSES_URL, HttpMethod.POST.name()));
     }
 
-    public PasswordAuthenticationFilter(AuthenticationManager authenticationManager, CloudUserService cloudUserService, CloudExternalAuthSourceService cloudExternalAuthSourceService) {
+    public PasswordAuthenticationFilter(AuthenticationManager authenticationManager, UserService userService, ExternalAuthSourceService externalAuthSourceService) {
         super(new AntPathRequestMatcher(DEFAULT_FILTER_PROCESSES_URL, HttpMethod.POST.name()), authenticationManager);
-        this.cloudUserService = cloudUserService;
-        this.cloudExternalAuthSourceService = cloudExternalAuthSourceService;
+        this.userService = userService;
+        this.externalAuthSourceService = externalAuthSourceService;
     }
 
     @Override
@@ -82,7 +82,7 @@ public class PasswordAuthenticationFilter extends AbstractAuthenticationProcessi
         if (!StringUtils.hasText(passwordLoginRequest.getPassword()))
             throw new BadCredentialsException("Password is Required!");
         //查询用户信息
-        LocalUser user = cloudUserService.getUserByName(passwordLoginRequest.getUserName());
+        LocalUser user = userService.getUserByName(passwordLoginRequest.getUserName());
         //判断用户是否存在
         if (user == null)
             throw new UsernameNotFoundException("user not found!");
@@ -90,7 +90,7 @@ public class PasswordAuthenticationFilter extends AbstractAuthenticationProcessi
             throw new DisabledException("user disabled!");
         //如果是传递进来了 就绑定一下第三方的 这个绑定的意思就是这个已经存在才可以绑定
         if (StringUtils.hasText(passwordLoginRequest.getSourceId()) && StringUtils.hasText(passwordLoginRequest.getUuid())) {
-            cloudExternalAuthSourceService.bindUserRelation(user.getUserId(), passwordLoginRequest.getSourceId(), passwordLoginRequest.getUuid());
+            externalAuthSourceService.bindUserRelation(user.getUserId(), passwordLoginRequest.getSourceId(), passwordLoginRequest.getUuid());
         }
         if (user != null) {
             request.setAttribute(Constants.REQ_USER_ATTRIBUTE, user);

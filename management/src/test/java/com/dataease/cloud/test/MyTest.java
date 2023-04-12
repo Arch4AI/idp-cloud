@@ -5,6 +5,7 @@ import org.mybatis.generator.api.ProgressCallback;
 import org.mybatis.generator.config.Configuration;
 import org.mybatis.generator.config.xml.ConfigurationParser;
 import org.mybatis.generator.internal.DefaultShellCallback;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,7 +33,8 @@ public class MyTest {
 //        String puk = "panjiannneng";
 //        String prk = "shitouzhu";
 //        System.out.println(AddressUtils.getRealAddressByIP("120.196.86.13"));
-        generator();
+//        generator();
+        System.out.println(JdbcTokenRepositoryImpl.CREATE_TABLE_SQL);
     }
 
     private static void generator() throws Exception {

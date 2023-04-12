@@ -8,8 +8,8 @@ import com.dataease.cloud.security.LocalUser;
 import com.dataease.cloud.security.exception.SecurityException;
 import com.dataease.cloud.security.phone.PhoneAuthenticationToken;
 import com.dataease.cloud.security.phone.request.PhoneLoginRequest;
-import com.dataease.cloud.service.CloudExternalAuthSourceService;
-import com.dataease.cloud.service.CloudUserService;
+import com.dataease.cloud.service.ExternalAuthSourceService;
+import com.dataease.cloud.service.UserService;
 import com.dataease.cloud.utils.ObjectMapperUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.undertow.util.Headers;
@@ -48,18 +48,18 @@ public class PhoneAuthenticationFilter extends AbstractAuthenticationProcessingF
     private static final String PHONE_REGX = RegxContants.PHONE_NUM_REGX;
 
     private StringRedisTemplate stringRedisTemplate;
-    private CloudUserService cloudUserService;
-    private CloudExternalAuthSourceService cloudExternalAuthSourceService;
+    private UserService userService;
+    private ExternalAuthSourceService externalAuthSourceService;
 
     public PhoneAuthenticationFilter() {
         super(new AntPathRequestMatcher(DEFAULT_FILTER_PROCESSES_URL, HttpMethod.POST.name()));
     }
 
-    public PhoneAuthenticationFilter(AuthenticationManager authenticationManager, StringRedisTemplate stringRedisTemplate, CloudUserService cloudUserService, CloudExternalAuthSourceService cloudExternalAuthSourceService) {
+    public PhoneAuthenticationFilter(AuthenticationManager authenticationManager, StringRedisTemplate stringRedisTemplate, UserService userService, ExternalAuthSourceService externalAuthSourceService) {
         super(new AntPathRequestMatcher(DEFAULT_FILTER_PROCESSES_URL, HttpMethod.POST.name()), authenticationManager);
         this.stringRedisTemplate = stringRedisTemplate;
-        this.cloudUserService = cloudUserService;
-        this.cloudExternalAuthSourceService = cloudExternalAuthSourceService;
+        this.userService = userService;
+        this.externalAuthSourceService = externalAuthSourceService;
     }
 
     @Override
@@ -89,7 +89,7 @@ public class PhoneAuthenticationFilter extends AbstractAuthenticationProcessingF
         if (!StringUtils.hasText(phoneLoginRequest.getPhone()))
             throw new BadCredentialsException("phone code required!");
         //判断用户信息
-        LocalUser user = cloudUserService.getUserByPhone(phoneLoginRequest.getPhone());
+        LocalUser user = userService.getUserByPhone(phoneLoginRequest.getPhone());
         if (!user.getEnabled())
             throw new DisabledException("user has disabled!");
         String redisCode = stringRedisTemplate.opsForValue().get(phoneLoginRequest.getPhone());
@@ -103,7 +103,7 @@ public class PhoneAuthenticationFilter extends AbstractAuthenticationProcessingF
         stringRedisTemplate.delete(phoneLoginRequest.getPhone());
         //如果是传递进来了 就绑定一下第三方的 这个绑定的意思就是这个已经存在才可以绑定
         if (StringUtils.hasText(phoneLoginRequest.getSourceId()) && StringUtils.hasText(phoneLoginRequest.getUuid())) {
-            cloudExternalAuthSourceService.bindUserRelation(user.getUserId(), phoneLoginRequest.getSourceId(), phoneLoginRequest.getUuid());
+            externalAuthSourceService.bindUserRelation(user.getUserId(), phoneLoginRequest.getSourceId(), phoneLoginRequest.getUuid());
         }
         if (user != null) {
             request.setAttribute(Constants.REQ_USER_ATTRIBUTE, user);

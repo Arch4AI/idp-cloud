@@ -27,7 +27,7 @@
       "type": "java.lang.String",
       "description": "记住我的token-key",
       "sourceType": "com.dataease.cloud.properties.CommonProperties",
-      "defaultValue": "idp_cloud"
+      "defaultValue": "cloud_idp"
     },
     {
       "name": "cloud.common.session-time-out",
@@ -42,6 +42,20 @@
       "description": "前端地址",
       "sourceType": "com.dataease.cloud.properties.CommonProperties",
       "defaultValue": "http://127.0.0.1:4000"
+    },
+    {
+      "name": "cloud.common.remember-cookie-name",
+      "type": "java.lang.String",
+      "description": "记住我的CookieName",
+      "sourceType": "com.dataease.cloud.properties.CommonProperties",
+      "defaultValue": "CLOUD_REMEMBER_ME"
+    },
+    {
+      "name": "cloud.common.maximum-sessions",
+      "type": "java.lang.Integer",
+      "description": "单用户最大在线数，-1代表无限制",
+      "sourceType": "com.dataease.cloud.properties.CommonProperties",
+      "defaultValue": -1
     },
     {
       "name": "cloud.common.address-enabled",

@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 
 /**
  * 通用属性
- *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/17 11:00 AM
@@ -19,7 +18,7 @@ public class CommonProperties {
     /**
      * 记住我cookie加密Key
      */
-    private String rememberTokenKey;
+    private String rememberTokenKey="cloud_idp";
 
     /**
      * session到期时间<这里指的只是登录后的Session>
@@ -31,6 +30,16 @@ public class CommonProperties {
      * 前端VITE的地址查询
      */
     private String viteAddr = "http://127.0.0.1:4000";
+
+    /**
+     * 记住我的cookieName
+     */
+    private String rememberCookieName="CLOUD_REMEMBER_ME";
+
+    /**
+     * 单用户最大在线数量
+     */
+    private int maximumSessions=-1;
 
     /**
      * 开启IP归属地查询

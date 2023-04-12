@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
  **/
 @Service
 @Transactional(rollbackFor = Exception.class)
-public class CloudExternalAuthSourceService {
+public class ExternalAuthSourceService {
 
     @Resource
     private CloudExternalAuthSourceMapper cloudExternalAuthSourceMapper;

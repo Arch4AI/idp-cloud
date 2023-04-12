@@ -6,8 +6,8 @@ import com.dataease.cloud.security.LocalUser;
 import com.dataease.cloud.security.exception.SecurityException;
 import com.dataease.cloud.security.register.RegisterAuthenticationToken;
 import com.dataease.cloud.security.register.request.RegisterRequest;
-import com.dataease.cloud.service.CloudExternalAuthSourceService;
-import com.dataease.cloud.service.CloudUserService;
+import com.dataease.cloud.service.ExternalAuthSourceService;
+import com.dataease.cloud.service.UserService;
 import com.dataease.cloud.utils.ObjectMapperUtils;
 import io.undertow.util.Headers;
 import jakarta.servlet.ServletException;
@@ -41,18 +41,18 @@ public class RegisterAuthenticationFilter extends AbstractAuthenticationProcessi
 
     private static final String DEFAULT_FILTER_PROCESSES_URL = Constants.REGISTER_URI;
 
-    private CloudUserService cloudUserService;
+    private UserService userService;
 
-    private CloudExternalAuthSourceService cloudExternalAuthSourceService;
+    private ExternalAuthSourceService externalAuthSourceService;
 
     public RegisterAuthenticationFilter() {
         super(new AntPathRequestMatcher(DEFAULT_FILTER_PROCESSES_URL, HttpMethod.POST.name()));
     }
 
-    public RegisterAuthenticationFilter(AuthenticationManager authenticationManager, CloudUserService cloudUserService, CloudExternalAuthSourceService cloudExternalAuthSourceService) {
+    public RegisterAuthenticationFilter(AuthenticationManager authenticationManager, UserService userService, ExternalAuthSourceService externalAuthSourceService) {
         super(new AntPathRequestMatcher(DEFAULT_FILTER_PROCESSES_URL, HttpMethod.POST.name()), authenticationManager);
-        this.cloudUserService = cloudUserService;
-        this.cloudExternalAuthSourceService = cloudExternalAuthSourceService;
+        this.userService = userService;
+        this.externalAuthSourceService = externalAuthSourceService;
     }
 
 
@@ -76,13 +76,13 @@ public class RegisterAuthenticationFilter extends AbstractAuthenticationProcessi
         }
         LocalUser user = null;
         try {
-            user = cloudUserService.registerUser(req);
+            user = userService.registerUser(req);
         } catch (Exception e) {
             SecurityException.throwException(e);
         }
         //如果是传递进来了 就绑定一下第三方的 这个绑定的意思就是这个已经存在才可以绑定
         if (StringUtils.hasText(req.getSourceId()) && StringUtils.hasText(req.getUuid())) {
-            cloudExternalAuthSourceService.bindUserRelation(user.getUserId(), req.getSourceId(), req.getUuid());
+            externalAuthSourceService.bindUserRelation(user.getUserId(), req.getSourceId(), req.getUuid());
         }
         //创建一个token 传入获取到的用户request
         RegisterAuthenticationToken authRequest = new RegisterAuthenticationToken(user.getUserId());

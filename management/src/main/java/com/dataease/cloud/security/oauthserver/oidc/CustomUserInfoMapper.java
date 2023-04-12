@@ -2,7 +2,7 @@ package com.dataease.cloud.security.oauthserver.oidc;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.dataease.cloud.security.LocalUser;
-import com.dataease.cloud.service.CloudUserService;
+import com.dataease.cloud.service.UserService;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
@@ -23,10 +23,10 @@ import java.util.function.Function;
  **/
 public class CustomUserInfoMapper implements Function<OidcUserInfoAuthenticationContext, OidcUserInfo> {
 
-    private CloudUserService cloudUserService;
+    private UserService userService;
 
-    public CustomUserInfoMapper(CloudUserService cloudUserService) {
-        this.cloudUserService = cloudUserService;
+    public CustomUserInfoMapper(UserService userService) {
+        this.userService = userService;
     }
 
     private static final List<String> EMAIL_CLAIMS = Arrays.asList(
@@ -52,7 +52,7 @@ public class CustomUserInfoMapper implements Function<OidcUserInfoAuthentication
         OAuth2AccessToken accessToken = authenticationContext.getAccessToken();
         Map<String, Object> objectMap = idToken.getClaims();
         String userId = authorization.getPrincipalName();
-        LocalUser localUser = cloudUserService.getUserById(userId);
+        LocalUser localUser = userService.getUserById(userId);
         Map<String, Object> userMap = BeanUtil.beanToMap(localUser);
         userMap.putAll(objectMap);
         Map<String, Object> scopeRequestedClaims = getClaimsRequestedByScope(userMap,

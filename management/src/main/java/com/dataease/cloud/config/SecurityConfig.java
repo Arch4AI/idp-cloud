@@ -1,13 +1,12 @@
 package com.dataease.cloud.config;
 
+import com.dataease.cloud.properties.CommonProperties;
 import com.dataease.cloud.security.CustomSecurityConfigurerAdapter;
 import com.dataease.cloud.security.exclude.DefaultSecurityExcludes;
 import com.dataease.cloud.security.handler.CustomAccessDeniedHandler;
 import com.dataease.cloud.security.handler.CustomAuthenticationEntryPoint;
 import com.dataease.cloud.security.handler.CustomLogoutSuccessHandler;
-import com.dataease.cloud.security.rememberme.RememberMeDetailsService;
-import com.dataease.cloud.security.rememberme.service.CustomTokenBasedRememberMeServices;
-import jakarta.annotation.Resource;
+import com.dataease.cloud.security.rememberme.service.PersistentTokenBasedRememberMeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +14,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -27,26 +25,9 @@ import org.springframework.web.filter.CorsFilter;
  * @version v1.0
  * @date 2023/3/6 1:55 PM
  **/
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @Slf4j
 public class SecurityConfig {
-
-    private static final String REMEMBER_ME_KEY = "idp_cloud";
-
-    @Resource
-    private CustomAccessDeniedHandler customAccessDeniedHandler;
-
-    @Resource
-    private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-
-    @Resource
-    private CustomLogoutSuccessHandler customLogoutSuccessHandler;
-
-    @Resource
-    private RememberMeDetailsService rememberMeDetailsService;
-
-    @Resource
-    private CustomSecurityConfigurerAdapter customSecurityConfigurerAdapter;
 
     /**
      * 定义过滤器
@@ -58,7 +39,13 @@ public class SecurityConfig {
     @Bean
     @Order
     public SecurityFilterChain defaultSecurityWebFilterChain(HttpSecurity httpSecurity,
-                                                             SessionRegistry sessionRegistry) throws Exception {
+                                                             SessionRegistry sessionRegistry,
+                                                             CommonProperties commonProperties,
+                                                             CustomAccessDeniedHandler customAccessDeniedHandler,
+                                                             CustomAuthenticationEntryPoint customAuthenticationEntryPoint,
+                                                             CustomLogoutSuccessHandler customLogoutSuccessHandler,
+                                                             PersistentTokenBasedRememberMeService rememberMeService,
+                                                             CustomSecurityConfigurerAdapter customSecurityConfigurerAdapter) throws Exception {
         return httpSecurity.authorizeHttpRequests().requestMatchers(DefaultSecurityExcludes.excludes)
                 .permitAll()
                 .anyRequest()
@@ -78,29 +65,17 @@ public class SecurityConfig {
                 .logoutSuccessHandler(customLogoutSuccessHandler)
                 .and()
                 .sessionManagement()
-                .maximumSessions(1)
-                //.maximumSessions(Integer.MAX_VALUE)
+                //负一代表无数次登录
+                .maximumSessions(commonProperties.getMaximumSessions())
                 .sessionRegistry(sessionRegistry)
                 .and()
                 .and()
                 .rememberMe()
-                .rememberMeServices(rememberMeServices())
+                .rememberMeServices(rememberMeService)
                 .and()
                 .apply(customSecurityConfigurerAdapter)
                 .and()
                 .build();
-    }
-
-    /**
-     * 重写记住我
-     *
-     * @return
-     */
-    @Bean
-    public RememberMeServices rememberMeServices() {
-        CustomTokenBasedRememberMeServices customTokenBasedRememberMeServices = new CustomTokenBasedRememberMeServices(REMEMBER_ME_KEY, rememberMeDetailsService, 86400);
-        customTokenBasedRememberMeServices.setAlwaysRemember(true);
-        return customTokenBasedRememberMeServices;
     }
 
     /**

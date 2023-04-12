@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 @Transactional(rollbackFor = Exception.class)
 @Lazy
 @Slf4j
-public class CloudUserService {
+public class UserService {
 
     @Resource
     private CloudUserMapper cloudUserMapper;

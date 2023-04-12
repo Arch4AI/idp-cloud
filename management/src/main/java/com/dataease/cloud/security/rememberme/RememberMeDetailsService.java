@@ -1,6 +1,6 @@
 package com.dataease.cloud.security.rememberme;
 
-import com.dataease.cloud.service.CloudUserService;
+import com.dataease.cloud.service.UserService;
 import jakarta.annotation.Resource;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,14 +18,14 @@ import org.springframework.stereotype.Service;
 public class RememberMeDetailsService implements UserDetailsService {
 
     @Resource
-    private CloudUserService cloudUserService;
+    private UserService userService;
 
-    public RememberMeDetailsService(CloudUserService cloudUserService) {
-        this.cloudUserService = cloudUserService;
+    public RememberMeDetailsService(UserService userService) {
+        this.userService = userService;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return cloudUserService.getUserById(username);
+        return userService.getUserById(username);
     }
 }

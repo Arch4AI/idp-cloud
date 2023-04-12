@@ -12,7 +12,7 @@ import com.dataease.cloud.security.oauthserver.CustomOAuth2AuthorizationService;
 import com.dataease.cloud.security.oauthserver.CustomRegisteredClientRepository;
 import com.dataease.cloud.security.oauthserver.oidc.CustomUserInfoMapper;
 import com.dataease.cloud.security.oauthserver.resourceserver.ResourceServerAuthenticationEntryPoint;
-import com.dataease.cloud.service.CloudUserService;
+import com.dataease.cloud.service.UserService;
 import com.dataease.cloud.utils.ObjectMapperUtils;
 import com.dataease.cloud.utils.RSAUtils;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -69,11 +69,11 @@ public class AuthServerConfig {
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http,
                                                                       CustomAccessDeniedHandler customAccessDeniedHandler,
                                                                       CustomAuthenticationEntryPoint customAuthenticationEntryPoint,
-                                                                      CloudUserService cloudUserService) throws Exception {
+                                                                      UserService userService) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
                 .oidc(oidcConfigurer -> oidcConfigurer.userInfoEndpoint(oidcUserInfoEndpointConfigurer ->
-                        oidcUserInfoEndpointConfigurer.userInfoMapper(new CustomUserInfoMapper(cloudUserService))));
+                        oidcUserInfoEndpointConfigurer.userInfoMapper(new CustomUserInfoMapper(userService))));
         http
                 .exceptionHandling()
                 .authenticationEntryPoint(customAuthenticationEntryPoint)

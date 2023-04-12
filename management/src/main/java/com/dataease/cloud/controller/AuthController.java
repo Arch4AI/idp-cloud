@@ -1,7 +1,7 @@
 package com.dataease.cloud.controller;
 
 import com.dataease.cloud.entity.response.Result;
-import com.dataease.cloud.service.CloudExternalAuthSourceService;
+import com.dataease.cloud.service.ExternalAuthSourceService;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     @Resource
-    private CloudExternalAuthSourceService cloudExternalAuthSourceService;
+    private ExternalAuthSourceService externalAuthSourceService;
 
     /**
      * 获取可用的提供商
@@ -29,7 +29,7 @@ public class AuthController {
      */
     @GetMapping("providers")
     public Result listActiveProviders() {
-        return Result.success(cloudExternalAuthSourceService.listActive());
+        return Result.success(externalAuthSourceService.listActive());
     }
 
     /**
@@ -40,6 +40,6 @@ public class AuthController {
      */
     @GetMapping("providers/{id}")
     public Result redirectUri(@PathVariable("id") String id) {
-        return Result.success(cloudExternalAuthSourceService.getSettingById(id));
+        return Result.success(externalAuthSourceService.getSettingById(id));
     }
 }

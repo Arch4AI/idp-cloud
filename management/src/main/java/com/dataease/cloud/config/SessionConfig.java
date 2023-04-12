@@ -1,6 +1,10 @@
 package com.dataease.cloud.config;
 
+import com.dataease.cloud.properties.CommonProperties;
+import com.dataease.cloud.security.rememberme.RememberMeDetailsService;
+import com.dataease.cloud.security.rememberme.service.PersistentTokenBasedRememberMeService;
 import com.dataease.cloud.security.session.CustomSessionRegistryImpl;
+import com.dataease.cloud.service.RememberMeTokenService;
 import com.dataease.cloud.service.SessionService;
 import com.dataease.cloud.utils.ObjectMapperUtils;
 import jakarta.annotation.Resource;
@@ -13,6 +17,7 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 
@@ -50,5 +55,17 @@ public class SessionConfig {
     @Bean
     public SessionRegistry sessionRegistry(SessionService sessionService) {
         return new CustomSessionRegistryImpl(sessionService);
+    }
+
+    @Bean
+    public PersistentTokenBasedRememberMeService rememberMeService(RememberMeDetailsService rememberMeDetailsService, CommonProperties commonProperties, RememberMeTokenService rememberMeTokenService){
+        PersistentTokenBasedRememberMeService rememberMeService = new PersistentTokenBasedRememberMeService(commonProperties.getRememberTokenKey(),rememberMeDetailsService,rememberMeTokenService);
+        //总是记住我 不需要额外参数
+        rememberMeService.setAlwaysRemember(true);
+        //记住我的cookie名称
+        rememberMeService.setCookieName(commonProperties.getRememberCookieName());
+        //默认是两个星期
+        rememberMeService.setTokenValiditySeconds(AbstractRememberMeServices.TWO_WEEKS_S);
+        return rememberMeService;
     }
 }

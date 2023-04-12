@@ -3,6 +3,7 @@ package com.dataease.cloud.security.handler;
 import com.dataease.cloud.base.domain.CloudUserLoginLog;
 import com.dataease.cloud.base.mapper.CloudUserLoginLogMapper;
 import com.dataease.cloud.entity.response.Result;
+import com.dataease.cloud.properties.CommonProperties;
 import com.dataease.cloud.security.LocalUser;
 import com.dataease.cloud.service.SessionService;
 import com.dataease.cloud.utils.AddressUtils;
@@ -54,6 +55,9 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
     @Resource
     private SessionService sessionService;
 
+    @Resource
+    private CommonProperties commonProperties;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
         AuthenticationSuccessHandler.super.onAuthenticationSuccess(request, response, chain, authentication);
@@ -67,7 +71,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
         // 目前 是仅登录
         if (principal instanceof LocalUser) {
             //当用户登录成功后 将session的时间设置为1天
-            request.getSession().setMaxInactiveInterval(86400);
+            request.getSession().setMaxInactiveInterval(commonProperties.getSessionTimeOut().intValue());
             LocalUser localUser = (LocalUser) principal;
             localUser.setPassword(null);
             CloudUserLoginLog cloudUserLoginLog = new CloudUserLoginLog();

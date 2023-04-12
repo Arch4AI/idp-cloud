@@ -7,8 +7,8 @@ import com.dataease.cloud.security.LocalUser;
 import com.dataease.cloud.security.exception.SecurityException;
 import com.dataease.cloud.security.profile.ProfileAuthenticationToken;
 import com.dataease.cloud.security.profile.request.UserUpdateProfileRequest;
-import com.dataease.cloud.service.CloudExternalAuthSourceService;
-import com.dataease.cloud.service.CloudUserService;
+import com.dataease.cloud.service.ExternalAuthSourceService;
+import com.dataease.cloud.service.UserService;
 import com.dataease.cloud.utils.ObjectMapperUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.undertow.util.Headers;
@@ -49,19 +49,19 @@ public class ProfileAuthenticationFilter extends AbstractAuthenticationProcessin
 
     private ObjectMapper objectMapper;
 
-    private CloudUserService cloudUserService;
+    private UserService userService;
 
-    private CloudExternalAuthSourceService cloudExternalAuthSourceService;
+    private ExternalAuthSourceService externalAuthSourceService;
     private SecurityContextRepository contextRepository;
 
     public ProfileAuthenticationFilter() {
         super(new AntPathRequestMatcher(DEFAULT_FILTER_PROCESSES_URL, HttpMethod.POST.name()));
     }
 
-    public ProfileAuthenticationFilter(AuthenticationManager authenticationManager, CloudUserService cloudUserService, CloudExternalAuthSourceService cloudExternalAuthSourceService) {
+    public ProfileAuthenticationFilter(AuthenticationManager authenticationManager, UserService userService, ExternalAuthSourceService externalAuthSourceService) {
         super(new AntPathRequestMatcher(DEFAULT_FILTER_PROCESSES_URL, HttpMethod.POST.name()), authenticationManager);
-        this.cloudUserService = cloudUserService;
-        this.cloudExternalAuthSourceService = cloudExternalAuthSourceService;
+        this.userService = userService;
+        this.externalAuthSourceService = externalAuthSourceService;
         this.objectMapper = ObjectMapperUtils.simpleObjectMapper;
     }
 
@@ -91,7 +91,7 @@ public class ProfileAuthenticationFilter extends AbstractAuthenticationProcessin
             LocalUser localUser = (LocalUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             req.setUserId(localUser.getUserId());
             try {
-                LocalUser u = cloudUserService.updateProfile(req);
+                LocalUser u = userService.updateProfile(req);
                 //更新当前用户的信息 稍等一会在执行
                 SecurityContext context = SecurityContextHolder.getContext();
                 ProfileAuthenticationToken token = new ProfileAuthenticationToken(localUser, localUser.getAuthorities());
@@ -118,10 +118,10 @@ public class ProfileAuthenticationFilter extends AbstractAuthenticationProcessin
             return null;
         }
         //这里相当于是注册
-        user = cloudUserService.registerUserByProfile(req);
+        user = userService.registerUserByProfile(req);
         //如果是传递进来了 就绑定一下第三方的 这个绑定的意思就是这个已经存在才可以绑定
         if (StringUtils.hasText(req.getSourceId()) && StringUtils.hasText(req.getUuid())) {
-            cloudExternalAuthSourceService.bindUserRelation(user.getUserId(), req.getSourceId(), req.getUuid());
+            externalAuthSourceService.bindUserRelation(user.getUserId(), req.getSourceId(), req.getUuid());
         }
 
         //创建一个token 传入获取到的用户request

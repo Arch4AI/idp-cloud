@@ -2,15 +2,13 @@ package com.dataease.cloud.test;
 
 import cn.hutool.core.util.IdUtil;
 import com.dataease.cloud.base.domain.CloudExternalAuthSource;
-import com.dataease.cloud.properties.AliyunSmsProperties;
 import com.dataease.cloud.properties.SmsProperties;
-import com.dataease.cloud.service.CloudExternalAuthSourceService;
+import com.dataease.cloud.service.ExternalAuthSourceService;
 import com.dataease.cloud.service.sms.MessageService;
 import com.dataease.cloud.utils.GlobalConfigurations;
 import com.fit2cloud.cloud.oauth.config.AuthDefaultSource;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 /**
@@ -24,7 +22,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class ApplicationTest {
 
     @Resource
-    private CloudExternalAuthSourceService cloudOauthProviderSettingService;
+    private ExternalAuthSourceService cloudOauthProviderSettingService;
 
     @Resource
     private SmsProperties smsProperties;

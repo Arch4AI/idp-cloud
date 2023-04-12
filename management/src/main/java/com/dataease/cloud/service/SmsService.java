@@ -7,7 +7,6 @@ import com.dataease.cloud.entity.request.SmsRequest;
 import com.dataease.cloud.entity.response.SmsCodeResponse;
 import com.dataease.cloud.exception.CloudException;
 import com.dataease.cloud.service.sms.MessageService;
-import com.dataease.cloud.utils.GlobalConfigurations;
 import jakarta.annotation.Resource;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;

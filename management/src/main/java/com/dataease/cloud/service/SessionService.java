@@ -3,8 +3,6 @@ package com.dataease.cloud.service;
 import com.dataease.cloud.base.domain.CloudSession;
 import com.dataease.cloud.base.domain.CloudSessionExample;
 import com.dataease.cloud.base.mapper.CloudSessionMapper;
-import com.dataease.cloud.security.LocalUser;
-import com.dataease.cloud.security.profile.ProfileAuthenticationToken;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +12,7 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.session.Session;
 import org.springframework.session.SessionRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -32,6 +31,7 @@ import java.util.stream.Collectors;
  **/
 @Service
 @Slf4j
+@Transactional(rollbackFor = Exception.class)
 public class SessionService {
 
     @Resource
@@ -40,35 +40,8 @@ public class SessionService {
     @Resource
     private CloudSessionMapper cloudSessionMapper;
 
-    /**
-     * 更新用户session 默认就开始用的ProflieAuthenticationToken
-     *
-     * @param sessionId 指定SessionId的权限 这样改了以后应该是立马就生效啦
-     * @param localUser
-     */
-    public void updateSession(String sessionId, LocalUser localUser) {
-        Session session = sessionRepository.findById(sessionId);
-        localUser.setPassword(null);
-        SecurityContextImpl springSecurityContext = session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
-        ProfileAuthenticationToken proflieAuthenticationToken = new ProfileAuthenticationToken(localUser, localUser.getAuthorities());
-        proflieAuthenticationToken.setAuthenticated(true);
-        proflieAuthenticationToken.setDetails(springSecurityContext.getAuthentication().getDetails());
-        springSecurityContext.setAuthentication(proflieAuthenticationToken);
-        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, springSecurityContext);
-        sessionRepository.save(session);
-    }
-
-    /**
-     * 根据sessionId获取用户的session列表
-     *
-     * @param userId
-     * @return
-     */
-    public List<CloudSession> findSessionByUserId(String userId) {
-        CloudSessionExample example = new CloudSessionExample();
-        example.createCriteria().andUserIdEqualTo(userId);
-        return cloudSessionMapper.selectByExample(example);
-    }
+    @Resource
+    private RememberMeTokenService rememberMeTokenService;
 
     /**
      * 只获取用户相关的session集合
@@ -84,6 +57,11 @@ public class SessionService {
         return cloudSessions.stream().map(CloudSession::getSessionId).collect(Collectors.toSet());
     }
 
+    /**
+     * 根据sessionId查询session
+     * @param sessionId
+     * @return
+     */
     public Session getSessionInformation(String sessionId) {
         //直接查询redis中是否有这个sessinId
         Session session = sessionRepository.findById(sessionId);
@@ -127,8 +105,6 @@ public class SessionService {
 
     /**
      * 刷新最后一次请求
-     * 这个地方暂时未去校验？
-     *
      * @param sessionId
      */
     public void refreshLastRequest(String sessionId) {
@@ -149,8 +125,6 @@ public class SessionService {
 
     /**
      * 直接设置超时
-     * //TODO 这个是否直接删除比较合理？
-     *
      * @param sessionId
      */
     public void expireNow(String sessionId) {
@@ -210,6 +184,8 @@ public class SessionService {
         cloudSessionMapper.updateByPrimaryKeySelective(cloudSession);
         //在session里面也移除掉他
         sessionRepository.deleteById(sessionId);
+        //如果是退出这个地方也移除掉rememberMe的信息 让那个人直接登录不了即可
+        rememberMeTokenService.removeBySessionId(sessionId);
     }
 
     /**
@@ -240,24 +216,45 @@ public class SessionService {
     }
 
     /**
-     * 判断Session是否过期
-     * 在redis里面
-     *
-     * @param sessionId
+     * 获取session列表
      * @return
      */
-    public boolean sessionHasdestroyed(String sessionId) {
-        Session session = sessionRepository.findById(sessionId);
-        return session == null || session.isExpired();
+    public List<CloudSession> listSessions(){
+        CloudSessionExample example = new CloudSessionExample();
+        return cloudSessionMapper.selectByExample(example);
+    }
+
+
+    /**
+     * 获取当前用户所有的会话记录
+     * 包含已经到期和正在使用的
+     * @param userId
+     * @return
+     */
+    public List<CloudSession> listSessionByUserId(String userId){
+        CloudSessionExample example = new CloudSessionExample();
+        example.createCriteria().andUserIdEqualTo(userId);
+        return cloudSessionMapper.selectByExample(example);
     }
 
     /**
-     * 销毁session
-     *
+     * 踢出session
+     * 需要处理一下remberMe里面的数据 因为踢出session remberMe记住我还是会自动登录
      * @param sessionId
      */
-    public void destroyeSession(String sessionId) {
-        sessionRepository.deleteById(sessionId);
+    public void kickoutSession(String sessionId){
+       //判断是不是在redis存在
+        log.info("sessionId:{}",sessionId);
+        Session session = sessionRepository.findById(sessionId);
+        if(session != null){
+            session.isExpired();
+        }
+        CloudSession cloudSession = new CloudSession();
+        cloudSession.setExpireTime(Calendar.getInstance().getTime());
+        cloudSession.setExpired(true);
+        cloudSession.setSessionId(sessionId);
+        cloudSessionMapper.updateByPrimaryKeySelective(cloudSession);
+        rememberMeTokenService.removeBySessionId(sessionId);
     }
 
 }

@@ -10,7 +10,7 @@ import com.dataease.cloud.base.mapper.CloudUserRoleMapper;
 import com.dataease.cloud.constant.GenderEnum;
 import com.dataease.cloud.constant.LanguageEnum;
 import com.dataease.cloud.constant.RoleEnum;
-import com.dataease.cloud.service.CloudExternalAuthSourceService;
+import com.dataease.cloud.service.ExternalAuthSourceService;
 import com.fit2cloud.cloud.oauth.config.AuthDefaultSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -31,13 +31,13 @@ public class SystemInit {
 
     private CloudUserMapper cloudUserMapper;
     private CloudUserRoleMapper cloudUserRoleMapper;
-    private CloudExternalAuthSourceService cloudOauthProviderSettingService;
+    private ExternalAuthSourceService externalAuthSourceService;
     private static final String DEFAULT_USER = "admin";
 
-    public SystemInit(CloudUserMapper cloudUserMapper, CloudUserRoleMapper cloudUserRoleMapper, CloudExternalAuthSourceService cloudOauthProviderSettingService) {
+    public SystemInit(CloudUserMapper cloudUserMapper, CloudUserRoleMapper cloudUserRoleMapper, ExternalAuthSourceService externalAuthSourceService) {
         this.cloudUserMapper = cloudUserMapper;
         this.cloudUserRoleMapper = cloudUserRoleMapper;
-        this.cloudOauthProviderSettingService = cloudOauthProviderSettingService;
+        this.externalAuthSourceService = externalAuthSourceService;
     }
 
     @EventListener
@@ -53,7 +53,7 @@ public class SystemInit {
      */
     private void initDefaultProvider() {
         // 为空的时候才去注入
-        if (cloudOauthProviderSettingService.listAll().isEmpty()) {
+        if (externalAuthSourceService.listAll().isEmpty()) {
             CloudExternalAuthSource setting = new CloudExternalAuthSource();
             setting.setId(IdUtil.randomUUID());
             setting.setDisplayName("MeterSphere Cloud Keycloak");
@@ -65,7 +65,7 @@ public class SystemInit {
             setting.setUserInfoUri("https://msdev.xgg.plus/auth/realms/halo/protocol/openid-connect/userinfo");
             setting.setRedirectUri("https://www.baidu.com");
             setting.setEnable(true);
-            cloudOauthProviderSettingService.add(setting);
+            externalAuthSourceService.add(setting);
         }
     }
 

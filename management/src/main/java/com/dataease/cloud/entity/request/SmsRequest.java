@@ -1,7 +1,6 @@
 package com.dataease.cloud.entity.request;
 
 import com.dataease.cloud.constant.SmsSendType;
-import lombok.Builder;
 import lombok.Data;
 
 /**
