@@ -58,6 +58,20 @@
       "defaultValue": -1
     },
     {
+      "name": "cloud.common.auto-remember-me",
+      "type": "java.lang.Boolean",
+      "description": "是否自动记住我,默认是true",
+      "sourceType": "com.dataease.cloud.properties.CommonProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "cloud.common.remember-me-token-time",
+      "type": "java.lang.Integer",
+      "description": "记住我时长单位秒 默认两周",
+      "sourceType": "com.dataease.cloud.properties.CommonProperties",
+      "defaultValue": 1209600
+    },
+    {
       "name": "cloud.common.address-enabled",
       "type": "java.lang.Boolean",
       "description": "是否开启IP地址归属查询",

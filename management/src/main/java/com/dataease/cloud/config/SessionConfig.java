@@ -17,7 +17,6 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 
@@ -58,14 +57,14 @@ public class SessionConfig {
     }
 
     @Bean
-    public PersistentTokenBasedRememberMeService rememberMeService(RememberMeDetailsService rememberMeDetailsService, CommonProperties commonProperties, RememberMeTokenService rememberMeTokenService){
-        PersistentTokenBasedRememberMeService rememberMeService = new PersistentTokenBasedRememberMeService(commonProperties.getRememberTokenKey(),rememberMeDetailsService,rememberMeTokenService);
+    public PersistentTokenBasedRememberMeService rememberMeService(RememberMeDetailsService rememberMeDetailsService, CommonProperties commonProperties, RememberMeTokenService rememberMeTokenService) {
+        PersistentTokenBasedRememberMeService rememberMeService = new PersistentTokenBasedRememberMeService(commonProperties.getRememberTokenKey(), rememberMeDetailsService, rememberMeTokenService, commonProperties.getSessionTimeOut().intValue());
         //总是记住我 不需要额外参数
-        rememberMeService.setAlwaysRemember(true);
+        rememberMeService.setAlwaysRemember(commonProperties.isAutoRememberMe());
         //记住我的cookie名称
         rememberMeService.setCookieName(commonProperties.getRememberCookieName());
         //默认是两个星期
-        rememberMeService.setTokenValiditySeconds(AbstractRememberMeServices.TWO_WEEKS_S);
+        rememberMeService.setTokenValiditySeconds(commonProperties.getRememberMeTokenTime());
         return rememberMeService;
     }
 }

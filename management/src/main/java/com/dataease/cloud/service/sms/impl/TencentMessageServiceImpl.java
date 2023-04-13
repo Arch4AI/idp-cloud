@@ -28,7 +28,7 @@ import org.springframework.stereotype.Service;
  **/
 @Slf4j
 @Service
-@ConditionalOnProperty(prefix = "cloud.sms",name = "provider",havingValue = "tencent")
+@ConditionalOnProperty(prefix = "cloud.sms", name = "provider", havingValue = "tencent")
 public class TencentMessageServiceImpl implements MessageService {
 
     @Resource

@@ -1,7 +1,9 @@
 package com.dataease.cloud.service;
 
+import com.dataease.cloud.base.domain.CloudRememberMeTokenExample;
 import com.dataease.cloud.base.domain.CloudSession;
 import com.dataease.cloud.base.domain.CloudSessionExample;
+import com.dataease.cloud.base.mapper.CloudRememberMeTokenMapper;
 import com.dataease.cloud.base.mapper.CloudSessionMapper;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpSession;
@@ -41,7 +43,7 @@ public class SessionService {
     private CloudSessionMapper cloudSessionMapper;
 
     @Resource
-    private RememberMeTokenService rememberMeTokenService;
+    private CloudRememberMeTokenMapper cloudRememberMeTokenMapper;
 
     /**
      * 只获取用户相关的session集合
@@ -59,6 +61,7 @@ public class SessionService {
 
     /**
      * 根据sessionId查询session
+     *
      * @param sessionId
      * @return
      */
@@ -105,6 +108,7 @@ public class SessionService {
 
     /**
      * 刷新最后一次请求
+     *
      * @param sessionId
      */
     public void refreshLastRequest(String sessionId) {
@@ -125,6 +129,7 @@ public class SessionService {
 
     /**
      * 直接设置超时
+     *
      * @param sessionId
      */
     public void expireNow(String sessionId) {
@@ -134,6 +139,7 @@ public class SessionService {
         cloudSession.setExpired(true);
         cloudSession.setExpireTime(Calendar.getInstance().getTime());
         cloudSessionMapper.updateByPrimaryKeySelective(cloudSession);
+        removeRememberMeTokenBySession(sessionId);
     }
 
     /**
@@ -185,7 +191,7 @@ public class SessionService {
         //在session里面也移除掉他
         sessionRepository.deleteById(sessionId);
         //如果是退出这个地方也移除掉rememberMe的信息 让那个人直接登录不了即可
-        rememberMeTokenService.removeBySessionId(sessionId);
+        removeRememberMeTokenBySession(sessionId);
     }
 
     /**
@@ -217,9 +223,10 @@ public class SessionService {
 
     /**
      * 获取session列表
+     *
      * @return
      */
-    public List<CloudSession> listSessions(){
+    public List<CloudSession> listSessions() {
         CloudSessionExample example = new CloudSessionExample();
         return cloudSessionMapper.selectByExample(example);
     }
@@ -228,10 +235,11 @@ public class SessionService {
     /**
      * 获取当前用户所有的会话记录
      * 包含已经到期和正在使用的
+     *
      * @param userId
      * @return
      */
-    public List<CloudSession> listSessionByUserId(String userId){
+    public List<CloudSession> listSessionByUserId(String userId) {
         CloudSessionExample example = new CloudSessionExample();
         example.createCriteria().andUserIdEqualTo(userId);
         return cloudSessionMapper.selectByExample(example);
@@ -240,13 +248,14 @@ public class SessionService {
     /**
      * 踢出session
      * 需要处理一下remberMe里面的数据 因为踢出session remberMe记住我还是会自动登录
+     *
      * @param sessionId
      */
-    public void kickoutSession(String sessionId){
-       //判断是不是在redis存在
-        log.info("sessionId:{}",sessionId);
+    public void kickoutSession(String sessionId) {
+        //判断是不是在redis存在
+        log.info("sessionId:{}", sessionId);
         Session session = sessionRepository.findById(sessionId);
-        if(session != null){
+        if (session != null) {
             session.isExpired();
         }
         CloudSession cloudSession = new CloudSession();
@@ -254,7 +263,18 @@ public class SessionService {
         cloudSession.setExpired(true);
         cloudSession.setSessionId(sessionId);
         cloudSessionMapper.updateByPrimaryKeySelective(cloudSession);
-        rememberMeTokenService.removeBySessionId(sessionId);
+        removeRememberMeTokenBySession(sessionId);
+    }
+
+    /**
+     * 移除remeberMe的token信息
+     *
+     * @param sessionId
+     */
+    public void removeRememberMeTokenBySession(String sessionId) {
+        CloudRememberMeTokenExample example = new CloudRememberMeTokenExample();
+        example.createCriteria().andSessionIdEqualTo(sessionId);
+        cloudRememberMeTokenMapper.deleteByExample(example);
     }
 
 }

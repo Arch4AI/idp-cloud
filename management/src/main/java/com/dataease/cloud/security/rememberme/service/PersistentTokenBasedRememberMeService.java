@@ -1,9 +1,11 @@
 package com.dataease.cloud.security.rememberme.service;
 
+import cn.hutool.core.util.IdUtil;
 import com.dataease.cloud.base.domain.CloudRememberMeToken;
 import com.dataease.cloud.service.RememberMeTokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.log.LogMessage;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,35 +16,40 @@ import org.springframework.util.StringUtils;
 
 import java.security.SecureRandom;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.Calendar;
 
 /**
  * 记住我持久化的service
  * 参考{@link PersistentTokenBasedRememberMeServices}
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/4/12 4:48 PM
  **/
+@Slf4j
 public class PersistentTokenBasedRememberMeService extends AbstractRememberMeServices {
 
     private RememberMeTokenService tokenRepository;
 
     private SecureRandom random;
+    private int sessionTimeOut = 1800;//默认是30分钟
 
-    public static final int DEFAULT_SERIES_LENGTH = 16;
+    public static final int DEFAULT_SERIES_LENGTH = 32;
 
-    public static final int DEFAULT_TOKEN_LENGTH = 16;
+    public static final int DEFAULT_TOKEN_LENGTH = 32;
 
     private int seriesLength = DEFAULT_SERIES_LENGTH;
 
     private int tokenLength = DEFAULT_TOKEN_LENGTH;
 
-    public PersistentTokenBasedRememberMeService(String key, UserDetailsService userDetailsService,
-                                                 RememberMeTokenService tokenRepository) {
+    public PersistentTokenBasedRememberMeService(String key,
+                                                 UserDetailsService userDetailsService,
+                                                 RememberMeTokenService tokenRepository,
+                                                 int sessionTimeOut) {
         super(key, userDetailsService);
         this.random = new SecureRandom();
         this.tokenRepository = tokenRepository;
+        this.sessionTimeOut = sessionTimeOut;
     }
 
     @Override
@@ -54,6 +61,7 @@ public class PersistentTokenBasedRememberMeService extends AbstractRememberMeSer
         }
         String presentedSeries = cookieTokens[0];
         String presentedToken = cookieTokens[1];
+        log.info("into remeber-me filter");
         CloudRememberMeToken token = this.tokenRepository.getTokenForSeries(presentedSeries);
         if (token == null) {
             throw new RememberMeAuthenticationException("No persistent token found for series id: " + presentedSeries);
@@ -82,18 +90,18 @@ public class PersistentTokenBasedRememberMeService extends AbstractRememberMeSer
         try {
             this.tokenRepository.updateToken(newToken);
             addCookie(newToken, request, response);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             this.logger.error("Failed to update token: ", ex);
             throw new RememberMeAuthenticationException("Autologin failed due to data access problem");
         }
+        //设置超时时间
+        request.getSession().setMaxInactiveInterval(sessionTimeOut);
         return getUserDetailsService().loadUserByUsername(token.getUserId());
     }
 
     /**
      * Creates a new persistent login token with a new series number, stores the data in
      * the persistent token repository and adds the corresponding cookie to the response.
-     *
      */
     @Override
     protected void onLoginSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -109,8 +117,7 @@ public class PersistentTokenBasedRememberMeService extends AbstractRememberMeSer
         try {
             this.tokenRepository.createNewToken(rememberMeToken);
             addCookie(rememberMeToken, request, response);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             this.logger.error("Failed to save persistent token ", ex);
         }
     }
@@ -124,19 +131,15 @@ public class PersistentTokenBasedRememberMeService extends AbstractRememberMeSer
     }
 
     protected String generateSeriesData() {
-        byte[] newSeries = new byte[this.seriesLength];
-        this.random.nextBytes(newSeries);
-        return new String(Base64.getEncoder().encode(newSeries));
+        return IdUtil.nanoId(seriesLength);
     }
 
     protected String generateTokenData() {
-        byte[] newToken = new byte[this.tokenLength];
-        this.random.nextBytes(newToken);
-        return new String(Base64.getEncoder().encode(newToken));
+        return IdUtil.nanoId(tokenLength);
     }
 
     private void addCookie(CloudRememberMeToken token, HttpServletRequest request, HttpServletResponse response) {
-        setCookie(new String[] { token.getSeries(), token.getToken() }, getTokenValiditySeconds(), request,
+        setCookie(new String[]{token.getSeries(), token.getToken()}, getTokenValiditySeconds(), request,
                 response);
     }
 

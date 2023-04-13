@@ -27,7 +27,7 @@ public class ApplicationTest {
     @Resource
     private SmsProperties smsProperties;
 
-//    @Autowired(required = false)
+    //    @Autowired(required = false)
     @Resource
     private MessageService messageService;
 
@@ -53,10 +53,10 @@ public class ApplicationTest {
 
     @Test
     public void getSmsConfig() {
-        if(messageService == null)
+        if (messageService == null)
             System.out.println("message not init");
         String simpleName = messageService.getClass().getSimpleName();
-        System.out.println("message provider:"+simpleName);
+        System.out.println("message provider:" + simpleName);
     }
 
 

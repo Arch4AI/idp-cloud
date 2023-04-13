@@ -49,16 +49,16 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-<!--        <table tableName="cloud_external_auth_source"/>-->
-<!--        <table tableName="cloud_oauth2_authorization_consent"/>-->
-<!--        <table tableName="cloud_oauth2_authorization"/>-->
-<!--        <table tableName="cloud_oauth2_registered_client"/>-->
-<!--        <table tableName="cloud_session"/>-->
-<!--        <table tableName="cloud_user_attribute"/>-->
-<!--        <table tableName="cloud_user_auth_source_relation"/>-->
-<!--        <table tableName="cloud_user_login_log"/>-->
-<!--        <table tableName="cloud_user"/>-->
-<!--        <table tableName="cloud_user_role"/>-->
+        <!--        <table tableName="cloud_external_auth_source"/>-->
+        <!--        <table tableName="cloud_oauth2_authorization_consent"/>-->
+        <!--        <table tableName="cloud_oauth2_authorization"/>-->
+        <!--        <table tableName="cloud_oauth2_registered_client"/>-->
+        <!--        <table tableName="cloud_session"/>-->
+        <!--        <table tableName="cloud_user_attribute"/>-->
+        <!--        <table tableName="cloud_user_auth_source_relation"/>-->
+        <!--        <table tableName="cloud_user_login_log"/>-->
+        <!--        <table tableName="cloud_user"/>-->
+        <!--        <table tableName="cloud_user_role"/>-->
         <table tableName="cloud_remember_me_token"/>
     </context>
 </generatorConfiguration>

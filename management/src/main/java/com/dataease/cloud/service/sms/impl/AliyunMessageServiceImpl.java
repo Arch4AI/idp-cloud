@@ -31,7 +31,7 @@ import org.springframework.util.StringUtils;
  **/
 @Slf4j
 @Service
-@ConditionalOnProperty(prefix = "cloud.sms",name = "provider",havingValue = "aliyun")
+@ConditionalOnProperty(prefix = "cloud.sms", name = "provider", havingValue = "aliyun")
 public class AliyunMessageServiceImpl implements MessageService {
 
     @Resource
