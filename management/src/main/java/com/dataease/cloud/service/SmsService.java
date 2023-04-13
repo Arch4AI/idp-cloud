@@ -10,6 +10,7 @@ import com.dataease.cloud.service.sms.MessageService;
 import jakarta.annotation.Resource;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.Date;
@@ -23,6 +24,7 @@ import java.util.concurrent.TimeUnit;
  * @date 2023/3/9 12:10 PM
  **/
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class SmsService {
 
     @Resource

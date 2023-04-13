@@ -875,143 +875,503 @@ public class CloudOauth2RegisteredClientExample {
             return (Criteria) this;
         }
 
-        public Criteria andClientSettingsIsNull() {
-            addCriterion("client_settings is null");
+        public Criteria andRequireProofKeyIsNull() {
+            addCriterion("require_proof_key is null");
             return (Criteria) this;
         }
 
-        public Criteria andClientSettingsIsNotNull() {
-            addCriterion("client_settings is not null");
+        public Criteria andRequireProofKeyIsNotNull() {
+            addCriterion("require_proof_key is not null");
             return (Criteria) this;
         }
 
-        public Criteria andClientSettingsEqualTo(String value) {
-            addCriterion("client_settings =", value, "clientSettings");
+        public Criteria andRequireProofKeyEqualTo(Boolean value) {
+            addCriterion("require_proof_key =", value, "requireProofKey");
             return (Criteria) this;
         }
 
-        public Criteria andClientSettingsNotEqualTo(String value) {
-            addCriterion("client_settings <>", value, "clientSettings");
+        public Criteria andRequireProofKeyNotEqualTo(Boolean value) {
+            addCriterion("require_proof_key <>", value, "requireProofKey");
             return (Criteria) this;
         }
 
-        public Criteria andClientSettingsGreaterThan(String value) {
-            addCriterion("client_settings >", value, "clientSettings");
+        public Criteria andRequireProofKeyGreaterThan(Boolean value) {
+            addCriterion("require_proof_key >", value, "requireProofKey");
             return (Criteria) this;
         }
 
-        public Criteria andClientSettingsGreaterThanOrEqualTo(String value) {
-            addCriterion("client_settings >=", value, "clientSettings");
+        public Criteria andRequireProofKeyGreaterThanOrEqualTo(Boolean value) {
+            addCriterion("require_proof_key >=", value, "requireProofKey");
             return (Criteria) this;
         }
 
-        public Criteria andClientSettingsLessThan(String value) {
-            addCriterion("client_settings <", value, "clientSettings");
+        public Criteria andRequireProofKeyLessThan(Boolean value) {
+            addCriterion("require_proof_key <", value, "requireProofKey");
             return (Criteria) this;
         }
 
-        public Criteria andClientSettingsLessThanOrEqualTo(String value) {
-            addCriterion("client_settings <=", value, "clientSettings");
+        public Criteria andRequireProofKeyLessThanOrEqualTo(Boolean value) {
+            addCriterion("require_proof_key <=", value, "requireProofKey");
             return (Criteria) this;
         }
 
-        public Criteria andClientSettingsLike(String value) {
-            addCriterion("client_settings like", value, "clientSettings");
+        public Criteria andRequireProofKeyIn(List<Boolean> values) {
+            addCriterion("require_proof_key in", values, "requireProofKey");
             return (Criteria) this;
         }
 
-        public Criteria andClientSettingsNotLike(String value) {
-            addCriterion("client_settings not like", value, "clientSettings");
+        public Criteria andRequireProofKeyNotIn(List<Boolean> values) {
+            addCriterion("require_proof_key not in", values, "requireProofKey");
             return (Criteria) this;
         }
 
-        public Criteria andClientSettingsIn(List<String> values) {
-            addCriterion("client_settings in", values, "clientSettings");
+        public Criteria andRequireProofKeyBetween(Boolean value1, Boolean value2) {
+            addCriterion("require_proof_key between", value1, value2, "requireProofKey");
             return (Criteria) this;
         }
 
-        public Criteria andClientSettingsNotIn(List<String> values) {
-            addCriterion("client_settings not in", values, "clientSettings");
+        public Criteria andRequireProofKeyNotBetween(Boolean value1, Boolean value2) {
+            addCriterion("require_proof_key not between", value1, value2, "requireProofKey");
             return (Criteria) this;
         }
 
-        public Criteria andClientSettingsBetween(String value1, String value2) {
-            addCriterion("client_settings between", value1, value2, "clientSettings");
+        public Criteria andRequireAuthorizationConsentIsNull() {
+            addCriterion("require_authorization_consent is null");
             return (Criteria) this;
         }
 
-        public Criteria andClientSettingsNotBetween(String value1, String value2) {
-            addCriterion("client_settings not between", value1, value2, "clientSettings");
+        public Criteria andRequireAuthorizationConsentIsNotNull() {
+            addCriterion("require_authorization_consent is not null");
             return (Criteria) this;
         }
 
-        public Criteria andTokenSettingsIsNull() {
-            addCriterion("token_settings is null");
+        public Criteria andRequireAuthorizationConsentEqualTo(Boolean value) {
+            addCriterion("require_authorization_consent =", value, "requireAuthorizationConsent");
             return (Criteria) this;
         }
 
-        public Criteria andTokenSettingsIsNotNull() {
-            addCriterion("token_settings is not null");
+        public Criteria andRequireAuthorizationConsentNotEqualTo(Boolean value) {
+            addCriterion("require_authorization_consent <>", value, "requireAuthorizationConsent");
             return (Criteria) this;
         }
 
-        public Criteria andTokenSettingsEqualTo(String value) {
-            addCriterion("token_settings =", value, "tokenSettings");
+        public Criteria andRequireAuthorizationConsentGreaterThan(Boolean value) {
+            addCriterion("require_authorization_consent >", value, "requireAuthorizationConsent");
             return (Criteria) this;
         }
 
-        public Criteria andTokenSettingsNotEqualTo(String value) {
-            addCriterion("token_settings <>", value, "tokenSettings");
+        public Criteria andRequireAuthorizationConsentGreaterThanOrEqualTo(Boolean value) {
+            addCriterion("require_authorization_consent >=", value, "requireAuthorizationConsent");
             return (Criteria) this;
         }
 
-        public Criteria andTokenSettingsGreaterThan(String value) {
-            addCriterion("token_settings >", value, "tokenSettings");
+        public Criteria andRequireAuthorizationConsentLessThan(Boolean value) {
+            addCriterion("require_authorization_consent <", value, "requireAuthorizationConsent");
             return (Criteria) this;
         }
 
-        public Criteria andTokenSettingsGreaterThanOrEqualTo(String value) {
-            addCriterion("token_settings >=", value, "tokenSettings");
+        public Criteria andRequireAuthorizationConsentLessThanOrEqualTo(Boolean value) {
+            addCriterion("require_authorization_consent <=", value, "requireAuthorizationConsent");
             return (Criteria) this;
         }
 
-        public Criteria andTokenSettingsLessThan(String value) {
-            addCriterion("token_settings <", value, "tokenSettings");
+        public Criteria andRequireAuthorizationConsentIn(List<Boolean> values) {
+            addCriterion("require_authorization_consent in", values, "requireAuthorizationConsent");
             return (Criteria) this;
         }
 
-        public Criteria andTokenSettingsLessThanOrEqualTo(String value) {
-            addCriterion("token_settings <=", value, "tokenSettings");
+        public Criteria andRequireAuthorizationConsentNotIn(List<Boolean> values) {
+            addCriterion("require_authorization_consent not in", values, "requireAuthorizationConsent");
             return (Criteria) this;
         }
 
-        public Criteria andTokenSettingsLike(String value) {
-            addCriterion("token_settings like", value, "tokenSettings");
+        public Criteria andRequireAuthorizationConsentBetween(Boolean value1, Boolean value2) {
+            addCriterion("require_authorization_consent between", value1, value2, "requireAuthorizationConsent");
             return (Criteria) this;
         }
 
-        public Criteria andTokenSettingsNotLike(String value) {
-            addCriterion("token_settings not like", value, "tokenSettings");
+        public Criteria andRequireAuthorizationConsentNotBetween(Boolean value1, Boolean value2) {
+            addCriterion("require_authorization_consent not between", value1, value2, "requireAuthorizationConsent");
             return (Criteria) this;
         }
 
-        public Criteria andTokenSettingsIn(List<String> values) {
-            addCriterion("token_settings in", values, "tokenSettings");
+        public Criteria andAuthorizationCodeTimeToLiveIsNull() {
+            addCriterion("authorization_code_time_to_live is null");
             return (Criteria) this;
         }
 
-        public Criteria andTokenSettingsNotIn(List<String> values) {
-            addCriterion("token_settings not in", values, "tokenSettings");
+        public Criteria andAuthorizationCodeTimeToLiveIsNotNull() {
+            addCriterion("authorization_code_time_to_live is not null");
             return (Criteria) this;
         }
 
-        public Criteria andTokenSettingsBetween(String value1, String value2) {
-            addCriterion("token_settings between", value1, value2, "tokenSettings");
+        public Criteria andAuthorizationCodeTimeToLiveEqualTo(Integer value) {
+            addCriterion("authorization_code_time_to_live =", value, "authorizationCodeTimeToLive");
             return (Criteria) this;
         }
 
-        public Criteria andTokenSettingsNotBetween(String value1, String value2) {
-            addCriterion("token_settings not between", value1, value2, "tokenSettings");
+        public Criteria andAuthorizationCodeTimeToLiveNotEqualTo(Integer value) {
+            addCriterion("authorization_code_time_to_live <>", value, "authorizationCodeTimeToLive");
+            return (Criteria) this;
+        }
+
+        public Criteria andAuthorizationCodeTimeToLiveGreaterThan(Integer value) {
+            addCriterion("authorization_code_time_to_live >", value, "authorizationCodeTimeToLive");
+            return (Criteria) this;
+        }
+
+        public Criteria andAuthorizationCodeTimeToLiveGreaterThanOrEqualTo(Integer value) {
+            addCriterion("authorization_code_time_to_live >=", value, "authorizationCodeTimeToLive");
+            return (Criteria) this;
+        }
+
+        public Criteria andAuthorizationCodeTimeToLiveLessThan(Integer value) {
+            addCriterion("authorization_code_time_to_live <", value, "authorizationCodeTimeToLive");
+            return (Criteria) this;
+        }
+
+        public Criteria andAuthorizationCodeTimeToLiveLessThanOrEqualTo(Integer value) {
+            addCriterion("authorization_code_time_to_live <=", value, "authorizationCodeTimeToLive");
+            return (Criteria) this;
+        }
+
+        public Criteria andAuthorizationCodeTimeToLiveIn(List<Integer> values) {
+            addCriterion("authorization_code_time_to_live in", values, "authorizationCodeTimeToLive");
+            return (Criteria) this;
+        }
+
+        public Criteria andAuthorizationCodeTimeToLiveNotIn(List<Integer> values) {
+            addCriterion("authorization_code_time_to_live not in", values, "authorizationCodeTimeToLive");
+            return (Criteria) this;
+        }
+
+        public Criteria andAuthorizationCodeTimeToLiveBetween(Integer value1, Integer value2) {
+            addCriterion("authorization_code_time_to_live between", value1, value2, "authorizationCodeTimeToLive");
+            return (Criteria) this;
+        }
+
+        public Criteria andAuthorizationCodeTimeToLiveNotBetween(Integer value1, Integer value2) {
+            addCriterion("authorization_code_time_to_live not between", value1, value2, "authorizationCodeTimeToLive");
+            return (Criteria) this;
+        }
+
+        public Criteria andAccessTokenTimeToLiveIsNull() {
+            addCriterion("access_token_time_to_live is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAccessTokenTimeToLiveIsNotNull() {
+            addCriterion("access_token_time_to_live is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAccessTokenTimeToLiveEqualTo(Integer value) {
+            addCriterion("access_token_time_to_live =", value, "accessTokenTimeToLive");
+            return (Criteria) this;
+        }
+
+        public Criteria andAccessTokenTimeToLiveNotEqualTo(Integer value) {
+            addCriterion("access_token_time_to_live <>", value, "accessTokenTimeToLive");
+            return (Criteria) this;
+        }
+
+        public Criteria andAccessTokenTimeToLiveGreaterThan(Integer value) {
+            addCriterion("access_token_time_to_live >", value, "accessTokenTimeToLive");
+            return (Criteria) this;
+        }
+
+        public Criteria andAccessTokenTimeToLiveGreaterThanOrEqualTo(Integer value) {
+            addCriterion("access_token_time_to_live >=", value, "accessTokenTimeToLive");
+            return (Criteria) this;
+        }
+
+        public Criteria andAccessTokenTimeToLiveLessThan(Integer value) {
+            addCriterion("access_token_time_to_live <", value, "accessTokenTimeToLive");
+            return (Criteria) this;
+        }
+
+        public Criteria andAccessTokenTimeToLiveLessThanOrEqualTo(Integer value) {
+            addCriterion("access_token_time_to_live <=", value, "accessTokenTimeToLive");
+            return (Criteria) this;
+        }
+
+        public Criteria andAccessTokenTimeToLiveIn(List<Integer> values) {
+            addCriterion("access_token_time_to_live in", values, "accessTokenTimeToLive");
+            return (Criteria) this;
+        }
+
+        public Criteria andAccessTokenTimeToLiveNotIn(List<Integer> values) {
+            addCriterion("access_token_time_to_live not in", values, "accessTokenTimeToLive");
+            return (Criteria) this;
+        }
+
+        public Criteria andAccessTokenTimeToLiveBetween(Integer value1, Integer value2) {
+            addCriterion("access_token_time_to_live between", value1, value2, "accessTokenTimeToLive");
+            return (Criteria) this;
+        }
+
+        public Criteria andAccessTokenTimeToLiveNotBetween(Integer value1, Integer value2) {
+            addCriterion("access_token_time_to_live not between", value1, value2, "accessTokenTimeToLive");
+            return (Criteria) this;
+        }
+
+        public Criteria andAccessTokenFormatIsNull() {
+            addCriterion("access_token_format is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAccessTokenFormatIsNotNull() {
+            addCriterion("access_token_format is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAccessTokenFormatEqualTo(String value) {
+            addCriterion("access_token_format =", value, "accessTokenFormat");
+            return (Criteria) this;
+        }
+
+        public Criteria andAccessTokenFormatNotEqualTo(String value) {
+            addCriterion("access_token_format <>", value, "accessTokenFormat");
+            return (Criteria) this;
+        }
+
+        public Criteria andAccessTokenFormatGreaterThan(String value) {
+            addCriterion("access_token_format >", value, "accessTokenFormat");
+            return (Criteria) this;
+        }
+
+        public Criteria andAccessTokenFormatGreaterThanOrEqualTo(String value) {
+            addCriterion("access_token_format >=", value, "accessTokenFormat");
+            return (Criteria) this;
+        }
+
+        public Criteria andAccessTokenFormatLessThan(String value) {
+            addCriterion("access_token_format <", value, "accessTokenFormat");
+            return (Criteria) this;
+        }
+
+        public Criteria andAccessTokenFormatLessThanOrEqualTo(String value) {
+            addCriterion("access_token_format <=", value, "accessTokenFormat");
+            return (Criteria) this;
+        }
+
+        public Criteria andAccessTokenFormatLike(String value) {
+            addCriterion("access_token_format like", value, "accessTokenFormat");
+            return (Criteria) this;
+        }
+
+        public Criteria andAccessTokenFormatNotLike(String value) {
+            addCriterion("access_token_format not like", value, "accessTokenFormat");
+            return (Criteria) this;
+        }
+
+        public Criteria andAccessTokenFormatIn(List<String> values) {
+            addCriterion("access_token_format in", values, "accessTokenFormat");
+            return (Criteria) this;
+        }
+
+        public Criteria andAccessTokenFormatNotIn(List<String> values) {
+            addCriterion("access_token_format not in", values, "accessTokenFormat");
+            return (Criteria) this;
+        }
+
+        public Criteria andAccessTokenFormatBetween(String value1, String value2) {
+            addCriterion("access_token_format between", value1, value2, "accessTokenFormat");
+            return (Criteria) this;
+        }
+
+        public Criteria andAccessTokenFormatNotBetween(String value1, String value2) {
+            addCriterion("access_token_format not between", value1, value2, "accessTokenFormat");
+            return (Criteria) this;
+        }
+
+        public Criteria andReuseRefreshTokensIsNull() {
+            addCriterion("reuse_refresh_tokens is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andReuseRefreshTokensIsNotNull() {
+            addCriterion("reuse_refresh_tokens is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andReuseRefreshTokensEqualTo(Boolean value) {
+            addCriterion("reuse_refresh_tokens =", value, "reuseRefreshTokens");
+            return (Criteria) this;
+        }
+
+        public Criteria andReuseRefreshTokensNotEqualTo(Boolean value) {
+            addCriterion("reuse_refresh_tokens <>", value, "reuseRefreshTokens");
+            return (Criteria) this;
+        }
+
+        public Criteria andReuseRefreshTokensGreaterThan(Boolean value) {
+            addCriterion("reuse_refresh_tokens >", value, "reuseRefreshTokens");
+            return (Criteria) this;
+        }
+
+        public Criteria andReuseRefreshTokensGreaterThanOrEqualTo(Boolean value) {
+            addCriterion("reuse_refresh_tokens >=", value, "reuseRefreshTokens");
+            return (Criteria) this;
+        }
+
+        public Criteria andReuseRefreshTokensLessThan(Boolean value) {
+            addCriterion("reuse_refresh_tokens <", value, "reuseRefreshTokens");
+            return (Criteria) this;
+        }
+
+        public Criteria andReuseRefreshTokensLessThanOrEqualTo(Boolean value) {
+            addCriterion("reuse_refresh_tokens <=", value, "reuseRefreshTokens");
+            return (Criteria) this;
+        }
+
+        public Criteria andReuseRefreshTokensIn(List<Boolean> values) {
+            addCriterion("reuse_refresh_tokens in", values, "reuseRefreshTokens");
+            return (Criteria) this;
+        }
+
+        public Criteria andReuseRefreshTokensNotIn(List<Boolean> values) {
+            addCriterion("reuse_refresh_tokens not in", values, "reuseRefreshTokens");
+            return (Criteria) this;
+        }
+
+        public Criteria andReuseRefreshTokensBetween(Boolean value1, Boolean value2) {
+            addCriterion("reuse_refresh_tokens between", value1, value2, "reuseRefreshTokens");
+            return (Criteria) this;
+        }
+
+        public Criteria andReuseRefreshTokensNotBetween(Boolean value1, Boolean value2) {
+            addCriterion("reuse_refresh_tokens not between", value1, value2, "reuseRefreshTokens");
+            return (Criteria) this;
+        }
+
+        public Criteria andRefreshTokenTimeToLiveIsNull() {
+            addCriterion("refresh_token_time_to_live is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andRefreshTokenTimeToLiveIsNotNull() {
+            addCriterion("refresh_token_time_to_live is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andRefreshTokenTimeToLiveEqualTo(Integer value) {
+            addCriterion("refresh_token_time_to_live =", value, "refreshTokenTimeToLive");
+            return (Criteria) this;
+        }
+
+        public Criteria andRefreshTokenTimeToLiveNotEqualTo(Integer value) {
+            addCriterion("refresh_token_time_to_live <>", value, "refreshTokenTimeToLive");
+            return (Criteria) this;
+        }
+
+        public Criteria andRefreshTokenTimeToLiveGreaterThan(Integer value) {
+            addCriterion("refresh_token_time_to_live >", value, "refreshTokenTimeToLive");
+            return (Criteria) this;
+        }
+
+        public Criteria andRefreshTokenTimeToLiveGreaterThanOrEqualTo(Integer value) {
+            addCriterion("refresh_token_time_to_live >=", value, "refreshTokenTimeToLive");
+            return (Criteria) this;
+        }
+
+        public Criteria andRefreshTokenTimeToLiveLessThan(Integer value) {
+            addCriterion("refresh_token_time_to_live <", value, "refreshTokenTimeToLive");
+            return (Criteria) this;
+        }
+
+        public Criteria andRefreshTokenTimeToLiveLessThanOrEqualTo(Integer value) {
+            addCriterion("refresh_token_time_to_live <=", value, "refreshTokenTimeToLive");
+            return (Criteria) this;
+        }
+
+        public Criteria andRefreshTokenTimeToLiveIn(List<Integer> values) {
+            addCriterion("refresh_token_time_to_live in", values, "refreshTokenTimeToLive");
+            return (Criteria) this;
+        }
+
+        public Criteria andRefreshTokenTimeToLiveNotIn(List<Integer> values) {
+            addCriterion("refresh_token_time_to_live not in", values, "refreshTokenTimeToLive");
+            return (Criteria) this;
+        }
+
+        public Criteria andRefreshTokenTimeToLiveBetween(Integer value1, Integer value2) {
+            addCriterion("refresh_token_time_to_live between", value1, value2, "refreshTokenTimeToLive");
+            return (Criteria) this;
+        }
+
+        public Criteria andRefreshTokenTimeToLiveNotBetween(Integer value1, Integer value2) {
+            addCriterion("refresh_token_time_to_live not between", value1, value2, "refreshTokenTimeToLive");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdTokenSignatureAlgorithmIsNull() {
+            addCriterion("id_token_signature_algorithm is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdTokenSignatureAlgorithmIsNotNull() {
+            addCriterion("id_token_signature_algorithm is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdTokenSignatureAlgorithmEqualTo(String value) {
+            addCriterion("id_token_signature_algorithm =", value, "idTokenSignatureAlgorithm");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdTokenSignatureAlgorithmNotEqualTo(String value) {
+            addCriterion("id_token_signature_algorithm <>", value, "idTokenSignatureAlgorithm");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdTokenSignatureAlgorithmGreaterThan(String value) {
+            addCriterion("id_token_signature_algorithm >", value, "idTokenSignatureAlgorithm");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdTokenSignatureAlgorithmGreaterThanOrEqualTo(String value) {
+            addCriterion("id_token_signature_algorithm >=", value, "idTokenSignatureAlgorithm");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdTokenSignatureAlgorithmLessThan(String value) {
+            addCriterion("id_token_signature_algorithm <", value, "idTokenSignatureAlgorithm");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdTokenSignatureAlgorithmLessThanOrEqualTo(String value) {
+            addCriterion("id_token_signature_algorithm <=", value, "idTokenSignatureAlgorithm");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdTokenSignatureAlgorithmLike(String value) {
+            addCriterion("id_token_signature_algorithm like", value, "idTokenSignatureAlgorithm");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdTokenSignatureAlgorithmNotLike(String value) {
+            addCriterion("id_token_signature_algorithm not like", value, "idTokenSignatureAlgorithm");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdTokenSignatureAlgorithmIn(List<String> values) {
+            addCriterion("id_token_signature_algorithm in", values, "idTokenSignatureAlgorithm");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdTokenSignatureAlgorithmNotIn(List<String> values) {
+            addCriterion("id_token_signature_algorithm not in", values, "idTokenSignatureAlgorithm");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdTokenSignatureAlgorithmBetween(String value1, String value2) {
+            addCriterion("id_token_signature_algorithm between", value1, value2, "idTokenSignatureAlgorithm");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdTokenSignatureAlgorithmNotBetween(String value1, String value2) {
+            addCriterion("id_token_signature_algorithm not between", value1, value2, "idTokenSignatureAlgorithm");
             return (Criteria) this;
         }
     }

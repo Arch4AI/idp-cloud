@@ -4,24 +4,23 @@ import com.dataease.cloud.base.domain.CloudOauth2RegisteredClient;
 import com.dataease.cloud.base.domain.CloudOauth2RegisteredClientExample;
 import com.dataease.cloud.base.mapper.CloudOauth2RegisteredClientMapper;
 import com.dataease.cloud.utils.ObjectMapperUtils;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
-import org.springframework.security.oauth2.server.authorization.settings.ConfigurationSettingNames;
 import org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import java.time.Duration;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -59,8 +58,14 @@ public class CustomRegisteredClientRepository implements RegisteredClientReposit
         client.setAuthorizationGrantTypes(StringUtils.collectionToCommaDelimitedString(authorizationGrantTypes));
         client.setRedirectUris(StringUtils.collectionToCommaDelimitedString(registeredClient.getRedirectUris()));
         client.setScopes(StringUtils.collectionToCommaDelimitedString(registeredClient.getScopes()));
-        client.setClientSettings(writeMap(registeredClient.getClientSettings().getSettings()));
-        client.setTokenSettings(writeMap(registeredClient.getTokenSettings().getSettings()));
+        client.setRequireProofKey(registeredClient.getClientSettings().isRequireProofKey());
+        client.setRequireAuthorizationConsent(registeredClient.getClientSettings().isRequireAuthorizationConsent());
+        client.setAuthorizationCodeTimeToLive((int) registeredClient.getTokenSettings().getAuthorizationCodeTimeToLive().toMinutes());
+        client.setAccessTokenTimeToLive((int) registeredClient.getTokenSettings().getAccessTokenTimeToLive().toMinutes());
+        client.setAccessTokenFormat(registeredClient.getTokenSettings().getAccessTokenFormat().getValue());
+        client.setReuseRefreshTokens(registeredClient.getTokenSettings().isReuseRefreshTokens());
+        client.setRefreshTokenTimeToLive((int) registeredClient.getTokenSettings().getAccessTokenTimeToLive().toMinutes());
+        client.setIdTokenSignatureAlgorithm(registeredClient.getTokenSettings().getIdTokenSignatureAlgorithm().getName());
         //判断是不是已经存在了 存在了就更新 否则新增
         CloudOauth2RegisteredClient existingClient = cloudOauth2RegisteredClientMapper.selectByPrimaryKey(registeredClient.getId());
         if (existingClient == null) {
@@ -117,8 +122,6 @@ public class CustomRegisteredClientRepository implements RegisteredClientReposit
     }
 
     /**
-     * 将对象互换
-     *
      * @param client
      * @return
      */
@@ -142,30 +145,22 @@ public class CustomRegisteredClientRepository implements RegisteredClientReposit
                                 grantTypes.add(resolveAuthorizationGrantType(grantType))))
                 .redirectUris((uris) -> uris.addAll(redirectUris))
                 .scopes((scopes) -> scopes.addAll(clientScopes));
-        Map<String, Object> clientSettingsMap = parseMap(client.getClientSettings());
-        builder.clientSettings(ClientSettings.withSettings(clientSettingsMap).build());
-        Map<String, Object> tokenSettingsMap = parseMap(client.getTokenSettings());
-        TokenSettings.Builder tokenSettingsBuilder = TokenSettings.withSettings(tokenSettingsMap);
-        if (!tokenSettingsMap.containsKey(ConfigurationSettingNames.Token.ACCESS_TOKEN_FORMAT)) {
-            tokenSettingsBuilder.accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED);
-        }
-        builder.tokenSettings(tokenSettingsBuilder.build());
+        builder.clientSettings(ClientSettings.builder()
+                .requireAuthorizationConsent(client.getRequireAuthorizationConsent())
+                .requireProofKey(client.getRequireProofKey())
+                .build());
+        OAuth2TokenFormat format = OAuth2TokenFormat.SELF_CONTAINED;
+        if (client.getAccessTokenFormat().equals(OAuth2TokenFormat.REFERENCE.getValue()))
+            format = OAuth2TokenFormat.REFERENCE;
+        builder.tokenSettings(TokenSettings.builder()
+                .authorizationCodeTimeToLive(Duration.ofMinutes(client.getAuthorizationCodeTimeToLive()))
+                .accessTokenTimeToLive(Duration.ofMinutes(client.getAccessTokenTimeToLive()))
+                .accessTokenFormat(format)
+                .reuseRefreshTokens(client.getReuseRefreshTokens())
+                .refreshTokenTimeToLive(Duration.ofMinutes(client.getRefreshTokenTimeToLive()))
+                .idTokenSignatureAlgorithm(SignatureAlgorithm.from(client.getIdTokenSignatureAlgorithm()))
+                .build());
         return builder.build();
-    }
-
-    /**
-     * jackson转化
-     *
-     * @param data
-     * @return
-     */
-    private Map<String, Object> parseMap(String data) {
-        try {
-            return this.objectMapper.readValue(data, new TypeReference<Map<String, Object>>() {
-            });
-        } catch (Exception ex) {
-            throw new IllegalArgumentException(ex.getMessage(), ex);
-        }
     }
 
     private static AuthorizationGrantType resolveAuthorizationGrantType(String authorizationGrantType) {
@@ -188,19 +183,5 @@ public class CustomRegisteredClientRepository implements RegisteredClientReposit
             return ClientAuthenticationMethod.NONE;
         }
         return new ClientAuthenticationMethod(clientAuthenticationMethod);
-    }
-
-    /**
-     * 使用jackson转成Map对象
-     *
-     * @param data
-     * @return
-     */
-    private String writeMap(Map<String, Object> data) {
-        try {
-            return this.objectMapper.writeValueAsString(data);
-        } catch (Exception ex) {
-            throw new IllegalArgumentException(ex.getMessage(), ex);
-        }
     }
 }

@@ -16,8 +16,14 @@
         <result column="authorization_grant_types" jdbcType="VARCHAR" property="authorizationGrantTypes"/>
         <result column="redirect_uris" jdbcType="VARCHAR" property="redirectUris"/>
         <result column="scopes" jdbcType="VARCHAR" property="scopes"/>
-        <result column="client_settings" jdbcType="VARCHAR" property="clientSettings"/>
-        <result column="token_settings" jdbcType="VARCHAR" property="tokenSettings"/>
+        <result column="require_proof_key" jdbcType="BIT" property="requireProofKey"/>
+        <result column="require_authorization_consent" jdbcType="BIT" property="requireAuthorizationConsent"/>
+        <result column="authorization_code_time_to_live" jdbcType="INTEGER" property="authorizationCodeTimeToLive"/>
+        <result column="access_token_time_to_live" jdbcType="INTEGER" property="accessTokenTimeToLive"/>
+        <result column="access_token_format" jdbcType="VARCHAR" property="accessTokenFormat"/>
+        <result column="reuse_refresh_tokens" jdbcType="BIT" property="reuseRefreshTokens"/>
+        <result column="refresh_token_time_to_live" jdbcType="INTEGER" property="refreshTokenTimeToLive"/>
+        <result column="id_token_signature_algorithm" jdbcType="VARCHAR" property="idTokenSignatureAlgorithm"/>
     </resultMap>
     <sql id="Example_Where_Clause">
         <!--
@@ -94,7 +100,9 @@
         -->
         id, client_id, client_id_issued_at, client_secret, client_secret_expires_at, client_name,
         client_authentication_methods, authorization_grant_types, redirect_uris, scopes,
-        client_settings, token_settings
+        require_proof_key, require_authorization_consent, authorization_code_time_to_live,
+        access_token_time_to_live, access_token_format, reuse_refresh_tokens, refresh_token_time_to_live,
+        id_token_signature_algorithm
     </sql>
     <select id="selectByExample" parameterType="com.dataease.cloud.base.domain.CloudOauth2RegisteredClientExample"
             resultMap="BaseResultMap">
@@ -152,14 +160,19 @@
         client_secret, client_secret_expires_at,
         client_name, client_authentication_methods,
         authorization_grant_types, redirect_uris,
-        scopes, client_settings, token_settings
-        )
+        scopes, require_proof_key, require_authorization_consent,
+        authorization_code_time_to_live, access_token_time_to_live,
+        access_token_format, reuse_refresh_tokens, refresh_token_time_to_live,
+        id_token_signature_algorithm)
         values (#{id,jdbcType=VARCHAR}, #{clientId,jdbcType=VARCHAR}, #{clientIdIssuedAt,jdbcType=TIMESTAMP},
         #{clientSecret,jdbcType=VARCHAR}, #{clientSecretExpiresAt,jdbcType=TIMESTAMP},
         #{clientName,jdbcType=VARCHAR}, #{clientAuthenticationMethods,jdbcType=VARCHAR},
         #{authorizationGrantTypes,jdbcType=VARCHAR}, #{redirectUris,jdbcType=VARCHAR},
-        #{scopes,jdbcType=VARCHAR}, #{clientSettings,jdbcType=VARCHAR}, #{tokenSettings,jdbcType=VARCHAR}
-        )
+        #{scopes,jdbcType=VARCHAR}, #{requireProofKey,jdbcType=BIT}, #{requireAuthorizationConsent,jdbcType=BIT},
+        #{authorizationCodeTimeToLive,jdbcType=INTEGER}, #{accessTokenTimeToLive,jdbcType=INTEGER},
+        #{accessTokenFormat,jdbcType=VARCHAR}, #{reuseRefreshTokens,jdbcType=BIT},
+        #{refreshTokenTimeToLive,jdbcType=INTEGER},
+        #{idTokenSignatureAlgorithm,jdbcType=VARCHAR})
     </insert>
     <insert id="insertSelective" parameterType="com.dataease.cloud.base.domain.CloudOauth2RegisteredClient">
         <!--
@@ -198,11 +211,29 @@
             <if test="scopes != null">
                 scopes,
             </if>
-            <if test="clientSettings != null">
-                client_settings,
+            <if test="requireProofKey != null">
+                require_proof_key,
             </if>
-            <if test="tokenSettings != null">
-                token_settings,
+            <if test="requireAuthorizationConsent != null">
+                require_authorization_consent,
+            </if>
+            <if test="authorizationCodeTimeToLive != null">
+                authorization_code_time_to_live,
+            </if>
+            <if test="accessTokenTimeToLive != null">
+                access_token_time_to_live,
+            </if>
+            <if test="accessTokenFormat != null">
+                access_token_format,
+            </if>
+            <if test="reuseRefreshTokens != null">
+                reuse_refresh_tokens,
+            </if>
+            <if test="refreshTokenTimeToLive != null">
+                refresh_token_time_to_live,
+            </if>
+            <if test="idTokenSignatureAlgorithm != null">
+                id_token_signature_algorithm,
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -236,11 +267,29 @@
             <if test="scopes != null">
                 #{scopes,jdbcType=VARCHAR},
             </if>
-            <if test="clientSettings != null">
-                #{clientSettings,jdbcType=VARCHAR},
+            <if test="requireProofKey != null">
+                #{requireProofKey,jdbcType=BIT},
             </if>
-            <if test="tokenSettings != null">
-                #{tokenSettings,jdbcType=VARCHAR},
+            <if test="requireAuthorizationConsent != null">
+                #{requireAuthorizationConsent,jdbcType=BIT},
+            </if>
+            <if test="authorizationCodeTimeToLive != null">
+                #{authorizationCodeTimeToLive,jdbcType=INTEGER},
+            </if>
+            <if test="accessTokenTimeToLive != null">
+                #{accessTokenTimeToLive,jdbcType=INTEGER},
+            </if>
+            <if test="accessTokenFormat != null">
+                #{accessTokenFormat,jdbcType=VARCHAR},
+            </if>
+            <if test="reuseRefreshTokens != null">
+                #{reuseRefreshTokens,jdbcType=BIT},
+            </if>
+            <if test="refreshTokenTimeToLive != null">
+                #{refreshTokenTimeToLive,jdbcType=INTEGER},
+            </if>
+            <if test="idTokenSignatureAlgorithm != null">
+                #{idTokenSignatureAlgorithm,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -292,11 +341,29 @@
             <if test="row.scopes != null">
                 scopes = #{row.scopes,jdbcType=VARCHAR},
             </if>
-            <if test="row.clientSettings != null">
-                client_settings = #{row.clientSettings,jdbcType=VARCHAR},
+            <if test="row.requireProofKey != null">
+                require_proof_key = #{row.requireProofKey,jdbcType=BIT},
             </if>
-            <if test="row.tokenSettings != null">
-                token_settings = #{row.tokenSettings,jdbcType=VARCHAR},
+            <if test="row.requireAuthorizationConsent != null">
+                require_authorization_consent = #{row.requireAuthorizationConsent,jdbcType=BIT},
+            </if>
+            <if test="row.authorizationCodeTimeToLive != null">
+                authorization_code_time_to_live = #{row.authorizationCodeTimeToLive,jdbcType=INTEGER},
+            </if>
+            <if test="row.accessTokenTimeToLive != null">
+                access_token_time_to_live = #{row.accessTokenTimeToLive,jdbcType=INTEGER},
+            </if>
+            <if test="row.accessTokenFormat != null">
+                access_token_format = #{row.accessTokenFormat,jdbcType=VARCHAR},
+            </if>
+            <if test="row.reuseRefreshTokens != null">
+                reuse_refresh_tokens = #{row.reuseRefreshTokens,jdbcType=BIT},
+            </if>
+            <if test="row.refreshTokenTimeToLive != null">
+                refresh_token_time_to_live = #{row.refreshTokenTimeToLive,jdbcType=INTEGER},
+            </if>
+            <if test="row.idTokenSignatureAlgorithm != null">
+                id_token_signature_algorithm = #{row.idTokenSignatureAlgorithm,jdbcType=VARCHAR},
             </if>
         </set>
         <if test="example != null">
@@ -319,8 +386,14 @@
         authorization_grant_types = #{row.authorizationGrantTypes,jdbcType=VARCHAR},
         redirect_uris = #{row.redirectUris,jdbcType=VARCHAR},
         scopes = #{row.scopes,jdbcType=VARCHAR},
-        client_settings = #{row.clientSettings,jdbcType=VARCHAR},
-        token_settings = #{row.tokenSettings,jdbcType=VARCHAR}
+        require_proof_key = #{row.requireProofKey,jdbcType=BIT},
+        require_authorization_consent = #{row.requireAuthorizationConsent,jdbcType=BIT},
+        authorization_code_time_to_live = #{row.authorizationCodeTimeToLive,jdbcType=INTEGER},
+        access_token_time_to_live = #{row.accessTokenTimeToLive,jdbcType=INTEGER},
+        access_token_format = #{row.accessTokenFormat,jdbcType=VARCHAR},
+        reuse_refresh_tokens = #{row.reuseRefreshTokens,jdbcType=BIT},
+        refresh_token_time_to_live = #{row.refreshTokenTimeToLive,jdbcType=INTEGER},
+        id_token_signature_algorithm = #{row.idTokenSignatureAlgorithm,jdbcType=VARCHAR}
         <if test="example != null">
             <include refid="Update_By_Example_Where_Clause"/>
         </if>
@@ -359,11 +432,29 @@
             <if test="scopes != null">
                 scopes = #{scopes,jdbcType=VARCHAR},
             </if>
-            <if test="clientSettings != null">
-                client_settings = #{clientSettings,jdbcType=VARCHAR},
+            <if test="requireProofKey != null">
+                require_proof_key = #{requireProofKey,jdbcType=BIT},
             </if>
-            <if test="tokenSettings != null">
-                token_settings = #{tokenSettings,jdbcType=VARCHAR},
+            <if test="requireAuthorizationConsent != null">
+                require_authorization_consent = #{requireAuthorizationConsent,jdbcType=BIT},
+            </if>
+            <if test="authorizationCodeTimeToLive != null">
+                authorization_code_time_to_live = #{authorizationCodeTimeToLive,jdbcType=INTEGER},
+            </if>
+            <if test="accessTokenTimeToLive != null">
+                access_token_time_to_live = #{accessTokenTimeToLive,jdbcType=INTEGER},
+            </if>
+            <if test="accessTokenFormat != null">
+                access_token_format = #{accessTokenFormat,jdbcType=VARCHAR},
+            </if>
+            <if test="reuseRefreshTokens != null">
+                reuse_refresh_tokens = #{reuseRefreshTokens,jdbcType=BIT},
+            </if>
+            <if test="refreshTokenTimeToLive != null">
+                refresh_token_time_to_live = #{refreshTokenTimeToLive,jdbcType=INTEGER},
+            </if>
+            <if test="idTokenSignatureAlgorithm != null">
+                id_token_signature_algorithm = #{idTokenSignatureAlgorithm,jdbcType=VARCHAR},
             </if>
         </set>
         where id = #{id,jdbcType=VARCHAR}
@@ -383,8 +474,14 @@
         authorization_grant_types = #{authorizationGrantTypes,jdbcType=VARCHAR},
         redirect_uris = #{redirectUris,jdbcType=VARCHAR},
         scopes = #{scopes,jdbcType=VARCHAR},
-        client_settings = #{clientSettings,jdbcType=VARCHAR},
-        token_settings = #{tokenSettings,jdbcType=VARCHAR}
+        require_proof_key = #{requireProofKey,jdbcType=BIT},
+        require_authorization_consent = #{requireAuthorizationConsent,jdbcType=BIT},
+        authorization_code_time_to_live = #{authorizationCodeTimeToLive,jdbcType=INTEGER},
+        access_token_time_to_live = #{accessTokenTimeToLive,jdbcType=INTEGER},
+        access_token_format = #{accessTokenFormat,jdbcType=VARCHAR},
+        reuse_refresh_tokens = #{reuseRefreshTokens,jdbcType=BIT},
+        refresh_token_time_to_live = #{refreshTokenTimeToLive,jdbcType=INTEGER},
+        id_token_signature_algorithm = #{idTokenSignatureAlgorithm,jdbcType=VARCHAR}
         where id = #{id,jdbcType=VARCHAR}
     </update>
 </mapper>

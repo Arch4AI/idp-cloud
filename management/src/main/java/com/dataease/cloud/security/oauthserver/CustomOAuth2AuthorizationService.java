@@ -58,7 +58,7 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
         CloudOauth2AuthorizationWithBLOBs cloudOauth2AuthorizationWithBLOBs = new CloudOauth2AuthorizationWithBLOBs();
         cloudOauth2AuthorizationWithBLOBs.setId(authorization.getId());
         cloudOauth2AuthorizationWithBLOBs.setRegisteredClientId(authorization.getRegisteredClientId());
-        cloudOauth2AuthorizationWithBLOBs.setPrincipalName(authorization.getPrincipalName());
+        cloudOauth2AuthorizationWithBLOBs.setUserId(authorization.getPrincipalName());
         cloudOauth2AuthorizationWithBLOBs.setAuthorizationGrantType(authorization.getAuthorizationGrantType().getValue());
         cloudOauth2AuthorizationWithBLOBs.setAuthorizedScopes(authorizedScopes);
         String attributes = writeMap(authorization.getAttributes());
@@ -191,7 +191,7 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
         }
         Map<String, Object> attributes = parseMap(bloBs.getAttributes());
         builder.id(bloBs.getId())
-                .principalName(bloBs.getPrincipalName())
+                .principalName(bloBs.getUserId())
                 .authorizationGrantType(new AuthorizationGrantType(bloBs.getAuthorizationGrantType()))
                 .authorizedScopes(authorizedScopes)
                 .attributes((attrs) -> attrs.putAll(attributes));

@@ -43,11 +43,11 @@ public class CustomOAuth2AuthorizationConsentService implements OAuth2Authorizat
         }
         CloudOauth2AuthorizationConsent cloudOauth2AuthorizationConsent = new CloudOauth2AuthorizationConsent();
         cloudOauth2AuthorizationConsent.setAuthorities(StringUtils.collectionToDelimitedString(authorities, ","));
-        cloudOauth2AuthorizationConsent.setPrincipalName(authorizationConsent.getPrincipalName());
+        cloudOauth2AuthorizationConsent.setUserId(authorizationConsent.getPrincipalName());
         cloudOauth2AuthorizationConsent.setRegisteredClientId(authorizationConsent.getRegisteredClientId());
         //判断是不是存在
         CloudOauth2AuthorizationConsentKey key = new CloudOauth2AuthorizationConsentKey();
-        key.setPrincipalName(authorizationConsent.getPrincipalName());
+        key.setUserId(authorizationConsent.getPrincipalName());
         key.setRegisteredClientId(authorizationConsent.getRegisteredClientId());
         CloudOauth2AuthorizationConsent consent = cloudOauth2AuthorizationConsentMapper.selectByPrimaryKey(key);
         if (consent == null) {
@@ -61,7 +61,7 @@ public class CustomOAuth2AuthorizationConsentService implements OAuth2Authorizat
     public void remove(OAuth2AuthorizationConsent authorizationConsent) {
         Assert.notNull(authorizationConsent, "authorizationConsent cannot be null");
         CloudOauth2AuthorizationConsentKey key = new CloudOauth2AuthorizationConsentKey();
-        key.setPrincipalName(authorizationConsent.getPrincipalName());
+        key.setUserId(authorizationConsent.getPrincipalName());
         key.setRegisteredClientId(authorizationConsent.getRegisteredClientId());
         cloudOauth2AuthorizationConsentMapper.deleteByPrimaryKey(key);
     }
@@ -71,7 +71,7 @@ public class CustomOAuth2AuthorizationConsentService implements OAuth2Authorizat
         Assert.hasText(registeredClientId, "registeredClientId cannot be empty");
         Assert.hasText(principalName, "principalName cannot be empty");
         CloudOauth2AuthorizationConsentKey key = new CloudOauth2AuthorizationConsentKey();
-        key.setPrincipalName(principalName);
+        key.setUserId(principalName);
         key.setRegisteredClientId(registeredClientId);
         CloudOauth2AuthorizationConsent consent = cloudOauth2AuthorizationConsentMapper.selectByPrimaryKey(key);
         if (consent != null)
@@ -87,7 +87,7 @@ public class CustomOAuth2AuthorizationConsentService implements OAuth2Authorizat
                     "The RegisteredClient with id '" + registeredClientId + "' was not found in the RegisteredClientRepository.");
         }
 
-        String principalName = consent.getPrincipalName();
+        String principalName = consent.getUserId();
 
         OAuth2AuthorizationConsent.Builder builder = OAuth2AuthorizationConsent.withId(registeredClientId, principalName);
         String authorizationConsentAuthorities = consent.getAuthorities();

@@ -6,10 +6,10 @@ import java.io.Serializable;
 
 /**
  * 表说明:
- * <p>
+ * 首次授权同意记录
  * <p>
  * 表名:cloud_oauth2_authorization_consent
- * Date: 2023/04/07
+ * Date: 2023/04/13
  */
 @Data
 public class CloudOauth2AuthorizationConsent extends CloudOauth2AuthorizationConsentKey implements Serializable {

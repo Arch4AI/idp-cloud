@@ -19,7 +19,6 @@ import com.dataease.cloud.security.exception.SecurityException;
 import com.dataease.cloud.security.profile.request.UserUpdateProfileRequest;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.stereotype.Service;
@@ -38,7 +37,6 @@ import java.util.stream.Collectors;
  **/
 @Service
 @Transactional(rollbackFor = Exception.class)
-@Lazy
 @Slf4j
 public class UserService {
 
