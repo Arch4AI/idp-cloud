@@ -2,10 +2,16 @@ package com.dataease.cloud.service;
 
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ReUtil;
+import com.dataease.cloud.base.domain.CloudOauth2AuthorizationConsentExample;
+import com.dataease.cloud.base.domain.CloudOauth2AuthorizationExample;
 import com.dataease.cloud.base.domain.CloudOauth2RegisteredClient;
 import com.dataease.cloud.base.domain.CloudOauth2RegisteredClientExample;
+import com.dataease.cloud.base.mapper.CloudOauth2AuthorizationConsentMapper;
+import com.dataease.cloud.base.mapper.CloudOauth2AuthorizationMapper;
 import com.dataease.cloud.base.mapper.CloudOauth2RegisteredClientMapper;
 import com.dataease.cloud.constant.RegxContants;
+import com.dataease.cloud.entity.request.RegisteredClientModifyReq;
+import com.dataease.cloud.entity.request.RegisteredClientQueryReq;
 import com.dataease.cloud.exception.CloudException;
 import jakarta.annotation.Resource;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -34,6 +40,12 @@ public class Oauth2RegisteredClientSerive {
     @Resource
     private CloudOauth2RegisteredClientMapper cloudOauth2RegisteredClientMapper;
 
+    @Resource
+    private CloudOauth2AuthorizationMapper cloudOauth2AuthorizationMapper;
+
+    @Resource
+    private CloudOauth2AuthorizationConsentMapper cloudOauth2AuthorizationConsentMapper;
+
     //默认的授权类型
     private static List<AuthorizationGrantType> defaultGrantTypes = new ArrayList<>() {{
         add(AuthorizationGrantType.AUTHORIZATION_CODE);
@@ -46,6 +58,99 @@ public class Oauth2RegisteredClientSerive {
         add(OidcScopes.OPENID);
         add(OidcScopes.PROFILE);
     }};
+
+    /**
+     * 查询所有的客户端
+     * 条件暂时未确定
+     * 后续可以根据条件去查询
+     * @return
+     */
+    public List<CloudOauth2RegisteredClient> list(RegisteredClientQueryReq req){
+        CloudOauth2RegisteredClientExample example = new CloudOauth2RegisteredClientExample();
+        CloudOauth2RegisteredClientExample.Criteria criteria = example.createCriteria();
+        if(StringUtils.hasText(req.getClientName()))
+            criteria.andClientNameLike(req.getClientName());
+        if(req.getIsExpire() != null){
+            if(req.getIsExpire()){
+                criteria.andClientSecretExpiresAtLessThan(Calendar.getInstance().getTime());
+            }else{
+                criteria.andClientSecretExpiresAtGreaterThanOrEqualTo(Calendar.getInstance().getTime());
+            }
+        }
+        if(StringUtils.hasText(req.getScope()))
+            criteria.andScopesLike(req.getScope());
+        return cloudOauth2RegisteredClientMapper.selectByExample(example);
+    }
+
+    /**
+     * 重置密钥
+     * @param id
+     * @param secret 可选
+     */
+    public void resetClientSecret(String id,String secret){
+        CloudOauth2RegisteredClient client = cloudOauth2RegisteredClientMapper.selectByPrimaryKey(id);
+        if(client == null)
+            CloudException.throwException("client not found");
+        // 如果不为空且已经到期的话需要修改他为null
+        if(client.getClientSecretExpiresAt() != null && client.getClientSecretExpiresAt().before(Calendar.getInstance().getTime()))
+            client.setClientSecretExpiresAt(null);
+        if(StringUtils.hasText(secret)){
+            //需要判断密钥是不是已经存在或者是不是和现在的一致
+            if(client.getClientSecret().equals(secret))
+                CloudException.throwException("client secret not modify");
+            CloudOauth2RegisteredClientExample clientExample = new CloudOauth2RegisteredClientExample();
+            clientExample.createCriteria().andClientSecretEqualTo(secret);
+            if(cloudOauth2RegisteredClientMapper.countByExample(clientExample)>0)
+                CloudException.throwException("client secret exist");
+            client.setClientSecret(secret);
+        }else{
+            client.setClientSecret(IdUtil.nanoId(32));
+        }
+        //直接修改全部才可以覆盖掉已经到期的时间限制
+        cloudOauth2RegisteredClientMapper.updateByPrimaryKey(client);
+    }
+
+
+    /**
+     * 修改客户端信息
+     * @param id
+     * @param req
+     */
+    public void updateClient(String id, RegisteredClientModifyReq req){
+        CloudOauth2RegisteredClient client = cloudOauth2RegisteredClientMapper.selectByPrimaryKey(id);
+        if(client == null)
+            CloudException.throwException("client not found");
+        if(!StringUtils.hasText(req.getClientName()) && !StringUtils.hasText(req.getScopes()) && req.getClientSecretExpiresAt() == null)
+            CloudException.throwException("Confirm the attributes that you want to modify");
+        if(StringUtils.hasText(req.getScopes()) && notContains(stringtoSet(req.getScopes()), supportSocops()))
+            CloudException.throwException("scope not support");
+        //判断是不是符合要求
+        client = new CloudOauth2RegisteredClient();
+        client.setId(id);
+        if(StringUtils.hasText(req.getClientName()))
+            client.setClientName(req.getClientName());
+        if(req.getClientSecretExpiresAt() != null)
+            client.setClientSecretExpiresAt(req.getClientSecretExpiresAt());
+        if(StringUtils.hasText(req.getScopes()))
+            client.setScopes(req.getScopes());
+        cloudOauth2RegisteredClientMapper.updateByPrimaryKeySelective(client);
+    }
+
+    /**
+     * 根据ID移除客户端
+     * @param id
+     */
+    public void deleteById(String id){
+        cloudOauth2RegisteredClientMapper.deleteByPrimaryKey(id);
+        //移除这个客户端关联的认证记录
+        CloudOauth2AuthorizationExample authorizationExample = new CloudOauth2AuthorizationExample();
+        authorizationExample.createCriteria().andRegisteredClientIdEqualTo(id);
+        cloudOauth2AuthorizationMapper.deleteByExample(authorizationExample);
+        //移除首次同意认证的记录
+        CloudOauth2AuthorizationConsentExample consentExample = new CloudOauth2AuthorizationConsentExample();
+        consentExample.createCriteria().andRegisteredClientIdEqualTo(id);
+        cloudOauth2AuthorizationConsentMapper.deleteByExample(consentExample);
+    }
 
     /**
      * 创建一个oauth客户端

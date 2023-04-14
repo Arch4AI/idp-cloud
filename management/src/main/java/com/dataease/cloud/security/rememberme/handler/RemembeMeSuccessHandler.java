@@ -25,14 +25,12 @@ import java.io.IOException;
 public class RemembeMeSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
-        log.info("*******************remeber me authentication success****************");
         AuthenticationSuccessHandler.super.onAuthenticationSuccess(request, response, chain, authentication);
     }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         //设置httpsession的超时时间 1天
-        log.info("*******************remeber me authentication success****************");
         onAuthenticationSuccess(request, response, authentication);
     }
 }

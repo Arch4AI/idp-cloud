@@ -37,7 +37,6 @@ public class CustomSessionRegistryImpl implements SessionRegistry, ApplicationLi
 
     @Override
     public List<SessionInformation> getAllSessions(Object principal, boolean includeExpiredSessions) {
-        log.info("session filter in");
         if (principal instanceof UserDetails) {
             // 获取sessionId的集合
             Set<String> sessionsUsedByPrincipal = sessionService.getAllSessions(((UserDetails) principal).getUsername());
@@ -71,7 +70,6 @@ public class CustomSessionRegistryImpl implements SessionRegistry, ApplicationLi
 
     @Override
     public void refreshLastRequest(String sessionId) {
-        log.info("come in here");
         Assert.hasText(sessionId, "SessionId required as per interface contract");
         SessionInformation info = getSessionInformation(sessionId);
         if (info != null) {

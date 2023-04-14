@@ -76,4 +76,9 @@ public class Constants {
      * x轴允许的偏移值
      */
     public static final Integer SLIDER_CAPTCHA_ALLOW_DEVIATION = 5;
+
+    /**
+     * redis订阅主题
+     */
+    public static final String TOPIC_CUSTOMER = "cloud::ws::msg";
 }

@@ -1,6 +1,5 @@
 package com.dataease.cloud.security.jose;
 
-import cn.hutool.core.codec.Base64;
 import com.nimbusds.jose.jwk.Curve;
 import com.nimbusds.jose.jwk.ECKey;
 import com.nimbusds.jose.jwk.OctetSequenceKey;
@@ -33,8 +32,6 @@ public final class Jwks {
         KeyPair keyPair = KeyGeneratorUtils.generateRsaKey();
         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
         RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
-        log.info("pk:{}", Base64.encode(publicKey.getEncoded()));
-        log.info("prk:{}", Base64.encode(privateKey.getEncoded()));
         // @formatter:off
         return new RSAKey.Builder(publicKey)
                 .privateKey(privateKey)

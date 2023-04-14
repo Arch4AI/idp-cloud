@@ -223,7 +223,7 @@ public class SessionService {
 
     /**
      * 获取session列表
-     *
+     * 这个估计还得改一下代码不太支持
      * @return
      */
     public List<CloudSession> listSessions() {
@@ -253,7 +253,6 @@ public class SessionService {
      */
     public void kickoutSession(String sessionId) {
         //判断是不是在redis存在
-        log.info("sessionId:{}", sessionId);
         Session session = sessionRepository.findById(sessionId);
         if (session != null) {
             session.isExpired();

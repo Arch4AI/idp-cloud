@@ -61,7 +61,6 @@ public class PersistentTokenBasedRememberMeService extends AbstractRememberMeSer
         }
         String presentedSeries = cookieTokens[0];
         String presentedToken = cookieTokens[1];
-        log.info("into remeber-me filter");
         CloudRememberMeToken token = this.tokenRepository.getTokenForSeries(presentedSeries);
         if (token == null) {
             throw new RememberMeAuthenticationException("No persistent token found for series id: " + presentedSeries);

@@ -79,6 +79,41 @@
       "defaultValue": false
     },
     {
+      "name": "cloud.common.enable-request-body-encrypt",
+      "type": "java.lang.Boolean",
+      "description": "启用requestBody加解密 默认不启用",
+      "sourceType": "com.dataease.cloud.properties.CommonProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "cloud.common.enable-rate-limit",
+      "type": "java.lang.Boolean",
+      "description": "启用接口限流 默认不启用",
+      "sourceType": "com.dataease.cloud.properties.CommonProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "cloud.common.rate-limit-qps",
+      "type": "java.lang.Double",
+      "description": "限流QPS 默认50",
+      "sourceType": "com.dataease.cloud.properties.CommonProperties",
+      "defaultValue": 50
+    },
+    {
+      "name": "cloud.common.rate-limit-time",
+      "type": "java.lang.Long",
+      "description": "限流时间 默认100",
+      "sourceType": "com.dataease.cloud.properties.CommonProperties",
+      "defaultValue": 100
+    },
+    {
+      "name": "cloud.common.rate-limit-time-unit",
+      "type": "java.util.concurrent.TimeUnit",
+      "description": "限流时间单位 默认microseconds",
+      "sourceType": "com.dataease.cloud.properties.CommonProperties",
+      "defaultValue": "microseconds"
+    },
+    {
       "name": "cloud.sms.provider",
       "type": "com.dataease.cloud.constant.SmsProvider",
       "description": "短信提供商",

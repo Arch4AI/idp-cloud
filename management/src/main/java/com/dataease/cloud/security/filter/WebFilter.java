@@ -1,4 +1,4 @@
-package com.dataease.cloud.filter;
+package com.dataease.cloud.security.filter;
 
 import com.dataease.cloud.constant.Constants;
 import jakarta.servlet.FilterChain;
