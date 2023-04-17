@@ -27,7 +27,7 @@ public class CommonProperties {
     /**
      * session到期时间<这里指的只是登录后的Session>
      */
-    private Long sessionTimeOut = 1800l;
+    private int sessionTimeOut = 1800;
 
 
     /**
@@ -78,7 +78,7 @@ public class CommonProperties {
     private static long rateLimitTime=100;
 
     /**
-     * 限流时间默认单位
+     * 限流时间默认单位 默认是微秒
      */
     private static TimeUnit rateLimitTimeUnit = TimeUnit.MICROSECONDS;
 

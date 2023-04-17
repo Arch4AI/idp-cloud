@@ -71,7 +71,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
         // 目前 是仅登录
         if (principal instanceof LocalUser) {
             //当用户登录成功后 将session的时间设置为1天
-            request.getSession().setMaxInactiveInterval(commonProperties.getSessionTimeOut().intValue());
+            request.getSession().setMaxInactiveInterval(commonProperties.getSessionTimeOut());
             LocalUser localUser = (LocalUser) principal;
             localUser.setPassword(null);
             CloudUserLoginLog cloudUserLoginLog = new CloudUserLoginLog();

@@ -3,12 +3,14 @@ package com.dataease.cloud.security.profile.filter;
 import cn.hutool.core.io.IoUtil;
 import com.dataease.cloud.constant.Constants;
 import com.dataease.cloud.entity.response.Result;
+import com.dataease.cloud.properties.CommonProperties;
 import com.dataease.cloud.security.LocalUser;
 import com.dataease.cloud.security.exception.SecurityException;
 import com.dataease.cloud.security.profile.ProfileAuthenticationToken;
 import com.dataease.cloud.security.profile.request.UserUpdateProfileRequest;
 import com.dataease.cloud.service.ExternalAuthSourceService;
 import com.dataease.cloud.service.UserService;
+import com.dataease.cloud.utils.EncryptUtils;
 import com.dataease.cloud.utils.ObjectMapperUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.undertow.util.Headers;
@@ -78,6 +80,10 @@ public class ProfileAuthenticationFilter extends AbstractAuthenticationProcessin
         //转码
         try {
             String body = IoUtil.readUtf8(request.getInputStream());
+            //如果开启了加密的话 需要在这里先解密
+            if(CommonProperties.isEnableRequestBodyEncrypt()){
+                body = String.valueOf(EncryptUtils.aesDecrypt(body));
+            }
             req = this.objectMapper.readValue(body, UserUpdateProfileRequest.class);
         } catch (Exception e) {
             // 参数错误

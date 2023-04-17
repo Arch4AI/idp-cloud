@@ -329,7 +329,7 @@ public class SliderCaptchaUtils {
             String base64 = Base64.encode(byteArrayOutputStream.toByteArray());
             return String.format("data:image/%s;base64,%s", type, base64);
         } catch (IOException e) {
-            log.error("图片资源转换BASE64失败", e);
+            log.error("get image source error:", e);
         }
         return null;
     }

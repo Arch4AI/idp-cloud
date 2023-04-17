@@ -2,12 +2,14 @@ package com.dataease.cloud.security.register.filter;
 
 import cn.hutool.core.io.IoUtil;
 import com.dataease.cloud.constant.Constants;
+import com.dataease.cloud.properties.CommonProperties;
 import com.dataease.cloud.security.LocalUser;
 import com.dataease.cloud.security.exception.SecurityException;
 import com.dataease.cloud.security.register.RegisterAuthenticationToken;
 import com.dataease.cloud.security.register.request.RegisterRequest;
 import com.dataease.cloud.service.ExternalAuthSourceService;
 import com.dataease.cloud.service.UserService;
+import com.dataease.cloud.utils.EncryptUtils;
 import com.dataease.cloud.utils.ObjectMapperUtils;
 import io.undertow.util.Headers;
 import jakarta.servlet.ServletException;
@@ -69,6 +71,10 @@ public class RegisterAuthenticationFilter extends AbstractAuthenticationProcessi
         //转码
         try {
             String body = IoUtil.readUtf8(request.getInputStream());
+            //如果开启了加密的话 需要在这里先解密
+            if(CommonProperties.isEnableRequestBodyEncrypt()){
+                body = String.valueOf(EncryptUtils.aesDecrypt(body));
+            }
             req = ObjectMapperUtils.simpleObjectMapper.readValue(body, RegisterRequest.class);
         } catch (Exception e) {
             // 参数错误

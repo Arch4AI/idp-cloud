@@ -5,11 +5,13 @@ import cn.hutool.core.io.IoUtil;
 import com.dataease.cloud.base.domain.CloudUser;
 import com.dataease.cloud.constant.Constants;
 import com.dataease.cloud.entity.response.Result;
+import com.dataease.cloud.properties.CommonProperties;
 import com.dataease.cloud.security.exception.SecurityException;
 import com.dataease.cloud.security.external.ExternalAuthenticationToken;
 import com.dataease.cloud.security.external.request.ExternalSecurityRequest;
 import com.dataease.cloud.security.external.response.ExternalSecurityResponse;
 import com.dataease.cloud.service.ExternalAuthSourceService;
+import com.dataease.cloud.utils.EncryptUtils;
 import com.dataease.cloud.utils.ObjectMapperUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fit2cloud.cloud.oauth.model.AuthUser;
@@ -74,6 +76,10 @@ public class ExternalAuthenticationFilter extends AbstractAuthenticationProcessi
         try {
             //使用jackson去转对象
             String body = IoUtil.readUtf8(request.getInputStream());
+            //如果开启了加密的话 需要在这里先解密
+            if(CommonProperties.isEnableRequestBodyEncrypt()){
+                body = String.valueOf(EncryptUtils.aesDecrypt(body));
+            }
             externalSecurityRequest = objectMapper.readValue(body, ExternalSecurityRequest.class);
         } catch (Exception e) {
             // 参数错误

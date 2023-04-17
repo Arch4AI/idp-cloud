@@ -29,7 +29,6 @@ import java.lang.reflect.Type;
 @ConditionalOnProperty(prefix = "cloud.common",name = "enable-request-body-encrypt",havingValue = "true")
 public class DecryptRequestBodyAdvice implements RequestBodyAdvice {
 
-    // 如果是包含了不需要解密的就不进来
     @Override
     public boolean supports(MethodParameter methodParameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
         return methodParameter.getMethod().isAnnotationPresent(NoDecryptBody.class) ? false : true;

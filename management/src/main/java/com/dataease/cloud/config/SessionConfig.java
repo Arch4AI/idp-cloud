@@ -58,7 +58,7 @@ public class SessionConfig {
 
     @Bean
     public PersistentTokenBasedRememberMeService rememberMeService(RememberMeDetailsService rememberMeDetailsService, CommonProperties commonProperties, RememberMeTokenService rememberMeTokenService) {
-        PersistentTokenBasedRememberMeService rememberMeService = new PersistentTokenBasedRememberMeService(commonProperties.getRememberTokenKey(), rememberMeDetailsService, rememberMeTokenService, commonProperties.getSessionTimeOut().intValue());
+        PersistentTokenBasedRememberMeService rememberMeService = new PersistentTokenBasedRememberMeService(commonProperties.getRememberTokenKey(), rememberMeDetailsService, rememberMeTokenService, commonProperties.getSessionTimeOut());
         //总是记住我 不需要额外参数
         rememberMeService.setAlwaysRemember(commonProperties.isAutoRememberMe());
         //记住我的cookie名称

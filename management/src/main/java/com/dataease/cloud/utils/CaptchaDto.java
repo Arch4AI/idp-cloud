@@ -3,7 +3,7 @@ package com.dataease.cloud.utils;
 import lombok.Data;
 
 /**
- * [描述当前类是什么作用]
+ * 返回滑动验证的构建信息
  *
  * @author ShrChang.Liu
  * @version v1.0

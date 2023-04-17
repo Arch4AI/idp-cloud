@@ -4,12 +4,14 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ReUtil;
 import com.dataease.cloud.constant.Constants;
 import com.dataease.cloud.constant.RegxContants;
+import com.dataease.cloud.properties.CommonProperties;
 import com.dataease.cloud.security.LocalUser;
 import com.dataease.cloud.security.exception.SecurityException;
 import com.dataease.cloud.security.phone.PhoneAuthenticationToken;
 import com.dataease.cloud.security.phone.request.PhoneLoginRequest;
 import com.dataease.cloud.service.ExternalAuthSourceService;
 import com.dataease.cloud.service.UserService;
+import com.dataease.cloud.utils.EncryptUtils;
 import com.dataease.cloud.utils.ObjectMapperUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.undertow.util.Headers;
@@ -77,6 +79,10 @@ public class PhoneAuthenticationFilter extends AbstractAuthenticationProcessingF
         try {
             //使用jackson去转对象
             String body = IoUtil.readUtf8(request.getInputStream());
+            //如果开启了加密的话 需要在这里先解密
+            if(CommonProperties.isEnableRequestBodyEncrypt()){
+                body = String.valueOf(EncryptUtils.aesDecrypt(body));
+            }
             phoneLoginRequest = objectMapper.readValue(body, PhoneLoginRequest.class);
         } catch (Exception e) {
             // 参数错误
