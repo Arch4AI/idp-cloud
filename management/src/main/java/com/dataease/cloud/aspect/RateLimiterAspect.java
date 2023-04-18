@@ -13,6 +13,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -55,8 +57,13 @@ public class RateLimiterAspect {
             RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
             //从获取RequestAttributes中获取HttpServletRequest的信息
             HttpServletRequest request = (HttpServletRequest) requestAttributes.resolveReference(RequestAttributes.REFERENCE_REQUEST);
-            //获取用户ID
-            String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+            //获取用户ID 需要注意这里会返回匿名的 如果是匿名的话 需要返回IP地址
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String userId = null;
+            //判断已存在且不是匿名的token
+            if(authentication != null && !(authentication instanceof AnonymousAuthenticationToken)){
+                userId = authentication.getName();
+            }
             //获取用户或者IP
              String prefix = !StringUtils.hasText(userId) ? IpUtils.getIpAddr(request) : userId;
             //获取key

@@ -27,7 +27,6 @@ public class ResultResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 
     @Override
     public Object beforeBodyWrite(Object o, MethodParameter methodParameter, MediaType mediaType, Class<? extends HttpMessageConverter<?>> converterType, ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
-        log.info("******************Returning results uniformly**************");
         // 处理空值
         if (o == null && StringHttpMessageConverter.class.isAssignableFrom(converterType)) {
             return null;
