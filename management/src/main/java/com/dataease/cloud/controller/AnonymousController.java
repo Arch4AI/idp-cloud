@@ -8,10 +8,7 @@ import com.dataease.cloud.utils.SliderCaptchaUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.TimeUnit;
 
@@ -72,6 +69,17 @@ public class AnonymousController {
         //移除key
         stringRedisTemplate.delete(Constants.SLIDER_CAPTCHA_REDIS_KEY + request.getTicket());
         return Result.success("validate success");
+    }
+
+
+    @GetMapping("{id}/test")
+    public Result test1(@PathVariable("id")String id){
+        return Result.success(id);
+    }
+
+    @PostMapping("{id}/test")
+    public Result test2(@PathVariable("id")String id){
+        return Result.success(id);
     }
 
 }

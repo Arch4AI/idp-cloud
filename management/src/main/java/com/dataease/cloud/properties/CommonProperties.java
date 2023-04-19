@@ -2,7 +2,6 @@ package com.dataease.cloud.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
@@ -20,40 +19,9 @@ import java.util.concurrent.TimeUnit;
 public class CommonProperties {
 
     /**
-     * 记住我cookie加密Key
-     */
-    private String rememberTokenKey = "cloud_idp";
-
-    /**
-     * session到期时间<这里指的只是登录后的Session>
-     */
-    private int sessionTimeOut = 1800;
-
-
-    /**
      * 前端VITE的地址查询
      */
     private String viteAddr = "http://127.0.0.1:4000";
-
-    /**
-     * 记住我的cookieName
-     */
-    private String rememberCookieName = "CLOUD_REMEMBER_ME";
-
-    /**
-     * 单用户最大在线数量
-     */
-    private int maximumSessions = -1;
-
-    /**
-     * 是否开启记住我 默认true
-     */
-    private boolean autoRememberMe = true;
-
-    /**
-     * 记住我的token时间 秒 默认两个星期
-     */
-    private int rememberMeTokenTime = AbstractRememberMeServices.TWO_WEEKS_S;
 
     /**
      * 开启IP归属地查询

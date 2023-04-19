@@ -3,9 +3,12 @@ package com.dataease.cloud.service;
 import com.dataease.cloud.base.domain.CloudRememberMeToken;
 import com.dataease.cloud.base.domain.CloudRememberMeTokenExample;
 import com.dataease.cloud.base.mapper.CloudRememberMeTokenMapper;
-import com.dataease.cloud.base.mapper.CloudSessionMapper;
+import com.dataease.cloud.constant.LoginType;
+import com.dataease.cloud.security.LocalUser;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.session.Session;
 import org.springframework.session.SessionRepository;
 import org.springframework.stereotype.Service;
@@ -26,10 +29,10 @@ public class RememberMeTokenService {
     private CloudRememberMeTokenMapper cloudRememberMeTokenMapper;
 
     @Resource
-    private CloudSessionMapper cloudSessionMapper;
-
-    @Resource
     private SessionRepository sessionRepository;
+
+    @Autowired(required = false)
+    private SessionRegistry sessionRegistry;
 
 
     /**
@@ -47,7 +50,6 @@ public class RememberMeTokenService {
      * @param token
      */
     public void updateToken(CloudRememberMeToken token) {
-        //这个地方需要判断一些东西 如果他的sessionId变更了 说明需要将原来的session移除掉才行 保证一个token绑定到一个session上
         // 这里可以确保用户如果只把remeberMe换到另外一个地方去执行 就只有一个生效 原来的session立即失效 这个和是否多用户登录无关
         CloudRememberMeToken oldToken = cloudRememberMeTokenMapper.selectByPrimaryKey(token.getSeries());
         if (!StringUtils.equals(oldToken.getSessionId(), token.getSessionId())) {
@@ -56,7 +58,13 @@ public class RememberMeTokenService {
             if (session != null) {
                 sessionRepository.deleteById(oldToken.getSessionId());
             }
-            cloudSessionMapper.deleteByPrimaryKey(oldToken.getSessionId());
+            // 这个地方去保存一下 如果是rememberMe进来的话
+            if(sessionRegistry != null){
+                LocalUser localUser = new LocalUser();
+                localUser.setUserId(token.getUserId());
+                localUser.setLoginType(LoginType.REMEMBER_ME);
+                sessionRegistry.registerNewSession(token.getSessionId(), localUser);
+            }
         }
         cloudRememberMeTokenMapper.updateByPrimaryKeySelective(token);
     }

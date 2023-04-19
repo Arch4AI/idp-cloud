@@ -14,7 +14,7 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
  * @author ShrChang.Liu
  * @date 2022-05-27
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class RedisSubscriberConfig {
     /**
      * 消息监听适配器，注入接受消息方法

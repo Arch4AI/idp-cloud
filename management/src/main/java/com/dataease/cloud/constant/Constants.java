@@ -81,4 +81,10 @@ public class Constants {
      * redis订阅主题
      */
     public static final String TOPIC_CUSTOMER = "cloud::ws::msg";
+
+    /**
+     * session清理的cron表达式
+     * 仅对sessionType是redis和mysql有效
+     */
+    public static final String SESSION_CLEANUP_CRON = "0 2/5 * * * ?";
 }

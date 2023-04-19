@@ -3,9 +3,8 @@ package com.dataease.cloud.security.handler;
 import com.dataease.cloud.base.domain.CloudUserLoginLog;
 import com.dataease.cloud.base.mapper.CloudUserLoginLogMapper;
 import com.dataease.cloud.entity.response.Result;
-import com.dataease.cloud.properties.CommonProperties;
+import com.dataease.cloud.properties.SessionProperties;
 import com.dataease.cloud.security.LocalUser;
-import com.dataease.cloud.service.SessionService;
 import com.dataease.cloud.utils.AddressUtils;
 import com.dataease.cloud.utils.CommonUtils;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -53,10 +52,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
     private AuthorizationServerSettings authorizationServerSettings;
 
     @Resource
-    private SessionService sessionService;
-
-    @Resource
-    private CommonProperties commonProperties;
+    private SessionProperties sessionProperties;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
@@ -71,7 +67,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
         // 目前 是仅登录
         if (principal instanceof LocalUser) {
             //当用户登录成功后 将session的时间设置为1天
-            request.getSession().setMaxInactiveInterval(commonProperties.getSessionTimeOut());
+            request.getSession().setMaxInactiveInterval(sessionProperties.getSessionTimeOut());
             LocalUser localUser = (LocalUser) principal;
             localUser.setPassword(null);
             CloudUserLoginLog cloudUserLoginLog = new CloudUserLoginLog();
@@ -90,7 +86,6 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
             cloudUserLoginLog.setMsg("登录成功");
             cloudUserLoginLog.setLoginLocation(AddressUtils.getRealAddressByIP(cloudUserLoginLog.getIp()));//登录地址
             cloudUserLoginLogMapper.insertSelective(cloudUserLoginLog);
-            sessionService.addOrUpdateSessionRecord(request.getSession(), localUser.getUserId());
 
             //判断是不是有oauth2.0登录的请求 直接重定向？
             HttpSessionRequestCache cache = new HttpSessionRequestCache();
@@ -112,7 +107,6 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
                     return;
                 }
             }
-
         }
 
         //默认返回200

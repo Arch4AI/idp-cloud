@@ -11,7 +11,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * 启动器
  * 默认去掉quartz自动初始化 采用自己的{@link com.dataease.cloud.quartz.config.QuartzAutoConfiguration}
  */
-@SpringBootApplication(exclude = {QuartzAutoConfiguration.class})
+@SpringBootApplication(exclude = {
+        QuartzAutoConfiguration.class
+})
 @EnableTransactionManagement
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @EnableAsync

@@ -18,7 +18,7 @@ import org.springframework.core.env.Environment;
  * @version v1.0
  * @date 2023/3/7 2:12 PM
  **/
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @PropertySource("classpath:properties/global.properties")
 public class CommonConfig {
 

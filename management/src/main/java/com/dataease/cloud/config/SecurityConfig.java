@@ -1,32 +1,31 @@
 package com.dataease.cloud.config;
 
-import com.dataease.cloud.properties.CommonProperties;
+import com.dataease.cloud.properties.SessionProperties;
 import com.dataease.cloud.security.CustomSecurityConfigurerAdapter;
 import com.dataease.cloud.security.exclude.DefaultSecurityExcludes;
 import com.dataease.cloud.security.handler.CustomAccessDeniedHandler;
 import com.dataease.cloud.security.handler.CustomAuthenticationEntryPoint;
 import com.dataease.cloud.security.handler.CustomLogoutSuccessHandler;
-import com.dataease.cloud.security.rememberme.service.PersistentTokenBasedRememberMeService;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 /**
  * security 配置见下
- *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/6 1:55 PM
  **/
 @Configuration(proxyBeanMethods = false)
-@Slf4j
+@ConditionalOnBean({SessionProperties.class})
 public class SecurityConfig {
 
     /**
@@ -40,11 +39,11 @@ public class SecurityConfig {
     @Order
     public SecurityFilterChain defaultSecurityWebFilterChain(HttpSecurity httpSecurity,
                                                              SessionRegistry sessionRegistry,
-                                                             CommonProperties commonProperties,
+                                                             SessionProperties sessionProperties,
                                                              CustomAccessDeniedHandler customAccessDeniedHandler,
                                                              CustomAuthenticationEntryPoint customAuthenticationEntryPoint,
                                                              CustomLogoutSuccessHandler customLogoutSuccessHandler,
-                                                             PersistentTokenBasedRememberMeService rememberMeService,
+                                                             RememberMeServices rememberMeServices,
                                                              CustomSecurityConfigurerAdapter customSecurityConfigurerAdapter) throws Exception {
         return httpSecurity.authorizeHttpRequests().requestMatchers(DefaultSecurityExcludes.excludes)
                 .permitAll()
@@ -66,12 +65,13 @@ public class SecurityConfig {
                 .and()
                 .sessionManagement()
                 //负一代表无数次登录
-                .maximumSessions(commonProperties.getMaximumSessions())
+                .maximumSessions(sessionProperties.getMaximumSessions())
+                .maxSessionsPreventsLogin(sessionProperties.isMaxSessionsPreventsLogin())
                 .sessionRegistry(sessionRegistry)
                 .and()
                 .and()
                 .rememberMe()
-                .rememberMeServices(rememberMeService)
+                .rememberMeServices(rememberMeServices)
                 .and()
                 .apply(customSecurityConfigurerAdapter)
                 .and()

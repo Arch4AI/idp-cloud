@@ -5,7 +5,6 @@ import org.mybatis.generator.api.ProgressCallback;
 import org.mybatis.generator.config.Configuration;
 import org.mybatis.generator.config.xml.ConfigurationParser;
 import org.mybatis.generator.internal.DefaultShellCallback;
-import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -34,7 +33,13 @@ public class MyTest {
 //        String prk = "shitouzhu";
 //        System.out.println(AddressUtils.getRealAddressByIP("120.196.86.13"));
 //        generator();
-        System.out.println(JdbcTokenRepositoryImpl.CREATE_TABLE_SQL);
+//        System.out.println(JdbcTokenRepositoryImpl.CREATE_TABLE_SQL);
+//        AntPathRequestMatcher matcher = new AntPathRequestMatcher("/user/{userId}/add");
+//        HttpServletRequest httpServletRequest = new HttpServletRequestImpl();
+
+//        String key = "spring:session:sessions:2407437c-4a3c-49da-a6ee-81b10a174ced";
+//        String baseKey = Constants.redisNamespace+":sessions:";
+//        System.out.println(key.substring(baseKey.length()));
     }
 
     private static void generator() throws Exception {

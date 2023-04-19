@@ -24,57 +24,20 @@
       "name": "cloud.quartz",
       "type": "com.dataease.cloud.quartz.properties.CloudQuartzProperties",
       "sourceType": "com.dataease.cloud.quartz.properties.CloudQuartzProperties"
+    },
+    {
+      "name": "cloud.session",
+      "type": "com.dataease.cloud.properties.SessionProperties",
+      "sourceType": "com.dataease.cloud.properties.SessionProperties"
     }
   ],
   "properties": [
-    {
-      "name": "cloud.common.remember-token-key",
-      "type": "java.lang.String",
-      "description": "记住我的token-key",
-      "sourceType": "com.dataease.cloud.properties.CommonProperties",
-      "defaultValue": "cloud_idp"
-    },
-    {
-      "name": "cloud.common.session-time-out",
-      "type": "java.lang.Integer",
-      "description": "会话超时时间",
-      "sourceType": "com.dataease.cloud.properties.CommonProperties",
-      "defaultValue": 86400
-    },
     {
       "name": "cloud.common.vite-addr",
       "type": "java.lang.String",
       "description": "前端地址",
       "sourceType": "com.dataease.cloud.properties.CommonProperties",
       "defaultValue": "http://127.0.0.1:4000"
-    },
-    {
-      "name": "cloud.common.remember-cookie-name",
-      "type": "java.lang.String",
-      "description": "记住我的CookieName",
-      "sourceType": "com.dataease.cloud.properties.CommonProperties",
-      "defaultValue": "CLOUD_REMEMBER_ME"
-    },
-    {
-      "name": "cloud.common.maximum-sessions",
-      "type": "java.lang.Integer",
-      "description": "单用户最大在线数，-1代表无限制",
-      "sourceType": "com.dataease.cloud.properties.CommonProperties",
-      "defaultValue": -1
-    },
-    {
-      "name": "cloud.common.auto-remember-me",
-      "type": "java.lang.Boolean",
-      "description": "是否自动记住我,默认是true",
-      "sourceType": "com.dataease.cloud.properties.CommonProperties",
-      "defaultValue": true
-    },
-    {
-      "name": "cloud.common.remember-me-token-time",
-      "type": "java.lang.Integer",
-      "description": "记住我时长单位秒 默认两周",
-      "sourceType": "com.dataease.cloud.properties.CommonProperties",
-      "defaultValue": 1209600
     },
     {
       "name": "cloud.common.address-enabled",
@@ -243,6 +206,69 @@
       "type": "java.util.Map<String,Object>",
       "description": "额外属性，可以覆盖原生的quartz的属性",
       "sourceType": "com.dataease.cloud.quartz.properties.CloudQuartzProperties"
+    },
+    {
+      "name": "cloud.session.remember-token-key",
+      "type": "java.lang.String",
+      "description": "记住我的token-key",
+      "sourceType": "com.dataease.cloud.properties.SessionProperties",
+      "defaultValue": "cloud_idp"
+    },
+    {
+      "name": "cloud.session.session-time-out",
+      "type": "java.lang.Integer",
+      "description": "会话超时时间",
+      "sourceType": "com.dataease.cloud.properties.SessionProperties",
+      "defaultValue": 86400
+    },
+    {
+      "name": "cloud.session.remember-cookie-name",
+      "type": "java.lang.String",
+      "description": "记住我的CookieName",
+      "sourceType": "com.dataease.cloud.properties.SessionProperties",
+      "defaultValue": "CLOUD_REMEMBER_ME"
+    },
+    {
+      "name": "cloud.session.maximum-sessions",
+      "type": "java.lang.Integer",
+      "description": "单用户最大在线数，-1代表无限制",
+      "sourceType": "com.dataease.cloud.properties.SessionProperties",
+      "defaultValue": -1
+    },
+    {
+      "name": "cloud.session.auto-remember-me",
+      "type": "java.lang.Boolean",
+      "description": "是否自动记住我,默认是true",
+      "sourceType": "com.dataease.cloud.properties.SessionProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "cloud.session.remember-me-token-time",
+      "type": "java.lang.Integer",
+      "description": "记住我时长单位秒 默认两周",
+      "sourceType": "com.dataease.cloud.properties.SessionProperties",
+      "defaultValue": 1209600
+    },
+    {
+      "name": "cloud.session.session-type",
+      "type": "com.dataease.cloud.constant.SessionType",
+      "description": "session持久化类型",
+      "sourceType": "com.dataease.cloud.properties.SessionProperties",
+      "defaultValue": "jdbc"
+    },
+    {
+      "name": "cloud.session.max-sessions-prevents-login",
+      "type": "java.lang.Boolean",
+      "description": "防止超过最大session登录,默认不禁止",
+      "sourceType": "com.dataease.cloud.properties.SessionProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "cloud.session.redis-namespace",
+      "type": "java.lang.String",
+      "description": "redis默认的值",
+      "sourceType": "com.dataease.cloud.properties.SessionProperties",
+      "defaultValue": "spring:session"
     }
   ]
 }
