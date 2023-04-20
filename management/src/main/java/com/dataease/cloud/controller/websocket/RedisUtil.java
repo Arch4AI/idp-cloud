@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Redis发送信息 需要一个订阅者
+ *
  * @author ShrChang.Liu
  * @date 2022-05-27
  */
@@ -17,6 +18,7 @@ public class RedisUtil {
 
     /**
      * 发布
+     *
      * @param key
      */
     public void publish(String key, String value) {

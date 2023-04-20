@@ -30,8 +30,8 @@ CREATE TABLE cloud_spring_session_attributes
 DROP TABLE IF EXISTS cloud_redis_session;
 CREATE TABLE `cloud_redis_session`
 (
-    `session_id`      varchar(64) NOT NULL COMMENT 'session_id',
-    `user_id`         varchar(64) NOT NULL COMMENT '用户ID',
+    `session_id` varchar(64) NOT NULL COMMENT 'session_id',
+    `user_id`    varchar(64) NOT NULL COMMENT '用户ID',
     PRIMARY KEY (`session_id`),
-    INDEX `index_user_id`(`user_id`) COMMENT '用户ID索引'
+    INDEX        `index_user_id`(`user_id`) COMMENT '用户ID索引'
 ) COMMENT = '用户redis_session关联管理';

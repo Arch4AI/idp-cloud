@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * 通用属性
  * 静态的变量返回只需要控制set是非Static即可注入
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/17 11:00 AM
@@ -39,11 +40,11 @@ public class CommonProperties {
     /**
      * 限流默认的QPS 默认QPS 50
      */
-    private static double rateLimitQps=50;
+    private static double rateLimitQps = 50;
     /**
      * 限流默认时间微秒 默认限流时间
      */
-    private static long rateLimitTime=100;
+    private static long rateLimitTime = 100;
 
     /**
      * 限流时间默认单位 默认是微秒

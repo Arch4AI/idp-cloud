@@ -20,21 +20,24 @@
         <oauth2-authorization-server.verison>1.0.1</oauth2-authorization-server.verison>
         <aliyun-sdk-core.version>4.6.3</aliyun-sdk-core.version>
         <mybatis.version>3.0.0</mybatis.version>
-        <pagehelper.version>1.4.6</pagehelper.version>
+        <pagehelper.version>5.3.2</pagehelper.version>
         <user-agent.version>1.21</user-agent.version>
         <mybatis-generator.version>1.4.2</mybatis-generator.version>
         <tencent-cloud-sdk.version>3.1.732</tencent-cloud-sdk.version>
     </properties>
 
     <dependencies>
+        <!-- actuator集成 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+        <!-- quartz集成 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-quartz</artifactId>
         </dependency>
+        <!-- security集成 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
@@ -66,25 +69,28 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
+
         <!-- mybatis集成 -->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>${mybatis.version}</version>
         </dependency>
-        <!-- mybatis分页插件 -->
+
+        <!-- pageHelper插件 -->
         <dependency>
             <groupId>com.github.pagehelper</groupId>
-            <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <artifactId>pagehelper</artifactId>
             <version>${pagehelper.version}</version>
         </dependency>
 
-
+        <!-- spring session管理 -->
         <dependency>
             <groupId>org.springframework.session</groupId>
             <artifactId>spring-session-core</artifactId>
         </dependency>
 
+        <!-- redis集成 -->
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-redis</artifactId>
@@ -125,6 +131,7 @@
             <artifactId>flyway-mysql</artifactId>
         </dependency>
 
+        <!-- mysql驱动 -->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>

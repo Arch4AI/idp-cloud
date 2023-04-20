@@ -73,12 +73,12 @@ public class AnonymousController {
 
 
     @GetMapping("{id}/test")
-    public Result test1(@PathVariable("id")String id){
+    public Result test1(@PathVariable("id") String id) {
         return Result.success(id);
     }
 
     @PostMapping("{id}/test")
-    public Result test2(@PathVariable("id")String id){
+    public Result test2(@PathVariable("id") String id) {
         return Result.success(id);
     }
 

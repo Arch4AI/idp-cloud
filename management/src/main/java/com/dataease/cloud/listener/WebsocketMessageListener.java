@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 /**
  * wesocket消息订阅器
  * 用于解决分布式情况下websocket出现的问题
+ *
  * @author ShrChang.Liu
  * @date 2022-05-27
  */
@@ -32,7 +33,7 @@ public class WebsocketMessageListener implements MessageListener {
         if (StringUtils.hasText(value)) {
             try {
                 WebSocketMessage webSocketMessage = ObjectMapperUtils.simpleObjectMapper.readValue(value, WebSocketMessage.class);
-                WebSocketServer.sendMessage(webSocketMessage.getToUserId(),webSocketMessage.getMessage());
+                WebSocketServer.sendMessage(webSocketMessage.getToUserId(), webSocketMessage.getMessage());
                 log.info("websocket message send success");
             } catch (Exception e) {
                 e.printStackTrace();

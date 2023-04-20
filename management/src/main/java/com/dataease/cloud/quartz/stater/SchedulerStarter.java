@@ -61,6 +61,7 @@ public class SchedulerStarter implements BeanPostProcessor, ApplicationContextAw
     /**
      * 加载bean之前
      * 这里默认会在所有的Bean加载的时候都会进来
+     *
      * @param bean
      * @param beanName
      * @return
@@ -72,6 +73,7 @@ public class SchedulerStarter implements BeanPostProcessor, ApplicationContextAw
 
     /**
      * bean加载之后
+     *
      * @param bean
      * @param beanName
      * @return
@@ -88,7 +90,7 @@ public class SchedulerStarter implements BeanPostProcessor, ApplicationContextAw
                 String cron = annotation.cron();
                 long fixedDelay = annotation.fixedDelay();
                 long fixedRate = annotation.fixedRate();
-                int initialDelay = (int)annotation.initialDelay();
+                int initialDelay = (int) annotation.initialDelay();
                 String jobDetailIdentity = beanName + "." + method.getName();
                 JobDetail jobDetail;
                 Trigger trigger;
@@ -97,20 +99,20 @@ public class SchedulerStarter implements BeanPostProcessor, ApplicationContextAw
                     jobDetail = JobBuilder.newJob(ClusterQuartzJobBean.class).storeDurably(true).usingJobData(jobDataMap).build();
                     trigger = TriggerBuilder.newTrigger()
                             .withIdentity(TriggerKey.triggerKey(jobDetailIdentity, this.cloudQuartzProperties.getGroupName()))
-                            .startAt(new Date(this.now.plusMillis((long)initialDelay).toEpochMilli()))
+                            .startAt(new Date(this.now.plusMillis((long) initialDelay).toEpochMilli()))
                             .withSchedule(CronScheduleBuilder.cronSchedule(cron).inTimeZone(this.quartzTimeZone)).build();
                 } else if (fixedDelay > 0L) {
                     jobDataMap.put("FIXED_DELAY_JOB_DATA", new FixedDelayJobData(fixedDelay));
                     jobDetail = JobBuilder.newJob(ClusterQuartzFixedDelayJobBean.class).storeDurably(true).usingJobData(jobDataMap).build();
                     trigger = TriggerBuilder.newTrigger()
                             .withIdentity(TriggerKey.triggerKey(jobDetailIdentity, this.cloudQuartzProperties.getGroupName()))
-                            .startAt(new Date(this.now.plusMillis((long)initialDelay).toEpochMilli()))
+                            .startAt(new Date(this.now.plusMillis((long) initialDelay).toEpochMilli()))
                             .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMilliseconds(fixedDelay).repeatForever()).build();
                 } else {
                     jobDetail = JobBuilder.newJob(ClusterQuartzJobBean.class).storeDurably(true).usingJobData(jobDataMap).build();
                     trigger = TriggerBuilder.newTrigger()
                             .withIdentity(TriggerKey.triggerKey(jobDetailIdentity, this.cloudQuartzProperties.getGroupName()))
-                            .startAt(new Date(this.now.plusMillis((long)initialDelay).toEpochMilli()))
+                            .startAt(new Date(this.now.plusMillis((long) initialDelay).toEpochMilli()))
                             .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMilliseconds(fixedRate).repeatForever()).build();
                 }
                 this.jobDetailTriggerMap.put(jobDetailIdentity, new JobDetailTrigger(jobDetail, trigger));
@@ -122,6 +124,7 @@ public class SchedulerStarter implements BeanPostProcessor, ApplicationContextAw
 
     /**
      * 获取cron表达式
+     *
      * @param cron
      * @return
      */
@@ -132,6 +135,7 @@ public class SchedulerStarter implements BeanPostProcessor, ApplicationContextAw
 
     /**
      * 获取所有的任务key
+     *
      * @return
      * @throws SchedulerException
      */
@@ -141,6 +145,7 @@ public class SchedulerStarter implements BeanPostProcessor, ApplicationContextAw
 
     /**
      * 获取所有的定时器key
+     *
      * @return
      * @throws SchedulerException
      */
@@ -150,16 +155,18 @@ public class SchedulerStarter implements BeanPostProcessor, ApplicationContextAw
 
     /**
      * 获取上下文
+     *
      * @param applicationContext
      * @throws BeansException
      */
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.now = Instant.now();
-        this.applicationContext = (ConfigurableApplicationContext)applicationContext;
+        this.applicationContext = (ConfigurableApplicationContext) applicationContext;
     }
 
     /**
      * 项目启动后执行
+     *
      * @param args
      * @throws Exception
      */
@@ -177,7 +184,7 @@ public class SchedulerStarter implements BeanPostProcessor, ApplicationContextAw
                         this.quartzManageService.rescheduleJobs(this.getJobKeys(), this.getTriggerKeys(), this.jobDetailTriggerMap);
                         this.scheduler.start();
                     } catch (Exception e) {
-                        log.error("quartz start error:",e);
+                        log.error("quartz start error:", e);
                         throw new SchedulingException("Could not start Quartz Scheduler after delay", e);
                     }
                 });
@@ -186,7 +193,7 @@ public class SchedulerStarter implements BeanPostProcessor, ApplicationContextAw
                 schedulerThread.start();
             }
         } catch (SchedulerException e) {
-            log.error("quartz start error:",e);
+            log.error("quartz start error:", e);
         }
 
     }

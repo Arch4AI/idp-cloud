@@ -63,47 +63,49 @@ public class Oauth2RegisteredClientSerive {
      * 查询所有的客户端
      * 条件暂时未确定
      * 后续可以根据条件去查询
+     *
      * @return
      */
-    public List<CloudOauth2RegisteredClient> list(RegisteredClientQueryReq req){
+    public List<CloudOauth2RegisteredClient> list(RegisteredClientQueryReq req) {
         CloudOauth2RegisteredClientExample example = new CloudOauth2RegisteredClientExample();
         CloudOauth2RegisteredClientExample.Criteria criteria = example.createCriteria();
-        if(StringUtils.hasText(req.getClientName()))
+        if (StringUtils.hasText(req.getClientName()))
             criteria.andClientNameLike(req.getClientName());
-        if(req.getIsExpire() != null){
-            if(req.getIsExpire()){
+        if (req.getIsExpire() != null) {
+            if (req.getIsExpire()) {
                 criteria.andClientSecretExpiresAtLessThan(Calendar.getInstance().getTime());
-            }else{
+            } else {
                 criteria.andClientSecretExpiresAtGreaterThanOrEqualTo(Calendar.getInstance().getTime());
             }
         }
-        if(StringUtils.hasText(req.getScope()))
+        if (StringUtils.hasText(req.getScope()))
             criteria.andScopesLike(req.getScope());
         return cloudOauth2RegisteredClientMapper.selectByExample(example);
     }
 
     /**
      * 重置密钥
+     *
      * @param id
      * @param secret 可选
      */
-    public void resetClientSecret(String id,String secret){
+    public void resetClientSecret(String id, String secret) {
         CloudOauth2RegisteredClient client = cloudOauth2RegisteredClientMapper.selectByPrimaryKey(id);
-        if(client == null)
+        if (client == null)
             CloudException.throwException("client not found");
         // 如果不为空且已经到期的话需要修改他为null
-        if(client.getClientSecretExpiresAt() != null && client.getClientSecretExpiresAt().before(Calendar.getInstance().getTime()))
+        if (client.getClientSecretExpiresAt() != null && client.getClientSecretExpiresAt().before(Calendar.getInstance().getTime()))
             client.setClientSecretExpiresAt(null);
-        if(StringUtils.hasText(secret)){
+        if (StringUtils.hasText(secret)) {
             //需要判断密钥是不是已经存在或者是不是和现在的一致
-            if(client.getClientSecret().equals(secret))
+            if (client.getClientSecret().equals(secret))
                 CloudException.throwException("client secret not modify");
             CloudOauth2RegisteredClientExample clientExample = new CloudOauth2RegisteredClientExample();
             clientExample.createCriteria().andClientSecretEqualTo(secret);
-            if(cloudOauth2RegisteredClientMapper.countByExample(clientExample)>0)
+            if (cloudOauth2RegisteredClientMapper.countByExample(clientExample) > 0)
                 CloudException.throwException("client secret exist");
             client.setClientSecret(secret);
-        }else{
+        } else {
             client.setClientSecret(IdUtil.nanoId(32));
         }
         //直接修改全部才可以覆盖掉已经到期的时间限制
@@ -113,34 +115,36 @@ public class Oauth2RegisteredClientSerive {
 
     /**
      * 修改客户端信息
+     *
      * @param id
      * @param req
      */
-    public void updateClient(String id, RegisteredClientModifyReq req){
+    public void updateClient(String id, RegisteredClientModifyReq req) {
         CloudOauth2RegisteredClient client = cloudOauth2RegisteredClientMapper.selectByPrimaryKey(id);
-        if(client == null)
+        if (client == null)
             CloudException.throwException("client not found");
-        if(!StringUtils.hasText(req.getClientName()) && !StringUtils.hasText(req.getScopes()) && req.getClientSecretExpiresAt() == null)
+        if (!StringUtils.hasText(req.getClientName()) && !StringUtils.hasText(req.getScopes()) && req.getClientSecretExpiresAt() == null)
             CloudException.throwException("Confirm the attributes that you want to modify");
-        if(StringUtils.hasText(req.getScopes()) && notContains(stringtoSet(req.getScopes()), supportSocops()))
+        if (StringUtils.hasText(req.getScopes()) && notContains(stringtoSet(req.getScopes()), supportSocops()))
             CloudException.throwException("scope not support");
         //判断是不是符合要求
         client = new CloudOauth2RegisteredClient();
         client.setId(id);
-        if(StringUtils.hasText(req.getClientName()))
+        if (StringUtils.hasText(req.getClientName()))
             client.setClientName(req.getClientName());
-        if(req.getClientSecretExpiresAt() != null)
+        if (req.getClientSecretExpiresAt() != null)
             client.setClientSecretExpiresAt(req.getClientSecretExpiresAt());
-        if(StringUtils.hasText(req.getScopes()))
+        if (StringUtils.hasText(req.getScopes()))
             client.setScopes(req.getScopes());
         cloudOauth2RegisteredClientMapper.updateByPrimaryKeySelective(client);
     }
 
     /**
      * 根据ID移除客户端
+     *
      * @param id
      */
-    public void deleteById(String id){
+    public void deleteById(String id) {
         cloudOauth2RegisteredClientMapper.deleteByPrimaryKey(id);
         //移除这个客户端关联的认证记录
         CloudOauth2AuthorizationExample authorizationExample = new CloudOauth2AuthorizationExample();

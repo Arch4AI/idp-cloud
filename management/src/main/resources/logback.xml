@@ -152,6 +152,10 @@
         <appender-ref ref="errorAsyncAppender"/>
     </logger>
 
+    <!-- 开启mybatis日志打印 -->
+    <logger name="com.dataease.cloud.base.mapper" level="debugger">
+        <appender-ref ref="console"/>
+    </logger>
 
     <logger name="com.dataease.cloud.DataeaseCloudPortalApplication" additivity="false" level="${logger.level:INFO}">
         <appender-ref ref="infoAsyncAppender"/>

@@ -30,6 +30,7 @@ public class ClusterQuartzJobBean extends QuartzJobBean {
 
     /**
      * 重写 根据bean与method获取执行对象
+     *
      * @param context
      */
     protected void executeInternal(JobExecutionContext context) {

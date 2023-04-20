@@ -30,12 +30,11 @@ import java.util.concurrent.ConcurrentMap;
  * 默认只能针对controller中的访问
  * 无法实现对security中filter进行限流
  * 默认针对用户,如果没有用户的话 就针对IP地址
- *
  */
 @Slf4j
 @Aspect
 @Component
-@ConditionalOnProperty(prefix = "cloud.common",name = "enable-rate-limit",havingValue = "true")
+@ConditionalOnProperty(prefix = "cloud.common", name = "enable-rate-limit", havingValue = "true")
 public class RateLimiterAspect {
 
     //采用线程安全的Map会占用大量内存
@@ -52,7 +51,7 @@ public class RateLimiterAspect {
         log.info("**************rate limt begin*****************");
         MethodSignature signature = (MethodSignature) point.getSignature();
         Method method = signature.getMethod();
-        if(!method.isAnnotationPresent(NoRateLimit.class)){
+        if (!method.isAnnotationPresent(NoRateLimit.class)) {
             //获取RequestAttributes
             RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
             //从获取RequestAttributes中获取HttpServletRequest的信息
@@ -61,18 +60,18 @@ public class RateLimiterAspect {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String userId = null;
             //判断已存在且不是匿名的token
-            if(authentication != null && !(authentication instanceof AnonymousAuthenticationToken)){
+            if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
                 userId = authentication.getName();
             }
             //获取用户或者IP
-             String prefix = !StringUtils.hasText(userId) ? IpUtils.getIpAddr(request) : userId;
+            String prefix = !StringUtils.hasText(userId) ? IpUtils.getIpAddr(request) : userId;
             //获取key
             String key = prefix;
             if (RATE_LIMITER_CACHE.get(key) == null) {
-                RATE_LIMITER_CACHE.put(key,RateLimiter.create(CommonProperties.getRateLimitQps()));
+                RATE_LIMITER_CACHE.put(key, RateLimiter.create(CommonProperties.getRateLimitQps()));
                 log.info("【{}'s QPS:: {}", key, RATE_LIMITER_CACHE.get(key).getRate());
-            }else{
-                if(!RATE_LIMITER_CACHE.get(key).tryAcquire(CommonProperties.getRateLimitTime(), CommonProperties.getRateLimitTimeUnit())){
+            } else {
+                if (!RATE_LIMITER_CACHE.get(key).tryAcquire(CommonProperties.getRateLimitTime(), CommonProperties.getRateLimitTimeUnit())) {
                     CloudException.throwException("Too many interface requests, please try again later!");
                 }
             }

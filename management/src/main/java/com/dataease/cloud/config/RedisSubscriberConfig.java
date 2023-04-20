@@ -11,6 +11,7 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 
 /**
  * 消息订阅配置类
+ *
  * @author ShrChang.Liu
  * @date 2022-05-27
  */
@@ -26,6 +27,7 @@ public class RedisSubscriberConfig {
     public MessageListenerAdapter messageListenerAdapter(WebsocketMessageListener receiver) {
         return new MessageListenerAdapter(receiver);
     }
+
     /**
      * 创建消息监听容器
      *

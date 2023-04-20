@@ -20,6 +20,7 @@ import org.springframework.web.filter.CorsFilter;
 
 /**
  * security 配置见下
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/6 1:55 PM

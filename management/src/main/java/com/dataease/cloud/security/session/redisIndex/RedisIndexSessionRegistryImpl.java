@@ -16,6 +16,7 @@ import java.util.List;
 /**
  * 自定义redisIndexSessionRegisteryImpl
  * 处理redisIndex
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/17 2:13 PM
@@ -69,7 +70,7 @@ public class RedisIndexSessionRegistryImpl<S extends Session> implements Session
     @Override
     public void registerNewSession(String sessionId, Object principal) {
         String name = name(principal);
-        if(StringUtils.hasText(name)){
+        if (StringUtils.hasText(name)) {
             log.info("user:{} Login,sessionId:{}", name, sessionId);
         }
     }

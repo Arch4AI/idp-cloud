@@ -37,7 +37,7 @@ public class SessionService {
      * @return
      */
     public Set<String> getAllSessions(String userId) {
-       return Collections.emptySet();
+        return Collections.emptySet();
     }
 
     /**

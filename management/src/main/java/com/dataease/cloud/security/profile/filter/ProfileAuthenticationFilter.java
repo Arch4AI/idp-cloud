@@ -81,7 +81,7 @@ public class ProfileAuthenticationFilter extends AbstractAuthenticationProcessin
         try {
             String body = IoUtil.readUtf8(request.getInputStream());
             //如果开启了加密的话 需要在这里先解密
-            if(CommonProperties.isEnableRequestBodyEncrypt()){
+            if (CommonProperties.isEnableRequestBodyEncrypt()) {
                 body = String.valueOf(EncryptUtils.aesDecrypt(body));
             }
             req = this.objectMapper.readValue(body, UserUpdateProfileRequest.class);

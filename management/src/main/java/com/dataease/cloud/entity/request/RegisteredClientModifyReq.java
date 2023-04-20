@@ -10,6 +10,7 @@ import java.util.Date;
  * 1. 客户端名称
  * 2. 客户端密钥到期时间
  * 3. 作用域范围
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/4/14 10:10 AM

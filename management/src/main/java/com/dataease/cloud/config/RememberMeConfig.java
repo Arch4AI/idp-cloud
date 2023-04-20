@@ -9,6 +9,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -44,6 +45,7 @@ public class RememberMeConfig {
 
     /**
      * 构建RememberMeService
+     *
      * @return
      */
     @Bean
@@ -64,14 +66,14 @@ public class RememberMeConfig {
      * 销毁的时候就移除任务定时器
      */
     @PreDestroy
-    public void destory(){
-        if(this.taskScheduler != null){
+    public void destory() {
+        if (this.taskScheduler != null) {
             this.taskScheduler.destroy();
         }
     }
 
     @PostConstruct
-    public void init(){
+    public void init() {
         if (!Scheduled.CRON_DISABLED.equals(Constants.SESSION_CLEANUP_CRON)) {
             this.taskScheduler = createTaskScheduler();
             this.taskScheduler.initialize();
@@ -82,7 +84,7 @@ public class RememberMeConfig {
     /**
      * 清除到期的token
      */
-    private void cleanUpExpiredToken(){
+    private void cleanUpExpiredToken() {
         try {
             log.info("************start clean rememberme expire token's task*************");
             //获取最大的maxTokenDate
@@ -92,13 +94,14 @@ public class RememberMeConfig {
             //移除信息
             rememberMeTokenService.deleteByMaxDate(maxTokenDate);
             log.info("************clean rememberme expire token's task done*************");
-        }catch (Exception e){
-            log.error("clean remember me token error task:",e);
+        } catch (Exception e) {
+            log.error("clean remember me token error task:", e);
         }
     }
 
     /**
      * 创建任务
+     *
      * @return
      */
     private static ThreadPoolTaskScheduler createTaskScheduler() {

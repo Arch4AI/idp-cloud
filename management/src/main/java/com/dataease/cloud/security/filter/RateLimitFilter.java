@@ -36,6 +36,7 @@ import java.util.concurrent.ConcurrentMap;
  * Filter限流服务
  * 排除从controller那边定义的URL
  * 目前只支持已IP为主键进行限流
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/4/17 4:56 PM
@@ -43,7 +44,7 @@ import java.util.concurrent.ConcurrentMap;
 @Slf4j
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@ConditionalOnProperty(prefix = "cloud.common",name = "enable-rate-limit",havingValue = "true")
+@ConditionalOnProperty(prefix = "cloud.common", name = "enable-rate-limit", havingValue = "true")
 public class RateLimitFilter implements Filter, ApplicationContextAware {
 
     //采用线程安全的Map会占用大量内存
@@ -54,18 +55,19 @@ public class RateLimitFilter implements Filter, ApplicationContextAware {
 
     /**
      * 是不是在requestMapping中
+     *
      * @param request
      * @return
      */
-    private boolean requestMappingExist(HttpServletRequest request){
+    private boolean requestMappingExist(HttpServletRequest request) {
         //先获取一次
         getRequestMapping();
         for (RequestMappingInfo requestMappingInfo : requestMappingInfoList) {
             String path = requestMappingInfo.getPathPatternsCondition().getFirstPattern().getPatternString();
             String method = requestMappingInfo.getMethodsCondition() != null ? requestMappingInfo.getMethodsCondition().getMethods().stream().findFirst().get().name() : HttpMethod.GET.name();
-           //获取到path/method
-            AntPathRequestMatcher antPathRequestMatcher = new AntPathRequestMatcher(path,method);
-            if(antPathRequestMatcher.matcher(request).isMatch()){
+            //获取到path/method
+            AntPathRequestMatcher antPathRequestMatcher = new AntPathRequestMatcher(path, method);
+            if (antPathRequestMatcher.matcher(request).isMatch()) {
                 return true;
             }
         }
@@ -80,14 +82,14 @@ public class RateLimitFilter implements Filter, ApplicationContextAware {
     /**
      * 获取一下requestMapping的信息
      */
-    private void getRequestMapping(){
-        if(!requestMappingInfoList.isEmpty()){
-            return ;
+    private void getRequestMapping() {
+        if (!requestMappingInfoList.isEmpty()) {
+            return;
         }
         RequestMappingHandlerMapping mapping = applicationContext.getBean(RequestMappingHandlerMapping.class);
         Map<RequestMappingInfo, HandlerMethod> methodMap = mapping.getHandlerMethods();
         for (RequestMappingInfo requestMappingInfo : methodMap.keySet()) {
-            if(!requestMappingInfo.getMethodsCondition().isEmpty()){
+            if (!requestMappingInfo.getMethodsCondition().isEmpty()) {
                 requestMappingInfoList.add(requestMappingInfo);
             }
         }
@@ -97,15 +99,15 @@ public class RateLimitFilter implements Filter, ApplicationContextAware {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
-        log.info("request uri:{},request method:{}",request.getRequestURI(),request.getMethod());
-        if(!requestMappingExist(request)){
+        log.info("request uri:{},request method:{}", request.getRequestURI(), request.getMethod());
+        if (!requestMappingExist(request)) {
             log.info("request not in controller");
             //获取key
             String key = IpUtils.getIpAddr(request);
             if (RATE_LIMITER_CACHE.get(key) == null) {
                 RATE_LIMITER_CACHE.put(key, RateLimiter.create(CommonProperties.getRateLimitQps()));
-            }else{
-                if(!RATE_LIMITER_CACHE.get(key).tryAcquire(CommonProperties.getRateLimitTime(), CommonProperties.getRateLimitTimeUnit())){
+            } else {
+                if (!RATE_LIMITER_CACHE.get(key).tryAcquire(CommonProperties.getRateLimitTime(), CommonProperties.getRateLimitTimeUnit())) {
                     response.setStatus(HttpStatus.OK.value());
                     response.setContentType(MediaType.APPLICATION_JSON.toString());
                     PrintWriter out = response.getWriter();
@@ -115,9 +117,9 @@ public class RateLimitFilter implements Filter, ApplicationContextAware {
                     return;
                 }
             }
-        }else{
+        } else {
             log.info("request in to controller");
         }
-        filterChain.doFilter(request,response);
+        filterChain.doFilter(request, response);
     }
 }

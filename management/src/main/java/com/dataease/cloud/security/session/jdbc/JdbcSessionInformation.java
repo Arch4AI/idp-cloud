@@ -38,6 +38,7 @@ class JdbcSessionInformation<S extends Session> extends SessionInformation {
 
     /**
      * 解析用户
+     *
      * @param session
      * @return
      */
@@ -69,11 +70,11 @@ class JdbcSessionInformation<S extends Session> extends SessionInformation {
         try {
             //移除remember
             RememberMeTokenService rememberMeTokenService = CommonBeanFactory.getBean(RememberMeTokenService.class);
-            if(rememberMeTokenService != null){
+            if (rememberMeTokenService != null) {
                 rememberMeTokenService.removeBySessionId(getSessionId());
             }
-        }catch (Exception e){
-            log.error("session {} remove remeberme token error:{}",getSessionId(),e.getMessage());
+        } catch (Exception e) {
+            log.error("session {} remove remeberme token error:{}", getSessionId(), e.getMessage());
         }
     }
 }

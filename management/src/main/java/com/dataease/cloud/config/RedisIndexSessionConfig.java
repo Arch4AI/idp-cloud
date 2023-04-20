@@ -23,7 +23,7 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
  * @date 2023/4/18 3:23 PM
  **/
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnProperty(prefix = "cloud.session",value = "session-type",havingValue = "redis_index")
+@ConditionalOnProperty(prefix = "cloud.session", value = "session-type", havingValue = "redis_index")
 @EnableRedisIndexedHttpSession(redisNamespace = "${cloud.session.redis-namespace:spring:session}")
 public class RedisIndexSessionConfig {
 

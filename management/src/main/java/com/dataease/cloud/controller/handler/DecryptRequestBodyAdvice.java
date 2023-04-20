@@ -20,13 +20,14 @@ import java.lang.reflect.Type;
 
 /**
  * 针对@requestBody请求体进行加密的方案
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/4/14 2:55 PM
-**/
+ **/
 @ControllerAdvice
 @Slf4j
-@ConditionalOnProperty(prefix = "cloud.common",name = "enable-request-body-encrypt",havingValue = "true")
+@ConditionalOnProperty(prefix = "cloud.common", name = "enable-request-body-encrypt", havingValue = "true")
 public class DecryptRequestBodyAdvice implements RequestBodyAdvice {
 
     @Override
@@ -37,13 +38,13 @@ public class DecryptRequestBodyAdvice implements RequestBodyAdvice {
     @Override
     public HttpInputMessage beforeBodyRead(HttpInputMessage inputMessage, MethodParameter parameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) throws IOException {
         log.info("**************Decrypt request body*************");
-        if (inputMessage.getBody().available()<=0) {
+        if (inputMessage.getBody().available() <= 0) {
             return inputMessage;
         }
         // 解密
         String body = IoUtil.readUtf8(inputMessage.getBody());
         String decryptBody = String.valueOf(EncryptUtils.aesDecrypt(body));
-        if(!StringUtils.hasText(decryptBody) || body.equals(decryptBody))
+        if (!StringUtils.hasText(decryptBody) || body.equals(decryptBody))
             CloudException.throwException("Decrypt request body error");
         return new HttpInputMessage() {
             @Override
@@ -60,6 +61,7 @@ public class DecryptRequestBodyAdvice implements RequestBodyAdvice {
 
     /**
      * 读取之后的处理
+     *
      * @return
      */
     @Override

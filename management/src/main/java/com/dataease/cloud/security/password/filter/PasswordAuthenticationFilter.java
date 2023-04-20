@@ -75,7 +75,7 @@ public class PasswordAuthenticationFilter extends AbstractAuthenticationProcessi
             //使用jackson去转对象
             String body = IoUtil.readUtf8(request.getInputStream());
             //如果开启了加密的话 需要在这里先解密
-            if(CommonProperties.isEnableRequestBodyEncrypt()){
+            if (CommonProperties.isEnableRequestBodyEncrypt()) {
                 body = String.valueOf(EncryptUtils.aesDecrypt(body));
             }
             passwordLoginRequest = objectMapper.readValue(body, PasswordLoginRequest.class);

@@ -38,7 +38,7 @@ import java.util.List;
  * @date 2023/3/6 11:25 AM
  **/
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnProperty(prefix = "cloud.session",value = "session-type",havingValue = "redis")
+@ConditionalOnProperty(prefix = "cloud.session", value = "session-type", havingValue = "redis")
 @EnableRedisHttpSession(redisNamespace = "${cloud.session.redis-namespace:spring:session}")
 @Slf4j
 public class RedisSessionConfig {
@@ -77,8 +77,8 @@ public class RedisSessionConfig {
      * 销毁的时候就移除任务定时器
      */
     @PreDestroy
-    public void destory(){
-        if(this.taskScheduler != null){
+    public void destory() {
+        if (this.taskScheduler != null) {
             this.taskScheduler.destroy();
         }
     }
@@ -87,7 +87,7 @@ public class RedisSessionConfig {
      * 初始化的时候初始化一个任务
      */
     @PostConstruct
-    public void init(){
+    public void init() {
         if (!Scheduled.CRON_DISABLED.equals(Constants.SESSION_CLEANUP_CRON)) {
             this.taskScheduler = createTaskScheduler();
             this.taskScheduler.initialize();
@@ -98,23 +98,24 @@ public class RedisSessionConfig {
     /**
      * 清除超时的session
      */
-    public void cleanUpExpiredSessions(){
+    public void cleanUpExpiredSessions() {
         log.info("start clean up redis session");
         RedisSessionRepository sessionRepository = CommonBeanFactory.getBean(RedisSessionRepository.class);
-        if(sessionRepository != null){
+        if (sessionRepository != null) {
             //开始判断是不是session还存在 不存在就删除记录
             List<CloudRedisSession> cloudRedisSessions = cloudRedisSessionMapper.selectByExample(new CloudRedisSessionExample());
-            cloudRedisSessions.forEach(session->{
-               Session s =  sessionRepository.findById(session.getSessionId());
-               if(s == null){
-                   cloudRedisSessionMapper.deleteByPrimaryKey(session.getSessionId());
-               }
+            cloudRedisSessions.forEach(session -> {
+                Session s = sessionRepository.findById(session.getSessionId());
+                if (s == null) {
+                    cloudRedisSessionMapper.deleteByPrimaryKey(session.getSessionId());
+                }
             });
         }
     }
 
     /**
      * 创建任务
+     *
      * @return
      */
     private static ThreadPoolTaskScheduler createTaskScheduler() {

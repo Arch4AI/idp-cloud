@@ -65,7 +65,6 @@ public class SessionProperties {
     private static String redisNamespace = RedisSessionRepository.DEFAULT_KEY_NAMESPACE;
 
 
-
     public static String getRedisNamespace() {
         return redisNamespace;
     }

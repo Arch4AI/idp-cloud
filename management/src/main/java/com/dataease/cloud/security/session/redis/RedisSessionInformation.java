@@ -30,12 +30,13 @@ public class RedisSessionInformation extends SessionInformation {
 
     /**
      * 可垃圾了 因为这里可能是一个空的
+     *
      * @param session
      * @return
      */
     private static String resolvePrincipal(Session session) {
         SecurityContextImpl springSecurityContext = session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
-        if(springSecurityContext != null && springSecurityContext.getAuthentication() != null){
+        if (springSecurityContext != null && springSecurityContext.getAuthentication() != null) {
             return springSecurityContext.getAuthentication().getName();
         }
         return "";
@@ -49,27 +50,27 @@ public class RedisSessionInformation extends SessionInformation {
         super.expireNow();
         //如果session存在的话 就移除掉
         Session session = sessionRepository.findById(getSessionId());
-        if(session != null){
+        if (session != null) {
             sessionRepository.deleteById(session.getId());
         }
         try {
             //移除remember
             RememberMeTokenService rememberMeTokenService = CommonBeanFactory.getBean(RememberMeTokenService.class);
-            if(rememberMeTokenService != null){
+            if (rememberMeTokenService != null) {
                 rememberMeTokenService.removeBySessionId(getSessionId());
             }
-        }catch (Exception e){
-            log.error("session {} remove remeberme token error:{}",getSessionId(),e.getMessage());
+        } catch (Exception e) {
+            log.error("session {} remove remeberme token error:{}", getSessionId(), e.getMessage());
         }
 
         try {
             //移除记录
             CloudRedisSessionMapper cloudRedisSessionMapper = CommonBeanFactory.getBean(CloudRedisSessionMapper.class);
-            if(cloudRedisSessionMapper != null){
+            if (cloudRedisSessionMapper != null) {
                 cloudRedisSessionMapper.deleteByPrimaryKey(getSessionId());
             }
-        }catch (Exception e){
-            log.error("session {} remove redis session user relation error:{}",getSessionId(),e.getMessage());
+        } catch (Exception e) {
+            log.error("session {} remove redis session user relation error:{}", getSessionId(), e.getMessage());
         }
     }
 }

@@ -22,6 +22,7 @@ import java.util.Set;
  * 自定义redisSessionRegisteryImpl
  * 关联部分使用了jdbc中的cloud_redis_session可以提供性能
  * //TODO 需要定时处理cloud_redis_session中的关联是否已经到期 后续通过定时任务去处理
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/3/17 2:13 PM
@@ -135,6 +136,7 @@ public class RedisSessionRegistryImpl implements SessionRegistry {
 
     /**
      * 获取userId
+     *
      * @param principal
      * @return
      */

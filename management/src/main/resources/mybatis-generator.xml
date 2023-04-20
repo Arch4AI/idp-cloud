@@ -15,6 +15,7 @@
 
         <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
         <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin"/>
+        <!-- 这个东西可以忽略 不然无法指定多数据源 -->
         <plugin type="org.mybatis.generator.plugins.MapperAnnotationPlugin"/>
         <plugin type="com.idp.cloud.plugin.LombokPlugin"/>
 
@@ -49,7 +50,7 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table tableName="cloud_spring_session" />
+        <table tableName="cloud_spring_session"/>
         <table tableName="cloud_spring_session_attributes"/>
         <table tableName="cloud_redis_session"/>
     </context>

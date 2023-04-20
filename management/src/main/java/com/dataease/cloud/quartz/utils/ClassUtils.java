@@ -10,6 +10,7 @@ package com.dataease.cloud.quartz.utils;
 public class ClassUtils {
     /**
      * 根据请求返回class
+     *
      * @param array
      * @return
      */
@@ -21,7 +22,7 @@ public class ClassUtils {
         } else {
             Class<?>[] classes = new Class[array.length];
 
-            for(int i = 0; i < array.length; ++i) {
+            for (int i = 0; i < array.length; ++i) {
                 classes[i] = array[i] == null ? null : array[i].getClass();
             }
 

@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * 任务的监听器
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/4/17 11:23 AM
@@ -34,7 +35,7 @@ public final class FixedDelayJobListener extends JobListenerSupport {
         } else {
             log.debug("Rescheduling {} as there is no unfired trigger.", context.getJobDetail().getKey());
             TriggerKey oldTriggerKey = context.getTrigger().getKey();
-            FixedDelayJobData jobData = (FixedDelayJobData)data.getWrappedMap().get(FIXED_DELAY_JOB_DATA);
+            FixedDelayJobData jobData = (FixedDelayJobData) data.getWrappedMap().get(FIXED_DELAY_JOB_DATA);
             Trigger newTrigger = this.buildNewTrigger(jobData, oldTriggerKey);
             this.rescheduleJob(context.getScheduler(), oldTriggerKey, newTrigger);
         }
@@ -50,8 +51,8 @@ public final class FixedDelayJobListener extends JobListenerSupport {
             if (!iterator.hasNext()) {
                 return false;
             }
-            trigger = (Trigger)iterator.next();
-        } while(!(trigger instanceof SimpleTrigger) || ((SimpleTrigger)trigger).getTimesTriggered() != 0);
+            trigger = (Trigger) iterator.next();
+        } while (!(trigger instanceof SimpleTrigger) || ((SimpleTrigger) trigger).getTimesTriggered() != 0);
 
         return true;
     }
@@ -65,7 +66,7 @@ public final class FixedDelayJobListener extends JobListenerSupport {
             this.getLog().error(e.getMessage());
         }
 
-        return (List)triggersOfJob;
+        return (List) triggersOfJob;
     }
 
     private Trigger buildNewTrigger(FixedDelayJobData jobData, TriggerKey oldTriggerKey) {
