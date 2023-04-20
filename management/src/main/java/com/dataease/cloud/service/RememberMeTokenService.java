@@ -14,6 +14,9 @@ import org.springframework.session.SessionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+import java.util.List;
+
 /**
  * 记住我的持久化信息
  *
@@ -96,6 +99,17 @@ public class RememberMeTokenService {
     public void removeBySessionId(String sessionId) {
         CloudRememberMeTokenExample example = new CloudRememberMeTokenExample();
         example.createCriteria().andSessionIdEqualTo(sessionId);
+        cloudRememberMeTokenMapper.deleteByExample(example);
+    }
+
+    /**
+     * 超过最大的时间就移除token信息
+     * lastused.gettime < now.gettime - (tokentime*1000)
+     * @param maxDate
+     */
+    public void deleteByMaxDate(Date maxDate){
+        CloudRememberMeTokenExample example = new CloudRememberMeTokenExample();
+        example.createCriteria().andLastUsedLessThan(maxDate);
         cloudRememberMeTokenMapper.deleteByExample(example);
     }
 }

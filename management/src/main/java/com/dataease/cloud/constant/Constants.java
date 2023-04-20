@@ -85,6 +85,15 @@ public class Constants {
     /**
      * session清理的cron表达式
      * 仅对sessionType是redis和mysql有效
+     * 默认每天晚上1:20触发
+     * 这个后续移到运营中心即可 设置成Scheduled.CRON_DISABLED
      */
-    public static final String SESSION_CLEANUP_CRON = "0 2/5 * * * ?";
+    public static final String SESSION_CLEANUP_CRON = "0 20 1 * * ?";
+
+    /**
+     * 默认一个星期触发一次
+     * 每个星期6晚上2点
+     * 这个后续移到运营中心即可设置成Scheduled.CRON_DISABLED
+     */
+    public static final String REMEMBER_ME_TOKEN_CLEANUP_CRON = "0 0 2 ? * SAT";
 }

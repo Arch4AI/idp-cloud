@@ -53,7 +53,7 @@ import java.time.Duration;
  **/
 @Configuration(proxyBeanMethods = false)
 @Slf4j
-public class AuthServerConfig {
+public class OauthServerConfig {
 
     /**
      * 具体的实现都在OAuth2AuthorizationServerConfiguration
