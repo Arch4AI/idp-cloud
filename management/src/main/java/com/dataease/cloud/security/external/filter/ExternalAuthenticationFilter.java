@@ -5,6 +5,7 @@ import cn.hutool.core.io.IoUtil;
 import com.dataease.cloud.base.domain.CloudUser;
 import com.dataease.cloud.constant.Constants;
 import com.dataease.cloud.entity.response.Result;
+import com.dataease.cloud.i18n.I18nService;
 import com.dataease.cloud.properties.CommonProperties;
 import com.dataease.cloud.security.exception.SecurityException;
 import com.dataease.cloud.security.external.ExternalAuthenticationToken;
@@ -25,7 +26,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -64,11 +64,11 @@ public class ExternalAuthenticationFilter extends AbstractAuthenticationProcessi
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
         if (!Objects.equals(request.getMethod(), HttpMethod.POST.name())) {
-            throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
+            SecurityException.throwException(I18nService.getMessage("auth_method_not_support",request.getMethod()));
         }
         // 后面可能还有编码 默认UTF-8
         if (!request.getHeader(Headers.CONTENT_TYPE_STRING).startsWith(MediaType.APPLICATION_JSON.toString())) {
-            SecurityException.throwException("External Auth Request Parameter error!");
+            SecurityException.throwException(I18nService.getMessage("request_param_error"));
         }
         ObjectMapper objectMapper = ObjectMapperUtils.simpleObjectMapper;
         //转码
@@ -83,11 +83,11 @@ public class ExternalAuthenticationFilter extends AbstractAuthenticationProcessi
             externalSecurityRequest = objectMapper.readValue(body, ExternalSecurityRequest.class);
         } catch (Exception e) {
             // 参数错误
-            SecurityException.throwException("Authentication parameter error!");
+            SecurityException.throwException(I18nService.getMessage("request_param_error"));
         }
         //在这里还要判断是否已经登录了
         if (externalSecurityRequest == null)
-            SecurityException.throwException("Authentication parameter not supported!");
+            SecurityException.throwException(I18nService.getMessage("request_param_error"));
         //获取第三方用户
         AuthUser authUser = externalAuthSourceService.getAuthUser(externalSecurityRequest);
         //根据第三方用户是否已经绑定了用户本身
@@ -101,14 +101,14 @@ public class ExternalAuthenticationFilter extends AbstractAuthenticationProcessi
                 response.setCharacterEncoding(StandardCharsets.UTF_8.name());
                 response.setContentType(MediaType.APPLICATION_JSON.toString());
                 PrintWriter out = response.getWriter();
-                out.write(objectMapper.writeValueAsString(Result.success("Bind user success!")));
+                out.write(objectMapper.writeValueAsString(Result.success(I18nService.getMessage("bind_user_success"))));
                 out.flush();
                 out.close();
             } catch (Exception e) {
                 response.setCharacterEncoding(StandardCharsets.UTF_8.name());
                 response.setContentType(MediaType.APPLICATION_JSON.toString());
                 PrintWriter out = response.getWriter();
-                out.write(objectMapper.writeValueAsString(Result.error(e, "Bind user error!")));
+                out.write(objectMapper.writeValueAsString(Result.error(e, I18nService.getMessage("bind_user_error"))));
                 out.flush();
                 out.close();
             }
@@ -136,9 +136,9 @@ public class ExternalAuthenticationFilter extends AbstractAuthenticationProcessi
             return null;
         }
         if (user == null)
-            SecurityException.throwException("user not found!");
+            SecurityException.throwException(I18nService.getMessage("user_not_found"));
         if (!user.getEnabled())
-            SecurityException.throwException("user has disabled!");
+            SecurityException.throwException(I18nService.getMessage("user_has_disabled"));
         if (user != null) {
             request.setAttribute(Constants.REQ_USER_ATTRIBUTE, user);
         }

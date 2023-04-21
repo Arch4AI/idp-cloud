@@ -1,6 +1,7 @@
 package com.dataease.cloud.security.filter;
 
 import com.dataease.cloud.entity.response.Result;
+import com.dataease.cloud.i18n.I18nService;
 import com.dataease.cloud.properties.CommonProperties;
 import com.dataease.cloud.utils.IpUtils;
 import com.dataease.cloud.utils.ObjectMapperUtils;
@@ -111,7 +112,7 @@ public class RateLimitFilter implements Filter, ApplicationContextAware {
                     response.setStatus(HttpStatus.OK.value());
                     response.setContentType(MediaType.APPLICATION_JSON.toString());
                     PrintWriter out = response.getWriter();
-                    out.write(ObjectMapperUtils.simpleObjectMapper.writeValueAsString(Result.error("Too many interface requests, please try again later!")));
+                    out.write(ObjectMapperUtils.simpleObjectMapper.writeValueAsString(Result.error(I18nService.getMessage("rate_many_request_msg"))));
                     out.flush();
                     out.close();
                     return;

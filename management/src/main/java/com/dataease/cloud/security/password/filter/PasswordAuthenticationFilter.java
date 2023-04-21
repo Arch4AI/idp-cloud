@@ -2,6 +2,7 @@ package com.dataease.cloud.security.password.filter;
 
 import cn.hutool.core.io.IoUtil;
 import com.dataease.cloud.constant.Constants;
+import com.dataease.cloud.i18n.I18nService;
 import com.dataease.cloud.properties.CommonProperties;
 import com.dataease.cloud.security.LocalUser;
 import com.dataease.cloud.security.exception.SecurityException;
@@ -20,12 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.StringUtils;
@@ -62,11 +59,11 @@ public class PasswordAuthenticationFilter extends AbstractAuthenticationProcessi
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
         if (!Objects.equals(request.getMethod(), HttpMethod.POST.name())) {
-            throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
+            SecurityException.throwException(I18nService.getMessage("auth_method_not_support",request.getMethod()));
         }
         // 后面可能还有编码 默认UTF-8
         if (!request.getHeader(Headers.CONTENT_TYPE_STRING).startsWith(MediaType.APPLICATION_JSON.toString())) {
-            SecurityException.throwException("Password Auth Request Parameter error!");
+            SecurityException.throwException(I18nService.getMessage("request_param_error"));
         }
         ObjectMapper objectMapper = ObjectMapperUtils.simpleObjectMapper;
         //转码
@@ -81,19 +78,19 @@ public class PasswordAuthenticationFilter extends AbstractAuthenticationProcessi
             passwordLoginRequest = objectMapper.readValue(body, PasswordLoginRequest.class);
         } catch (Exception e) {
             // 参数错误
-            SecurityException.throwException("Authentication parameter error!");
+            SecurityException.throwException(I18nService.getMessage("request_param_error"));
         }
         if (!StringUtils.hasText(passwordLoginRequest.getUserName()))
-            throw new UsernameNotFoundException("userName/phone/email is Required!");
+            SecurityException.throwException(I18nService.getMessage("user_name_required"));
         if (!StringUtils.hasText(passwordLoginRequest.getPassword()))
-            throw new BadCredentialsException("Password is Required!");
+            SecurityException.throwException(I18nService.getMessage("password_required"));
         //查询用户信息
         LocalUser user = userService.getUserByName(passwordLoginRequest.getUserName());
         //判断用户是否存在
         if (user == null)
-            throw new UsernameNotFoundException("user not found!");
+            SecurityException.throwException(I18nService.getMessage("user_not_found"));
         if (!user.isEnabled())
-            throw new DisabledException("user disabled!");
+            SecurityException.throwException(I18nService.getMessage("user_has_disabled"));
         //如果是传递进来了 就绑定一下第三方的 这个绑定的意思就是这个已经存在才可以绑定
         if (StringUtils.hasText(passwordLoginRequest.getSourceId()) && StringUtils.hasText(passwordLoginRequest.getUuid())) {
             externalAuthSourceService.bindUserRelation(user.getUserId(), passwordLoginRequest.getSourceId(), passwordLoginRequest.getUuid());

@@ -1,8 +1,9 @@
 package com.dataease.cloud.security.password;
 
+import com.dataease.cloud.i18n.I18nService;
+import com.dataease.cloud.security.exception.SecurityException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -47,7 +48,7 @@ public class PasswordAuthenticationProvider implements AuthenticationProvider {
         UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
         //判断是不是可以
         if (!this.passwordEncoder.matches(password, userDetails.getPassword())) {
-            throw new BadCredentialsException("Bad credentials!");
+            SecurityException.throwException(I18nService.getMessage("password_incorrect"));
         }
         //设置token
         PasswordAuthenticationToken token = new PasswordAuthenticationToken(userDetails, userDetails.getAuthorities());

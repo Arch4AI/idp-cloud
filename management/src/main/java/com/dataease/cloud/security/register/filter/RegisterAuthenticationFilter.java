@@ -2,6 +2,7 @@ package com.dataease.cloud.security.register.filter;
 
 import cn.hutool.core.io.IoUtil;
 import com.dataease.cloud.constant.Constants;
+import com.dataease.cloud.i18n.I18nService;
 import com.dataease.cloud.properties.CommonProperties;
 import com.dataease.cloud.security.LocalUser;
 import com.dataease.cloud.security.exception.SecurityException;
@@ -19,7 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
@@ -61,11 +61,11 @@ public class RegisterAuthenticationFilter extends AbstractAuthenticationProcessi
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
         if (!Objects.equals(request.getMethod(), HttpMethod.POST.name())) {
-            throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
+            SecurityException.throwException(I18nService.getMessage("auth_method_not_support",request.getMethod()));
         }
         // 后面可能还有编码 默认UTF-8
         if (!request.getHeader(Headers.CONTENT_TYPE_STRING).startsWith(MediaType.APPLICATION_JSON.toString())) {
-            SecurityException.throwException("register request paramter error!");
+            SecurityException.throwException(I18nService.getMessage("request_param_error"));
         }
         RegisterRequest req = null;
         //转码
@@ -78,7 +78,7 @@ public class RegisterAuthenticationFilter extends AbstractAuthenticationProcessi
             req = ObjectMapperUtils.simpleObjectMapper.readValue(body, RegisterRequest.class);
         } catch (Exception e) {
             // 参数错误
-            SecurityException.throwException("register request paramter error!");
+            SecurityException.throwException(I18nService.getMessage("request_param_error"));
         }
         LocalUser user = null;
         try {

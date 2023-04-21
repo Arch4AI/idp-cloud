@@ -1,5 +1,6 @@
 package com.dataease.cloud.security.register;
 
+import com.dataease.cloud.i18n.I18nService;
 import com.dataease.cloud.security.exception.SecurityException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -29,7 +30,7 @@ public class RegisterAuthenticationProvider implements AuthenticationProvider {
         //强制转换
         RegisterAuthenticationToken registerAuthenticationToken = (RegisterAuthenticationToken) authentication;
         if (registerAuthenticationToken.getPrincipal() == null)
-            SecurityException.throwException("register request paramter error!");
+            SecurityException.throwException(I18nService.getMessage("request_param_error"));
         String username = (String) registerAuthenticationToken.getPrincipal();
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         //设置token

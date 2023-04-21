@@ -4,6 +4,7 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ReUtil;
 import com.dataease.cloud.constant.Constants;
 import com.dataease.cloud.constant.RegxContants;
+import com.dataease.cloud.i18n.I18nService;
 import com.dataease.cloud.properties.CommonProperties;
 import com.dataease.cloud.security.LocalUser;
 import com.dataease.cloud.security.exception.SecurityException;
@@ -23,12 +24,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.StringUtils;
@@ -67,11 +64,11 @@ public class PhoneAuthenticationFilter extends AbstractAuthenticationProcessingF
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
         if (!Objects.equals(request.getMethod(), HttpMethod.POST.name())) {
-            throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
+            SecurityException.throwException(I18nService.getMessage("auth_method_not_support",request.getMethod()));
         }
         // 后面可能还有编码 默认UTF-8
         if (!request.getHeader(Headers.CONTENT_TYPE_STRING).startsWith(MediaType.APPLICATION_JSON.toString())) {
-            SecurityException.throwException("Phone Auth Request Parameter error!");
+            SecurityException.throwException(I18nService.getMessage("request_param_error"));
         }
         ObjectMapper objectMapper = ObjectMapperUtils.simpleObjectMapper;
         //转码
@@ -86,24 +83,24 @@ public class PhoneAuthenticationFilter extends AbstractAuthenticationProcessingF
             phoneLoginRequest = objectMapper.readValue(body, PhoneLoginRequest.class);
         } catch (Exception e) {
             // 参数错误
-            SecurityException.throwException("Authentication parameter error!");
+            SecurityException.throwException(I18nService.getMessage("request_param_error"));
         }
         if (!StringUtils.hasText(phoneLoginRequest.getPhone()))
-            throw new UsernameNotFoundException("phone num required!");
+            SecurityException.throwException(I18nService.getMessage("phone_required"));
         if (!ReUtil.isMatch(PHONE_REGX, phoneLoginRequest.getPhone()))
-            throw new AuthenticationServiceException("The format of the phone number is incorrect！");
+            SecurityException.throwException(I18nService.getMessage("phone_format_error"));
         if (!StringUtils.hasText(phoneLoginRequest.getPhone()))
-            throw new BadCredentialsException("phone code required!");
+            SecurityException.throwException(I18nService.getMessage("verification_code_required"));
         //判断用户信息
         LocalUser user = userService.getUserByPhone(phoneLoginRequest.getPhone());
         if (!user.getEnabled())
-            throw new DisabledException("user has disabled!");
+            SecurityException.throwException(I18nService.getMessage("user_has_disabled"));
         String redisCode = stringRedisTemplate.opsForValue().get(phoneLoginRequest.getPhone());
         if (!StringUtils.hasText(redisCode)) {
-            throw new BadCredentialsException("The code has expired！");
+            SecurityException.throwException(I18nService.getMessage("verification_code_expired"));
         }
         if (!phoneLoginRequest.getCode().equals(redisCode)) {
-            throw new BadCredentialsException("The code is incorrect,please set again!");
+            SecurityException.throwException(I18nService.getMessage("verification_code_incorrect"));
         }
         //移除这个key
         stringRedisTemplate.delete(phoneLoginRequest.getPhone());

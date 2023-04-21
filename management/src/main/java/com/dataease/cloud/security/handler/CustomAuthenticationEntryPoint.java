@@ -1,6 +1,7 @@
 package com.dataease.cloud.security.handler;
 
 import com.dataease.cloud.entity.response.Result;
+import com.dataease.cloud.i18n.I18nService;
 import com.dataease.cloud.properties.CommonProperties;
 import com.dataease.cloud.utils.GlobalConfigurations;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -57,13 +58,13 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
             } else {
                 redirectStrategy.sendRedirect(request, response, idpProperties.getViteAddr() + "/login");
             }
-
+            return;
         } else {
             response.setCharacterEncoding(StandardCharsets.UTF_8.name());
             response.setContentType(MediaType.APPLICATION_JSON.toString());
             response.setStatus(HttpStatus.FORBIDDEN.value());
             PrintWriter out = response.getWriter();
-            out.write(jacksonObjectMapper.writeValueAsString(Result.error(HttpStatus.FORBIDDEN, authException, "用户未登录无法访问！")));
+            out.write(jacksonObjectMapper.writeValueAsString(Result.error(HttpStatus.FORBIDDEN, authException, I18nService.getMessage("user_not_login")+","+I18nService.getMessage("access_denied_msg"))));
             out.flush();
             out.close();
         }

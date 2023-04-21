@@ -2,6 +2,7 @@ package com.dataease.cloud.test;
 
 import cn.hutool.core.util.IdUtil;
 import com.dataease.cloud.base.domain.CloudExternalAuthSource;
+import com.dataease.cloud.i18n.I18nService;
 import com.dataease.cloud.properties.SmsProperties;
 import com.dataease.cloud.service.ExternalAuthSourceService;
 import com.dataease.cloud.service.sms.MessageService;
@@ -10,6 +11,9 @@ import com.fit2cloud.cloud.oauth.config.AuthDefaultSource;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.i18n.LocaleContextHolder;
+
+import java.util.Locale;
 
 /**
  * 单元测试类
@@ -18,7 +22,7 @@ import org.springframework.boot.test.context.SpringBootTest;
  * @version v1.0
  * @date 2023/4/3 3:09 PM
  **/
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ApplicationTest {
 
     @Resource
@@ -57,6 +61,12 @@ public class ApplicationTest {
             System.out.println("message not init");
         String simpleName = messageService.getClass().getSimpleName();
         System.out.println("message provider:" + simpleName);
+    }
+
+    @Test
+    public void getI18n(){
+        LocaleContextHolder.setLocale(Locale.US);
+        System.out.println(I18nService.getMessage("user_not_login"));
     }
 
 

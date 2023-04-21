@@ -14,6 +14,7 @@ import com.dataease.cloud.constant.GenderEnum;
 import com.dataease.cloud.constant.LanguageEnum;
 import com.dataease.cloud.constant.RegxContants;
 import com.dataease.cloud.constant.RoleEnum;
+import com.dataease.cloud.i18n.I18nService;
 import com.dataease.cloud.security.LocalUser;
 import com.dataease.cloud.security.exception.SecurityException;
 import com.dataease.cloud.security.profile.request.UserUpdateProfileRequest;
@@ -59,7 +60,7 @@ public class UserService {
                 .stream()
                 .findFirst();
         if (!userOptional.isPresent())
-            SecurityException.throwException("user not found!");
+            SecurityException.throwException(I18nService.getMessage("user_not_found"));
         CloudUser cloudUser = userOptional.get();
         Set<SimpleGrantedAuthority> grantedAuthoritySet = getSimpleGrantedAuthorities(cloudUser);
         LocalUser localUser = new LocalUser();

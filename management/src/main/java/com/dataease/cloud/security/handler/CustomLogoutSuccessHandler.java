@@ -3,6 +3,7 @@ package com.dataease.cloud.security.handler;
 import com.dataease.cloud.base.domain.CloudUserLoginLog;
 import com.dataease.cloud.base.mapper.CloudUserLoginLogMapper;
 import com.dataease.cloud.entity.response.Result;
+import com.dataease.cloud.i18n.I18nService;
 import com.dataease.cloud.utils.AddressUtils;
 import com.dataease.cloud.utils.CommonUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -75,7 +76,7 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setContentType(MediaType.APPLICATION_JSON.toString());
         PrintWriter out = response.getWriter();
-        out.write(jacksonObjectMapper.writeValueAsString(Result.success("用户登出成功")));
+        out.write(jacksonObjectMapper.writeValueAsString(Result.success(I18nService.getMessage("user_logout_success_msg"))));
         out.flush();
         out.close();
     }

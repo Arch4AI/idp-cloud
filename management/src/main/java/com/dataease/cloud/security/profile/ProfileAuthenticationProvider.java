@@ -1,5 +1,6 @@
 package com.dataease.cloud.security.profile;
 
+import com.dataease.cloud.i18n.I18nService;
 import com.dataease.cloud.security.exception.SecurityException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -29,7 +30,7 @@ public class ProfileAuthenticationProvider implements AuthenticationProvider {
         //强制转换
         ProfileAuthenticationToken proflieAuthenticationToken = (ProfileAuthenticationToken) authentication;
         if (proflieAuthenticationToken.getPrincipal() == null)
-            SecurityException.throwException("update user profile request parameter error!");
+            SecurityException.throwException(I18nService.getMessage("request_param_error"));
         String username = (String) proflieAuthenticationToken.getPrincipal();
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         //设置token

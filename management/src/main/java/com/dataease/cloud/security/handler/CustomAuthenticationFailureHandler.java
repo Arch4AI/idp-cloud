@@ -4,6 +4,7 @@ import com.dataease.cloud.base.domain.CloudUserLoginLog;
 import com.dataease.cloud.base.mapper.CloudUserLoginLogMapper;
 import com.dataease.cloud.constant.Constants;
 import com.dataease.cloud.entity.response.Result;
+import com.dataease.cloud.i18n.I18nService;
 import com.dataease.cloud.security.LocalUser;
 import com.dataease.cloud.utils.AddressUtils;
 import com.dataease.cloud.utils.CommonUtils;
@@ -69,10 +70,21 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
         }
         cloudUserLoginLog.setMsg("登录失败：" + exception.getLocalizedMessage());
         cloudUserLoginLogMapper.insertSelective(cloudUserLoginLog);
-        Result result = Result.error(exception, "登录失败！");
+//        Result result = Result.error(exception, I18nService.getMessage("login_error_msg"));
+        Result result = Result.error(exception,getMessageByException(exception));
         PrintWriter out = response.getWriter();
         out.write(jacksonObjectMapper.writeValueAsString(result));
         out.flush();
         out.close();
+    }
+
+    /**
+     * 根据异常返回提示信息
+     * @param exception
+     * @return
+     */
+    private String getMessageByException(AuthenticationException exception){
+        String message = I18nService.getMessage("login_error_msg");
+        return message;
     }
 }

@@ -1,13 +1,13 @@
 package com.dataease.cloud.security.phone;
 
+import com.dataease.cloud.i18n.I18nService;
+import com.dataease.cloud.security.exception.SecurityException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 /**
  * 手机验证码的提供者
@@ -32,9 +32,9 @@ public class PhoneAuthenticationProvider implements AuthenticationProvider {
         //获取用户信息
         UserDetails userDetails = userDetailsService.loadUserByUsername((String) phoneAuthenticationToken.getPrincipal());
         if (userDetails == null)
-            throw new UsernameNotFoundException("user not found!");
+            SecurityException.throwException(I18nService.getMessage("user_not_found"));
         if (!userDetails.isEnabled())
-            throw new DisabledException("user disabled!");
+            SecurityException.throwException(I18nService.getMessage("user_has_disabled"));
         //设置token
         PhoneAuthenticationToken token = new PhoneAuthenticationToken(userDetails, userDetails.getAuthorities());
         token.setDetails(authentication.getDetails());

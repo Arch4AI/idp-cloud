@@ -1,6 +1,7 @@
 package com.dataease.cloud.security.handler;
 
 import com.dataease.cloud.entity.response.Result;
+import com.dataease.cloud.i18n.I18nService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import jakarta.servlet.ServletException;
@@ -36,7 +37,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         response.setContentType(MediaType.APPLICATION_JSON.toString());
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         PrintWriter out = response.getWriter();
-        out.write(jacksonObjectMapper.writeValueAsString(Result.error(accessDeniedException, "权限不够无法访问！")));
+        out.write(jacksonObjectMapper.writeValueAsString(Result.error(accessDeniedException, I18nService.getMessage("access_denied_msg"))));
         out.flush();
         out.close();
     }

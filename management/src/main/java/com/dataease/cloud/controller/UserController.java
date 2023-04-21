@@ -1,6 +1,7 @@
 package com.dataease.cloud.controller;
 
 import com.dataease.cloud.entity.response.Result;
+import com.dataease.cloud.i18n.I18nService;
 import com.dataease.cloud.security.LocalUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +31,6 @@ public class UserController {
             localUser.setPassword(null);
             return Result.success(localUser);
         }
-        return Result.error("用户未登录");
+        return Result.error(I18nService.getMessage("user_not_login"));
     }
 }

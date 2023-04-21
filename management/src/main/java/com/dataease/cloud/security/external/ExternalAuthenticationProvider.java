@@ -1,5 +1,6 @@
 package com.dataease.cloud.security.external;
 
+import com.dataease.cloud.i18n.I18nService;
 import com.dataease.cloud.security.exception.SecurityException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -29,7 +30,7 @@ public class ExternalAuthenticationProvider implements AuthenticationProvider {
         //强制转换
         ExternalAuthenticationToken externalAuthenticationToken = (ExternalAuthenticationToken) authentication;
         if (externalAuthenticationToken.getPrincipal() == null)
-            SecurityException.throwException("External Auth Parameter error!");
+            SecurityException.throwException(I18nService.getMessage("request_param_error"));
         String userId = (String) externalAuthenticationToken.getPrincipal();
         UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
         //设置token
