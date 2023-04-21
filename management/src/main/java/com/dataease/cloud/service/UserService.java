@@ -140,7 +140,7 @@ public class UserService {
         if (cloudUser.getGender() == null)
             cloudUser.setGender(GenderEnum.MAN.getKey());
         if (cloudUser.getLanguage() == null)
-            cloudUser.setLanguage(LanguageEnum.ZH_CN.name());
+            cloudUser.setLanguage(LanguageEnum.ZH_CN.getName());
         if (StringUtils.hasText(cloudUser.getPassword()))
             cloudUser.setPassword(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(cloudUser.getPassword()));
         cloudUserMapper.insertSelective(cloudUser);

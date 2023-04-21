@@ -1,5 +1,6 @@
 package com.dataease.cloud.test;
 
+import com.dataease.cloud.constant.LanguageEnum;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.api.ProgressCallback;
 import org.mybatis.generator.config.Configuration;
@@ -40,6 +41,9 @@ public class MyTest {
 //        String key = "spring:session:sessions:2407437c-4a3c-49da-a6ee-81b10a174ced";
 //        String baseKey = Constants.redisNamespace+":sessions:";
 //        System.out.println(key.substring(baseKey.length()));
+//        System.out.println(I18nService.getMessage("aaaaa"));
+        //返回信息
+        System.out.println(LanguageEnum.ZH_CN.name());
     }
 
     private static void generator() throws Exception {

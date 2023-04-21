@@ -90,7 +90,7 @@ public class SystemInit {
                     cloudUser.setPhone("13168330000");
                     cloudUser.setEnabled(true);
                     cloudUser.setGender(GenderEnum.MAN.getKey());
-                    cloudUser.setLanguage(LanguageEnum.ZH_CN.name());
+                    cloudUser.setLanguage(LanguageEnum.ZH_CN.getName());
                     cloudUser.setNickName("超级管理员");
                     cloudUser.setPassword(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("admin"));
                     cloudUser.setCreateTime(Calendar.getInstance().getTime());
