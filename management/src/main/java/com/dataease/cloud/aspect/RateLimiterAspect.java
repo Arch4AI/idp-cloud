@@ -2,6 +2,7 @@ package com.dataease.cloud.aspect;
 
 import com.dataease.cloud.annotation.NoRateLimit;
 import com.dataease.cloud.exception.CloudException;
+import com.dataease.cloud.i18n.I18nService;
 import com.dataease.cloud.properties.CommonProperties;
 import com.dataease.cloud.utils.IpUtils;
 import com.google.common.util.concurrent.RateLimiter;
@@ -72,7 +73,7 @@ public class RateLimiterAspect {
                 log.info("【{}'s QPS:: {}", key, RATE_LIMITER_CACHE.get(key).getRate());
             } else {
                 if (!RATE_LIMITER_CACHE.get(key).tryAcquire(CommonProperties.getRateLimitTime(), CommonProperties.getRateLimitTimeUnit())) {
-                    CloudException.throwException("Too many interface requests, please try again later!");
+                    CloudException.throwException(I18nService.getMessage("too_many_interface_requests"));
                 }
             }
         }

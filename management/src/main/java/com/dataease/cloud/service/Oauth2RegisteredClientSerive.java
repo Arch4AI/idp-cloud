@@ -13,6 +13,7 @@ import com.dataease.cloud.constant.RegxContants;
 import com.dataease.cloud.entity.request.RegisteredClientModifyReq;
 import com.dataease.cloud.entity.request.RegisteredClientQueryReq;
 import com.dataease.cloud.exception.CloudException;
+import com.dataease.cloud.i18n.I18nService;
 import jakarta.annotation.Resource;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
@@ -92,7 +93,7 @@ public class Oauth2RegisteredClientSerive {
     public void resetClientSecret(String id, String secret) {
         CloudOauth2RegisteredClient client = cloudOauth2RegisteredClientMapper.selectByPrimaryKey(id);
         if (client == null)
-            CloudException.throwException("client not found");
+            CloudException.throwException(I18nService.getMessage("client_not_found"));
         // 如果不为空且已经到期的话需要修改他为null
         if (client.getClientSecretExpiresAt() != null && client.getClientSecretExpiresAt().before(Calendar.getInstance().getTime()))
             client.setClientSecretExpiresAt(null);
