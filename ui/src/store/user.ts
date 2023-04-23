@@ -1,5 +1,7 @@
 import { getMe } from '@/api/user/user'
 import { defineStore } from 'pinia'
+import { logout } from '@/api/logout/logout'
+import { useRouter } from 'vue-router'
 
 // 用户状态
 interface UserState {
@@ -16,11 +18,17 @@ const userStore = defineStore('UserSate', {
     // 检查是否已经登录 这个接口可以根据当前的sessionId或者remeberMe获取到登录用户信息
     async checkLogin() {
       const res = await getMe()
+      const router = useRouter()
+
+      console.log(window.location.pathname)
       if (res.code == 200) {
         this.user = res.data
       } else {
         this.user = {}
       }
+    },
+    async logout() {
+      await logout()
     }
   },
   // 同时支持localstorage sessionStorage

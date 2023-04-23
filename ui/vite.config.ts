@@ -1,5 +1,7 @@
 import { ConfigEnv, defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import svgLoader from 'vite-svg-loader'
+
 import path from 'path'
 
 export default defineConfig((mode: ConfigEnv) => {
@@ -12,7 +14,20 @@ export default defineConfig((mode: ConfigEnv) => {
         '@': path.resolve(__dirname, 'src') //添加@识别
       }
     },
-    plugins: [vue()],
+    css: {
+      preprocessorOptions: {
+        less: {
+          modifyVars: {
+            hack: `true; @import (reference) "${path.resolve(
+              'src/style/variables.less'
+            )}";`
+          },
+          math: 'strict',
+          javascriptEnabled: true
+        }
+      }
+    },
+    plugins: [vue(), svgLoader()],
     server: {
       port: 4000,
       cors: false,

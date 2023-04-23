@@ -1,3 +1,4 @@
+import uniq from 'lodash/uniq'
 import { loginByExternal } from '@/api/login/login'
 import externalInfoStore from '@/store/externalUser'
 import userStore from '@/store/user'
@@ -6,41 +7,58 @@ import {
   createRouter,
   createWebHistory,
   LocationQuery,
-  RouteRecordRaw
+  RouteRecordRaw,
+  useRoute
 } from 'vue-router'
 
-const routes: Array<RouteRecordRaw> = [
+// 导入modules相关固定路由
+const fixedModules = import.meta.glob('./modules/**/**.ts', { eager: true })
+const defaultRouterList: Array<RouteRecordRaw> = [
   {
     path: '/',
+    redirect: '/dashboard/base',
+  },
+  {
+    path: '/home',
     name: 'Home',
-    redirect: '/login'
-    //component: () => import('@/pages/home/Index.vue')
+    component: () => import('@/pages/home/index.vue')
   },
   {
     path: '/login',
     name: 'Login',
-    component: () => import('@/pages/login/Index.vue')
+    component: () => import('@/pages/login/index.vue')
   },
   {
     path: '/register',
     name: 'Register',
-    component: () => import('@/pages/register/Index.vue')
-  },
-  {
-    path: '/dashboard',
-    name: 'Dashboard',
-    component: () => import('@/pages/dashboard/Index.vue'),
-    beforeEnter: (to, from, next) => {
-      //这个可以使用 局部的路由守卫
-      next()
-    }
+    component: () => import('@/pages/register/index.vue')
   }
 ]
+
+// 存放固定路由
+export const fixedRouterList: Array<RouteRecordRaw> =
+  mapModuleRouterList(fixedModules)
+
+export const allRoutes = [...fixedRouterList, ...defaultRouterList]
+
+// 固定路由模块转换为路由
+export function mapModuleRouterList(
+  modules: Record<string, unknown>
+): Array<RouteRecordRaw> {
+  const routerList: Array<RouteRecordRaw> = []
+  Object.keys(modules).forEach((key) => {
+    // @ts-ignore
+    const mod = modules[key].default || {}
+    const modList = Array.isArray(mod) ? [...mod] : [mod]
+    routerList.push(...modList)
+  })
+  return routerList
+}
 
 // 导出路由
 const router = createRouter({
   history: createWebHistory(import.meta.env.VITE_APP_BASE_URL),
-  routes
+  routes: allRoutes
 })
 
 // 全局这个是路由守卫
@@ -84,5 +102,36 @@ router.afterEach(() => {
   // 跳转完成后直接把滚动条回到顶部
   window.scroll(0, 0)
 })
+
+export const getRoutesExpanded = () => {
+  const expandedRoutes: Array<any> | null | undefined = []
+
+  fixedRouterList.forEach((item) => {
+    if (item.meta && item.meta.expanded) {
+      expandedRoutes.push(item.path)
+    }
+    if (item.children && item.children.length > 0) {
+      item.children
+        .filter((child) => child.meta && child.meta.expanded)
+        .forEach((child: RouteRecordRaw) => {
+          expandedRoutes.push(item.path)
+          expandedRoutes.push(`${item.path}/${child.path}`)
+        })
+    }
+  })
+  return uniq(expandedRoutes)
+}
+
+export const getActive = (maxLevel = 3): string => {
+  const route = useRoute()
+  if (!route.path) {
+    return ''
+  }
+  return route.path
+    .split('/')
+    .filter((_item: string, index: number) => index <= maxLevel && index > 0)
+    .map((item: string) => `/${item}`)
+    .join('')
+}
 
 export default router

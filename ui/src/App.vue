@@ -6,7 +6,7 @@
   </div>
 </template>
 
-<style scoped>
+<style lang="less" scoped>
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -24,5 +24,9 @@
   width: 100%;
   height: 100%;
   margin: auto;
+}
+
+#nprogress .bar {
+  background: var(--td-brand-color) !important;
 }
 </style>

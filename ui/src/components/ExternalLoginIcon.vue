@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import defaultIcon from '@/assets/icon/external_login.svg'
+import DefaultIcon from '@/assets/icon/external_login.svg?component'
 
 //组件传值
 const props = defineProps({
@@ -25,12 +25,7 @@ const onClick = () => {
   </div>
   <div v-else>
     <div class="icon_item" @click="onClick" :title="displayName">
-      <t-image
-        fit="cover"
-        shape="circle"
-        class="login_icon"
-        :src="defaultIcon"
-      ></t-image>
+      <default-icon class="login_icon" />
     </div>
   </div>
 </template>

@@ -148,7 +148,7 @@ const sliderBoxWidth: any = ref(0)
 // 滑块按钮距离左侧起点位置
 const sliderButtonLeft: any = ref(0)
 // 鼠标按下状态
-let isMouseDown: boolean = false
+let isMouseDown = false
 // 图片加载提示，防止图片没加载完就开始验证
 const isLoading = ref(true)
 // 时间戳，计算滑动时长
@@ -156,7 +156,7 @@ let timestamp: any = null
 // 成功提示
 const successHint = ref('')
 // 随机字符串
-let ticket: string = ''
+let ticket = ''
 // 是否显示状态文字
 let isPassing = ref(false)
 const block: any = ref()

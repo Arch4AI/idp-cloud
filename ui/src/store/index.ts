@@ -5,5 +5,9 @@ import piniaPluginPersist from 'pinia-plugin-persist'
 const store = createPinia()
 // 使用该插件
 store.use(piniaPluginPersist)
+
+export { store }
+
+export * from './modules/permission'
 // 导出
 export default store
