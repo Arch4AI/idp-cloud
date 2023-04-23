@@ -19,6 +19,7 @@
     "pinia": "^2.0.33",
     "pinia-plugin-persist": "^1.0.0",
     "tdesign-vue-next": "^1.2.2",
+    "tdesign-icons-vue-next": "^0.1.8",
     "vue": "^3.2.47",
     "vue-router": "^4.1.6",
     "vue3-slide-verify": "^1.1.4"
