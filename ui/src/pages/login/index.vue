@@ -14,7 +14,7 @@
         </div>
         <!--  底部  -->
         <div class="login-footer">
-            <span>Copyright @ 2021-2023 Lingxia. All Rights Reserved.</span>
+            <span>Copyright @ 2021-2023 凌霞. All Rights Reserved.</span>
         </div>
     </div>
 </template>
