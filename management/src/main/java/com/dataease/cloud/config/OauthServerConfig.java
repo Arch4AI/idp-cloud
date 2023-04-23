@@ -4,6 +4,7 @@ import com.dataease.cloud.base.mapper.CloudOauth2AuthorizationConsentMapper;
 import com.dataease.cloud.base.mapper.CloudOauth2AuthorizationMapper;
 import com.dataease.cloud.base.mapper.CloudOauth2RegisteredClientMapper;
 import com.dataease.cloud.entity.response.Result;
+import com.dataease.cloud.i18n.I18nService;
 import com.dataease.cloud.security.handler.CustomAccessDeniedHandler;
 import com.dataease.cloud.security.handler.CustomAuthenticationEntryPoint;
 import com.dataease.cloud.security.oauthserver.CustomOAuth2AuthorizationConsentService;
@@ -18,6 +19,8 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +29,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
@@ -33,6 +37,7 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.web.SecurityFilterChain;
 
+import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -64,6 +69,19 @@ public class OauthServerConfig {
                                                                       UserService userService) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
+                .authorizationEndpoint(oAuth2AuthorizationEndpointConfigurer -> {
+                    // 错误的信息
+                    oAuth2AuthorizationEndpointConfigurer.errorResponseHandler((HttpServletRequest request, HttpServletResponse response,
+                                                                                AuthenticationException exception) -> {
+                        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+                        response.setContentType(MediaType.APPLICATION_JSON.toString());
+                        response.setStatus(HttpStatus.FORBIDDEN.value());
+                        PrintWriter out = response.getWriter();
+                        out.write(ObjectMapperUtils.simpleObjectMapper.writeValueAsString(Result.error(HttpStatus.FORBIDDEN, exception, I18nService.getMessage("request_param_error"))));
+                        out.flush();
+                        out.close();
+                    });
+                })
                 .oidc(oidcConfigurer -> oidcConfigurer.userInfoEndpoint(oidcUserInfoEndpointConfigurer ->
                         oidcUserInfoEndpointConfigurer.userInfoMapper(new CustomUserInfoMapper(userService))));
         http

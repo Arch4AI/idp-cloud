@@ -6,11 +6,14 @@ import com.dataease.cloud.base.mapper.CloudOauth2AuthorizationMapper;
 import com.dataease.cloud.utils.ObjectMapperUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.endpoint.OidcParameterNames;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationCode;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
@@ -20,6 +23,9 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.sql.Date;
 import java.time.Instant;
@@ -34,6 +40,7 @@ import java.util.Set;
  * @version v1.0
  * @date 2023/3/15 10:24 AM
  **/
+@Slf4j
 public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationService {
 
     private RegisteredClientRepository registeredClientRepository;
@@ -51,6 +58,7 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
     @Override
     public void save(OAuth2Authorization authorization) {
         Assert.notNull(authorization, "authorization cannot be null");
+
         String authorizedScopes = null;
         if (!CollectionUtils.isEmpty(authorization.getAuthorizedScopes())) {
             authorizedScopes = StringUtils.collectionToDelimitedString(authorization.getAuthorizedScopes(), ",");
@@ -115,9 +123,17 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
         //转化的整个内容
         CloudOauth2AuthorizationWithBLOBs primaryKey = cloudOauth2AuthorizationMapper.selectByPrimaryKey(cloudOauth2AuthorizationWithBLOBs.getId());
         if (primaryKey == null) {
+            // 只在新增的時候加入
+            RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+            if(requestAttributes != null && requestAttributes instanceof ServletRequestAttributes){
+                HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
+                log.info("request session id:{},session id:{}",request.getRequestedSessionId(),request.getSession().getId());
+                cloudOauth2AuthorizationWithBLOBs.setSessionId(request.getRequestedSessionId());
+            }
             cloudOauth2AuthorizationMapper.insertSelective(cloudOauth2AuthorizationWithBLOBs);
         } else {
-            cloudOauth2AuthorizationMapper.updateByPrimaryKeyWithBLOBs(cloudOauth2AuthorizationWithBLOBs);
+            //這個不會更新所有 那樣的話sessionId可以保存下來
+            cloudOauth2AuthorizationMapper.updateByPrimaryKeySelective(cloudOauth2AuthorizationWithBLOBs);
         }
     }
 
@@ -167,6 +183,12 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
             }
         } else if (OAuth2TokenType.REFRESH_TOKEN.equals(tokenType)) {
             example.createCriteria().andRefreshTokenValueEqualTo(token);
+            CloudOauth2AuthorizationWithBLOBs bloBs = cloudOauth2AuthorizationMapper.selectByExampleWithBLOBs(example).stream().findFirst().orElse(null);
+            if (bloBs != null) {
+                return entityRow(bloBs);
+            }
+        } else if(OidcParameterNames.ID_TOKEN.equals(tokenType.getValue())){
+            example.createCriteria().andOidcIdTokenValueEqualTo(token);
             CloudOauth2AuthorizationWithBLOBs bloBs = cloudOauth2AuthorizationMapper.selectByExampleWithBLOBs(example).stream().findFirst().orElse(null);
             if (bloBs != null) {
                 return entityRow(bloBs);

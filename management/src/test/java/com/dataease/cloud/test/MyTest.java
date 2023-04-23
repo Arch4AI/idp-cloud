@@ -10,6 +10,7 @@ import org.mybatis.generator.internal.DefaultShellCallback;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * [描述当前类是什么作用]
@@ -43,7 +44,8 @@ public class MyTest {
 //        System.out.println(key.substring(baseKey.length()));
 //        System.out.println(I18nService.getMessage("aaaaa"));
         //返回信息
-        System.out.println(LanguageEnum.ZH_CN.name());
+//        System.out.println(LanguageEnum.ZH_CN.name());
+        System.out.println(Locale.US.toString());
     }
 
     private static void generator() throws Exception {

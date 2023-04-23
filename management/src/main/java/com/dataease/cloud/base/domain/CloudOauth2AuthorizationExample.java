@@ -560,21 +560,6 @@ public class CloudOauth2AuthorizationExample {
             return (Criteria) this;
         }
 
-        public Criteria andAuthorizationCodeValueEqualTo(String value) {
-            addCriterion("`authorization_code_value` =", value, "authorizationCodeValue");
-            return (Criteria) this;
-        }
-
-        public Criteria andAccessTokenValueEqualTo(String value) {
-            addCriterion("`access_token_value` =", value, "accessTokenValue");
-            return (Criteria) this;
-        }
-
-        public Criteria andRefreshTokenValueEqualTo(String value) {
-            addCriterion("`refresh_token_value` =", value, "refreshTokenValue");
-            return (Criteria) this;
-        }
-
         public Criteria andStateNotEqualTo(String value) {
             addCriterion("`state` <>", value, "state");
             return (Criteria) this;
@@ -1247,6 +1232,96 @@ public class CloudOauth2AuthorizationExample {
 
         public Criteria andRefreshTokenExpiresAtNotBetween(Date value1, Date value2) {
             addCriterion("refresh_token_expires_at not between", value1, value2, "refreshTokenExpiresAt");
+            return (Criteria) this;
+        }
+
+        public Criteria andSessionIdIsNull() {
+            addCriterion("session_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSessionIdIsNotNull() {
+            addCriterion("session_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSessionIdEqualTo(String value) {
+            addCriterion("session_id =", value, "sessionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSessionIdNotEqualTo(String value) {
+            addCriterion("session_id <>", value, "sessionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSessionIdGreaterThan(String value) {
+            addCriterion("session_id >", value, "sessionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSessionIdGreaterThanOrEqualTo(String value) {
+            addCriterion("session_id >=", value, "sessionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSessionIdLessThan(String value) {
+            addCriterion("session_id <", value, "sessionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSessionIdLessThanOrEqualTo(String value) {
+            addCriterion("session_id <=", value, "sessionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSessionIdLike(String value) {
+            addCriterion("session_id like", value, "sessionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSessionIdNotLike(String value) {
+            addCriterion("session_id not like", value, "sessionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSessionIdIn(List<String> values) {
+            addCriterion("session_id in", values, "sessionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSessionIdNotIn(List<String> values) {
+            addCriterion("session_id not in", values, "sessionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSessionIdBetween(String value1, String value2) {
+            addCriterion("session_id between", value1, value2, "sessionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSessionIdNotBetween(String value1, String value2) {
+            addCriterion("session_id not between", value1, value2, "sessionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAuthorizationCodeValueEqualTo(String value) {
+            addCriterion("`authorization_code_value` =", value, "authorizationCodeValue");
+            return (Criteria) this;
+        }
+
+        public Criteria andAccessTokenValueEqualTo(String value) {
+            addCriterion("`access_token_value` =", value, "accessTokenValue");
+            return (Criteria) this;
+        }
+
+        public Criteria andRefreshTokenValueEqualTo(String value) {
+            addCriterion("`refresh_token_value` =", value, "refreshTokenValue");
+            return (Criteria) this;
+        }
+
+        public Criteria andOidcIdTokenValueEqualTo(String value) {
+            addCriterion("`oidc_id_token_value` =", value, "oidcIdTokenValue");
             return (Criteria) this;
         }
     }
