@@ -12,6 +12,7 @@ import com.dataease.cloud.constant.RegxContants;
 import com.dataease.cloud.constant.SmsSendType;
 import com.dataease.cloud.entity.response.AliyunSmsCodeResponse;
 import com.dataease.cloud.exception.CloudException;
+import com.dataease.cloud.i18n.I18nService;
 import com.dataease.cloud.properties.AliyunSmsProperties;
 import com.dataease.cloud.properties.SmsProperties;
 import com.dataease.cloud.service.sms.MessageService;
@@ -40,10 +41,10 @@ public class AliyunMessageServiceImpl implements MessageService {
     @Override
     public void sendCode(SmsSendType sendType, String phone, String code) {
         if (!StringUtils.hasText(phone) || !ReUtil.isMatch(RegxContants.PHONE_NUM_REGX, phone))
-            CloudException.throwException("phone number error");
+            CloudException.throwException(I18nService.getMessage("phone_number_error"));
         //放到这个里面就比较好
         if (ObjectUtils.isEmpty(smsProperties.getAliyun()))
-            CloudException.throwException("aliyun sms config required");
+            CloudException.throwException(I18nService.getMessage("aliyun_sms_config_required"));
         AliyunSmsProperties aliyun = smsProperties.getAliyun();
         IClientProfile profile = DefaultProfile.getProfile(aliyun.getRegionId(), aliyun.getAccessKey(), aliyun.getSecretKey());
         DefaultAcsClient client = new DefaultAcsClient(profile);
@@ -67,13 +68,13 @@ public class AliyunMessageServiceImpl implements MessageService {
             CommonResponse response = client.getCommonResponse(request);
             AliyunSmsCodeResponse smsCodeResponse = JSON.parseObject(response.getData(), AliyunSmsCodeResponse.class);
             if ("isv.BUSINESS_LIMIT_CONTROL".equals(smsCodeResponse.getCode()))
-                CloudException.throwException("发送短信次数已超过每小时限制，请稍后再试或使用其他方式登录！");
+                CloudException.throwException(I18nService.getMessage("sending_messages_too_frequently_hour"));
             if ("isv.DAY_LIMIT_CONTROL".equals(smsCodeResponse.getCode()))
-                CloudException.throwException("发送短信次数已超过每日限制，请使用其他方式登录！");
+                CloudException.throwException(I18nService.getMessage("sending_messages_too_frequently_day"));
             log.info(String.format("response: %s", response.getData()));
         } catch (Exception e) {
             log.error(String.format("阿里云短信发送失败: %s", e.getMessage()));
-            CloudException.throwException("Aliyun Send Message error:" + e.getMessage());
+            CloudException.throwException(I18nService.getMessage("aliyun_send_message_error") + e.getMessage());
         } finally {
             if (client != null)
                 client.shutdown();
