@@ -7,7 +7,7 @@ import { PAGE_NOT_FOUND_ROUTE } from '@/utils/route/constant'
 
 export const usePermissionStore = defineStore('permission', {
   state: () => ({
-    whiteListRouters: ['/login','/home'],
+    whiteListRouters: ['/login', '/home'],
     routers: [] as any[],
     removeRoutes: [],
     asyncRoutes: [] as any[]

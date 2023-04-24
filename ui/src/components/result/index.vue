@@ -15,7 +15,6 @@ import Result403Icon from '@/assets/assets-result-403.svg?component'
 import Result404Icon from '@/assets/assets-result-404.svg?component'
 import Result500Icon from '@/assets/assets-result-500.svg?component'
 
-
 const props = defineProps({
   bgUrl: String,
   title: String,

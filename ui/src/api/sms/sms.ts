@@ -1,4 +1,5 @@
 import apiRequest from '@/request/request'
+import { SmsCheckReq, SmsSendReq, SmsSendResp } from './types'
 
 // 发送短信
 export const sendSms = (data: SmsSendReq) => {

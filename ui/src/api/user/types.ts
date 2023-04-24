@@ -1,5 +1,5 @@
 // 这个是SessionUser 在redis中可以查询到 不返回sessionId
-interface LocalUser {
+export interface LocalUser {
   accountNonExpired?: boolean
   accountNonLocked?: boolean
   credentialsNonExpired?: boolean
@@ -20,12 +20,12 @@ interface LocalUser {
 }
 
 // spring 用户绑定角色
-interface Authoritity {
+export interface Authoritity {
   authority: string
 }
 
 // 定义一个角色枚举类
-enum SysRole {
+export enum SysRole {
   ROLE_ADMIN,
   ROLE_USER
 }

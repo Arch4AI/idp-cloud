@@ -1,3 +1,4 @@
+import { ExternalSecurityResponse } from '@/api/login/types'
 import { defineStore } from 'pinia'
 
 // 外部用户的信息
