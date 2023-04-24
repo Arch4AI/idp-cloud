@@ -3,6 +3,7 @@ package com.dataease.cloud.controller;
 import com.dataease.cloud.constant.Constants;
 import com.dataease.cloud.entity.response.Result;
 import com.dataease.cloud.exception.CloudException;
+import com.dataease.cloud.i18n.I18nService;
 import com.dataease.cloud.utils.CaptchaDto;
 import com.dataease.cloud.utils.SliderCaptchaUtils;
 import jakarta.annotation.Resource;
@@ -62,10 +63,10 @@ public class AnonymousController {
     @PostMapping("captcha/validate")
     public Result validateCaptcha(@RequestBody CaptchaDto request) {
         if (!stringRedisTemplate.hasKey(request.getTicket()))
-            CloudException.throwException("Captcha Code not exist");
+            CloudException.throwException(I18nService.getMessage("captcha_code_not_exist"));
         String redisValue = stringRedisTemplate.opsForValue().get(Constants.SLIDER_CAPTCHA_REDIS_KEY + request.getTicket());
         if (Math.abs(Integer.valueOf(redisValue) - request.getBlockX()) > Constants.SLIDER_CAPTCHA_ALLOW_DEVIATION)
-            CloudException.throwException("Please slide to the specified position.");
+            CloudException.throwException(I18nService.getMessage("slide_to_the_specified_position"));
         //移除key
         stringRedisTemplate.delete(Constants.SLIDER_CAPTCHA_REDIS_KEY + request.getTicket());
         return Result.success("validate success");
