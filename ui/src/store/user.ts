@@ -2,6 +2,7 @@ import { getMe } from '@/api/user/user'
 import { defineStore } from 'pinia'
 import { logout } from '@/api/logout/logout'
 import { useRouter } from 'vue-router'
+import { LocalUser } from '@/api/user/types'
 
 // 用户状态
 interface UserState {

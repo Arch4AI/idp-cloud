@@ -1,4 +1,12 @@
 import apiRequest from '@/request/request'
+import {
+  ExternalLoginReq,
+  PasswordLoginReq,
+  PhoneLoginReq,
+  UserProfileReq,
+  UserRegisterReq
+} from './types'
+import { LocalUser } from '../user/types'
 
 // 这个是账号密码登录
 export const loginByPwd = (data: PasswordLoginReq) => {

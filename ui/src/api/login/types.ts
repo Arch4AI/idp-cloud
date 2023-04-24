@@ -1,5 +1,7 @@
+import { Authoritity } from '../user/types'
+
 // 账号密码登录
-interface PasswordLoginReq {
+export interface PasswordLoginReq {
   userName: string
   password: string
   sourceId?: string //第三方登录的源ID
@@ -7,7 +9,7 @@ interface PasswordLoginReq {
 }
 
 // 短信登录请求
-interface PhoneLoginReq {
+export interface PhoneLoginReq {
   phone: string
   code: string
   sourceId?: string //第三方登录的源ID
@@ -15,7 +17,7 @@ interface PhoneLoginReq {
 }
 
 // 用户注册
-interface UserRegisterReq {
+export interface UserRegisterReq {
   userName: string
   nickName: string
   password: string
@@ -30,7 +32,7 @@ interface UserRegisterReq {
 }
 
 // 更新用户信息 非必须都填
-interface UserProfileReq {
+export interface UserProfileReq {
   userName?: string
   nickName?: string
   password?: string
@@ -43,7 +45,7 @@ interface UserProfileReq {
 }
 
 // 外部登录请求
-interface ExternalLoginReq {
+export interface ExternalLoginReq {
   state: string
   code: string
 
@@ -51,7 +53,7 @@ interface ExternalLoginReq {
 }
 
 // 登录成功返回的信息
-interface LoginResp {
+export interface LoginResp {
   loginType: string
   authorities: Authoritity[]
   userId: string
@@ -67,7 +69,7 @@ interface LoginResp {
 }
 
 // 这个是第三方登录没有绑定用户返回的信息对应code=403
-interface ExternalSecurityResponse {
+export interface ExternalSecurityResponse {
   sourceId?: string //对应源地址
   uuid?: string //对应用户uuid
   type?: string //对应类型 clientType

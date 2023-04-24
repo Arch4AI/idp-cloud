@@ -39,7 +39,9 @@
               <template #icon>
                 <t-icon class="header-user-avatar" name="user-circle" />
               </template>
-              <div class="header-user-account">{{ storeUser.user.nickName }}</div>
+              <div class="header-user-account">
+                {{ storeUser.user.nickName }}
+              </div>
               <template #suffix><t-icon name="chevron-down" /></template>
             </t-button>
           </t-dropdown>
@@ -58,7 +60,7 @@ import { prefix } from '@/config/global'
 import { getActive } from '@/router'
 import { logout } from '@/api/logout/logout'
 import { MessagePlugin } from 'tdesign-vue-next'
-import userStore from "@/store/user";
+import userStore from '@/store/user'
 
 const props = defineProps({
   theme: {

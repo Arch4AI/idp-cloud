@@ -16,7 +16,7 @@ const crumbs = computed(() => {
   const pathArray = route.path.split('/')
   pathArray.shift()
 
-  const breadcrumbs = pathArray.reduce((breadcrumbArray, path, idx) => {
+  const breadcrumbs = pathArray.reduce((breadcrumbArray: any[], path, idx) => {
     // 如果路由下有hiddenBreadcrumb或当前遍历到参数则隐藏
     if (
       route.matched[idx]?.meta?.hiddenBreadcrumb ||
@@ -26,7 +26,7 @@ const crumbs = computed(() => {
     }
 
     breadcrumbArray.push({
-      path,
+      path: path,
       to: breadcrumbArray[idx - 1]
         ? `/${breadcrumbArray[idx - 1].path}/${path}`
         : `/${path}`,

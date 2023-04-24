@@ -10,13 +10,14 @@ import {
   RouteRecordRaw,
   useRoute
 } from 'vue-router'
+import { ExternalLoginReq, ExternalSecurityResponse } from '@/api/login/types'
 
 // 导入modules相关固定路由
 const fixedModules = import.meta.glob('./modules/**/**.ts', { eager: true })
 const defaultRouterList: Array<RouteRecordRaw> = [
   {
     path: '/',
-    redirect: '/dashboard/base',
+    redirect: '/dashboard/base'
   },
   {
     path: '/home',

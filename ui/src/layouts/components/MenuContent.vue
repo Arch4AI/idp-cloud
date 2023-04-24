@@ -65,7 +65,7 @@ const list = computed(() => {
 
 const menuIcon = (item: ListItemType) => {
   console.log(typeof item.icon)
-    // TODO 菜单icon
+  // TODO 菜单icon
   // if (typeof item.icon === 'string') return <t-icon name={item.icon} />;
   if (typeof item.icon === 'string') return ''
   const RenderIcon = item.icon

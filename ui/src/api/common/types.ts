@@ -5,7 +5,7 @@ export type Component<T = any> =
   | (() => Promise<typeof import('*.vue')>)
   | (() => Promise<T>)
 
-interface Captcha {
+export interface Captcha {
   ticket?: string
   value?: string
   canvasSrc?: string
