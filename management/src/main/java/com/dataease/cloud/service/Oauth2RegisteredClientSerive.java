@@ -48,10 +48,10 @@ public class Oauth2RegisteredClientSerive {
     private CloudOauth2AuthorizationConsentMapper cloudOauth2AuthorizationConsentMapper;
 
     //默认的授权类型
-    private static List<AuthorizationGrantType> defaultGrantTypes = new ArrayList<>() {{
-        add(AuthorizationGrantType.AUTHORIZATION_CODE);
-        add(AuthorizationGrantType.REFRESH_TOKEN);
-        add(AuthorizationGrantType.CLIENT_CREDENTIALS);
+    private static List<String> defaultGrantTypes = new ArrayList<>() {{
+        add(AuthorizationGrantType.AUTHORIZATION_CODE.getValue());
+        add(AuthorizationGrantType.REFRESH_TOKEN.getValue());
+        add(AuthorizationGrantType.CLIENT_CREDENTIALS.getValue());
     }};
 
     //默认给的作用域

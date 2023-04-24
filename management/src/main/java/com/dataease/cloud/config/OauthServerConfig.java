@@ -124,42 +124,6 @@ public class OauthServerConfig {
      */
     @Bean
     public RegisteredClientRepository registeredClientRepository(CloudOauth2RegisteredClientMapper cloudOauth2RegisteredClientMapper) {
-//        String clientId = "idp_cloud";
-//        CustomRegisteredClientRepository registeredClientRepository = new CustomRegisteredClientRepository(cloudOauth2RegisteredClientMapper);
-//        RegisteredClient client = registeredClientRepository.findByClientId(clientId);
-//        String id = IdUtil.randomUUID();
-//        if (client != null) {
-//            id = client.getId();
-//        }
-//
-//        RegisteredClient registeredClient = RegisteredClient.withId(id)
-//                //客户端ID
-//                .clientId(clientId)
-//                //客服端密钥 建议自己生成 生成后展示给客户端即可 需要加密
-//                .clientSecret("123456")
-//                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
-//                // 授权模式 固定即可
-//                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-//                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-//                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-//                // 这个地方必须是全路径
-//                .redirectUri("https://www.baidu.com")
-//                //这里的scope理论上也可以定义 但是需要结合你实际接口需要的权限 建议这里用枚举 因为本身这个支持OIDC v1 所以默认带了OIDC的2个profile
-//                .scope(OidcScopes.OPENID)
-//                .scope(OidcScopes.PROFILE)
-//                .scope(OidcScopes.EMAIL)
-//                .scope(OidcScopes.PHONE)
-//                //客户端配置
-//                .clientSettings(ClientSettings.builder()
-//                        .requireAuthorizationConsent(false).build())
-//                .tokenSettings(TokenSettings.builder()
-//                        .authorizationCodeTimeToLive(Duration.ofMinutes(10))//code 10分钟有效
-//                        .accessTokenTimeToLive(Duration.ofMinutes(30))//token 限制30分钟
-//                        //默认refreshToken 是60分钟
-//                        .build())
-//                .build();
-//        registeredClientRepository.save(registeredClient);
-//        return registeredClientRepository;
         return new CustomRegisteredClientRepository(cloudOauth2RegisteredClientMapper);
     }
 
