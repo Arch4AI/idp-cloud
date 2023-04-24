@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.quartz.QuartzAutoConfiguration;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
 /**
@@ -20,7 +19,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
         DataSourceTransactionManagerAutoConfiguration.class
 })
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
-@EnableAsync
 public class DataeaseCloudPortalApplication {
 
     public static void main(String[] args) {

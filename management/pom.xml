@@ -23,7 +23,7 @@
         <pagehelper.version>5.3.2</pagehelper.version>
         <user-agent.version>1.21</user-agent.version>
         <mybatis-generator.version>1.4.2</mybatis-generator.version>
-        <tencent-cloud-sdk.version>3.1.732</tencent-cloud-sdk.version>
+        <tencent-cloud-sdk.version>3.1.743</tencent-cloud-sdk.version>
     </properties>
 
     <dependencies>
@@ -207,7 +207,7 @@
         <!-- 腾讯云sdk -->
         <dependency>
             <groupId>com.tencentcloudapi</groupId>
-            <artifactId>tencentcloud-sdk-java</artifactId>
+            <artifactId>tencentcloud-sdk-java-sms</artifactId>
             <version>${tencent-cloud-sdk.version}</version>
         </dependency>
 
