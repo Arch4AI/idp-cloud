@@ -5,6 +5,7 @@ import com.dataease.cloud.base.mapper.CloudOauth2AuthorizationMapper;
 import com.dataease.cloud.base.mapper.CloudOauth2RegisteredClientMapper;
 import com.dataease.cloud.entity.response.Result;
 import com.dataease.cloud.i18n.I18nService;
+import com.dataease.cloud.properties.CommonProperties;
 import com.dataease.cloud.security.handler.CustomAccessDeniedHandler;
 import com.dataease.cloud.security.handler.CustomAuthenticationEntryPoint;
 import com.dataease.cloud.security.oauthserver.CustomOAuth2AuthorizationConsentService;
@@ -30,6 +31,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
@@ -83,7 +85,16 @@ public class OauthServerConfig {
                     });
                 })
                 .oidc(oidcConfigurer -> oidcConfigurer.userInfoEndpoint(oidcUserInfoEndpointConfigurer ->
-                        oidcUserInfoEndpointConfigurer.userInfoMapper(new CustomUserInfoMapper(userService))));
+                                //自定义Mapper返回解析
+                                oidcUserInfoEndpointConfigurer.userInfoMapper(new CustomUserInfoMapper(userService)))
+                        .providerConfigurationEndpoint(oidcProviderConfigurationEndpointConfigurer ->
+                                //自定义scope的范围 如果还要加也可以
+                                oidcProviderConfigurationEndpointConfigurer.providerConfigurationCustomizer(customizer -> {
+                                    customizer.scope(OidcScopes.PROFILE)
+                                            .scope(OidcScopes.EMAIL)
+                                            .scope(OidcScopes.PHONE)
+                                            .build();
+                                })));
         http
                 .exceptionHandling()
                 .authenticationEntryPoint(customAuthenticationEntryPoint)
@@ -96,6 +107,15 @@ public class OauthServerConfig {
         return http.build();
     }
 
+    /**
+     * 通过oauth授权的API访问 暂时无效 后续可以写入到
+     * .well-known/openid-configuration
+     * .well-known/oauth-authorization-server
+     *
+     * @param http
+     * @return
+     * @throws Exception
+     */
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE + 1)
     public SecurityFilterChain resourceServerSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -170,11 +190,19 @@ public class OauthServerConfig {
     /**
      * 配置端点 一般直接默认即可 当然也可以做成自定义的 切记这个是固定的 在服务器启动的时候生效 因为要写入Filter的PathMatcher
      * 建议做成配置文件
+     * .well-known/oauth-authorization-server
+     * .well-known/openid-configuration
+     * 可以从这2个地址进行获取
      *
      * @return
      */
     @Bean
-    public AuthorizationServerSettings authorizationServerSettings() {
-        return AuthorizationServerSettings.builder().build();
+    public AuthorizationServerSettings authorizationServerSettings(CommonProperties commonProperties) {
+        //这里可以定义基础访问路径 issuer指定基础路径
+        AuthorizationServerSettings.Builder builder = AuthorizationServerSettings.builder();
+        if (commonProperties.getIssuerUrl() != null) {
+            builder.issuer(commonProperties.getIssuerUrl().toString());
+        }
+        return builder.build();
     }
 }

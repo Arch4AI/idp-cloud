@@ -82,6 +82,12 @@
       "defaultValue": "microseconds"
     },
     {
+      "name": "cloud.common.issuer-url",
+      "type": "java.net.URL",
+      "description": "用于创建oidc/oauthserver的发行地址，用于有上层代理后的配置,主要用于/.well-known/openid-configuration与/.well-known/oauth-authorization-server",
+      "sourceType": "com.dataease.cloud.properties.CommonProperties"
+    },
+    {
       "name": "cloud.sms.provider",
       "type": "com.dataease.cloud.constant.SmsProvider",
       "description": "短信提供商",
