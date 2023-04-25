@@ -6,7 +6,6 @@ import com.dataease.cloud.base.mapper.CloudRememberMeTokenMapper;
 import com.dataease.cloud.constant.LoginType;
 import com.dataease.cloud.security.LocalUser;
 import jakarta.annotation.Resource;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.session.Session;
@@ -54,7 +53,7 @@ public class RememberMeTokenService {
     public void updateToken(CloudRememberMeToken token) {
         // 这里可以确保用户如果只把remeberMe换到另外一个地方去执行 就只有一个生效 原来的session立即失效 这个和是否多用户登录无关
         CloudRememberMeToken oldToken = cloudRememberMeTokenMapper.selectByPrimaryKey(token.getSeries());
-        if (!StringUtils.equals(oldToken.getSessionId(), token.getSessionId())) {
+        if (!oldToken.getSessionId().equals(token.getSessionId())) {
             //移除旧的记录
             Session session = sessionRepository.findById(oldToken.getSessionId());
             if (session != null) {

@@ -1,12 +1,13 @@
 package com.dataease.cloud.utils;
 
-import com.alibaba.fastjson.JSONObject;
 import com.dataease.cloud.properties.CommonProperties;
 import com.fit2cloud.cloud.http.HttpUtil;
 import com.fit2cloud.cloud.http.support.SimpleHttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
+
+import java.util.Map;
 
 /**
  * 地址工具类
@@ -37,9 +38,9 @@ public class AddressUtils {
                     log.error("获取地理位置异常 {}", ip);
                     return UNKNOWN;
                 }
-                JSONObject obj = JSONObject.parseObject(rspStr);
-                String region = obj.getString("pro");
-                String city = obj.getString("city");
+                Map<String,String> obj = ObjectMapperUtils.simpleObjectMapper.readValue(rspStr, Map.class);
+                String region = obj.get("pro");
+                String city = obj.get("city");
                 return String.format("%s %s", region, city);
             } catch (Exception e) {
                 log.error("获取地理位置异常 {}", ip);

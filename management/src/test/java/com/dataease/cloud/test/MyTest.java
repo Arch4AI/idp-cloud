@@ -1,6 +1,12 @@
 package com.dataease.cloud.test;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IoUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.dataease.cloud.constant.LanguageEnum;
+import com.dataease.cloud.utils.AddressUtils;
+import com.dataease.cloud.utils.ObjectMapperUtils;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.api.ProgressCallback;
 import org.mybatis.generator.config.Configuration;
@@ -8,9 +14,7 @@ import org.mybatis.generator.config.xml.ConfigurationParser;
 import org.mybatis.generator.internal.DefaultShellCallback;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * [描述当前类是什么作用]
@@ -45,7 +49,21 @@ public class MyTest {
 //        System.out.println(I18nService.getMessage("aaaaa"));
         //返回信息
 //        System.out.println(LanguageEnum.ZH_CN.name());
-        System.out.println(Locale.US.toString());
+//        System.out.println(Locale.US.toString());
+//        System.out.println(AddressUtils.getRealAddressByIP("120.196.86.13"));
+//        Map<String,Object> map = new HashMap<>(){{
+//            put("a",false);
+//            put("b",false);
+//        }};
+//       String str = ObjectMapperUtils.simpleObj   ectMapper.writeValueAsString(map);
+//       JsonNode jsonNode = ObjectMapperUtils.simpleObjectMapper.readTree(str);
+//       System.out.println(jsonNode.get("a").toString());
+//        JSONObject jsonObject = new JSONObject();
+//        jsonObject.put("aaa","bbbbb");
+//        jsonObject.put("asadas","asadsad");
+//        System.out.println(jsonObject.toString());
+        File file = new File("/tmp/aa.txt");
+        IoUtil.copy(FileUtil.getInputStream(new File("/Users/liuchangchang/Downloads/1.sql")),FileUtil.getOutputStream(file));
     }
 
     private static void generator() throws Exception {

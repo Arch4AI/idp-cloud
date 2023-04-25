@@ -1,6 +1,8 @@
 package com.dataease.cloud.properties;
 
 import com.dataease.cloud.constant.SmsProvider;
+import com.dataease.cloud.properties.sms.AliyunSmsProperties;
+import com.dataease.cloud.properties.sms.TencentSmsProperties;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

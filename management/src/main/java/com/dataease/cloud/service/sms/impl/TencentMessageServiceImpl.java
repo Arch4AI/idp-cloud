@@ -4,7 +4,7 @@ import com.dataease.cloud.constant.SmsSendType;
 import com.dataease.cloud.exception.CloudException;
 import com.dataease.cloud.i18n.I18nService;
 import com.dataease.cloud.properties.SmsProperties;
-import com.dataease.cloud.properties.TencentSmsProperties;
+import com.dataease.cloud.properties.sms.TencentSmsProperties;
 import com.dataease.cloud.service.sms.MessageService;
 import com.tencentcloudapi.common.Credential;
 import com.tencentcloudapi.common.profile.ClientProfile;

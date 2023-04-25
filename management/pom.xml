@@ -24,6 +24,8 @@
         <user-agent.version>1.21</user-agent.version>
         <mybatis-generator.version>1.4.2</mybatis-generator.version>
         <tencent-cloud-sdk.version>3.1.743</tencent-cloud-sdk.version>
+        <cos-api.version>5.6.141</cos-api.version>
+        <aliyun-sdk-oss.version>3.16.2</aliyun-sdk-oss.version>
     </properties>
 
     <dependencies>
@@ -204,11 +206,25 @@
             <version>${aliyun-sdk-core.version}</version>
         </dependency>
 
+        <!-- oss support -->
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+            <version>${aliyun-sdk-oss.version}</version>
+        </dependency>
+
         <!-- 腾讯云sdk -->
         <dependency>
             <groupId>com.tencentcloudapi</groupId>
             <artifactId>tencentcloud-sdk-java-sms</artifactId>
             <version>${tencent-cloud-sdk.version}</version>
+        </dependency>
+
+        <!-- cos api -->
+        <dependency>
+            <groupId>com.qcloud</groupId>
+            <artifactId>cos_api</artifactId>
+            <version>${cos-api.version}</version>
         </dependency>
 
         <!-- guava限流方案针对单应用 -->
