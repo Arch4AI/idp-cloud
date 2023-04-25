@@ -388,12 +388,12 @@ public class ExternalAuthSourceService {
         String sourceId = Base64.decodeStr(externalSecurityRequest.getState());
         CloudExternalAuthSource setting = cloudExternalAuthSourceMapper.selectByPrimaryKey(sourceId);
         if (setting == null)
-            SecurityException.throwException("Provider not found!");
+            SecurityException.throwException(I18nService.getMessage("provider_not_found"));
         if (!setting.getEnable())
-            SecurityException.throwException("Provider not enable!");
+            SecurityException.throwException(I18nService.getMessage("provider_not_enable"));
         AuthDefaultSource source = Arrays.stream(AuthDefaultSource.values()).filter(defaultSource -> defaultSource.name().equals(setting.getClientType())).findFirst().orElse(null);
         if (source == null)
-            SecurityException.throwException("provider not support!");
+            SecurityException.throwException(I18nService.getMessage("provider_not_support"));
         AuthDefaultRequest authDefaultRequest = getRequestBySource(source, setting);
         AuthResponse authResponse = authDefaultRequest.login(externalSecurityRequest);
         if (!authResponse.ok())
@@ -412,19 +412,19 @@ public class ExternalAuthSourceService {
         String sourceId = Base64.decodeStr(state);
         LocalUser localUser = (LocalUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (localUser == null)
-            SecurityException.throwException("User not found!");
+            SecurityException.throwException(I18nService.getMessage("user_not_found"));
         //查询用户是否是可用
         CloudUser cloudUser = cloudUserMapper.selectByPrimaryKey(localUser.getUserId());
         if (cloudUser == null)
-            SecurityException.throwException("User not found!");
+            SecurityException.throwException(I18nService.getMessage("user_not_found"));
         if (!cloudUser.getEnabled())
-            SecurityException.throwException("User has disabled!");
+            SecurityException.throwException(I18nService.getMessage("user_has_disabled"));
         CloudUserAuthSourceRelationKey cloudUserAuthSourceRelationKey = new CloudUserAuthSourceRelationKey();
         cloudUserAuthSourceRelationKey.setAuthSourceId(sourceId);
         cloudUserAuthSourceRelationKey.setAuthUserUuid(authUser.getUuid());
         CloudUserAuthSourceRelation cloudUserAuthSourceRelation = cloudUserAuthSourceRelationMapper.selectByPrimaryKey(cloudUserAuthSourceRelationKey);
         if (cloudUserAuthSourceRelation != null)
-            SecurityException.throwException("Auth User has binded!");
+            SecurityException.throwException(I18nService.getMessage("auth_user_has_binded"));
         addUserRelation(authUser, sourceId, localUser.getUserId());
     }
 
@@ -467,7 +467,7 @@ public class ExternalAuthSourceService {
         CloudUserAuthSourceRelation cloudUserAuthSourceRelation = cloudUserAuthSourceRelationMapper.selectByPrimaryKey(cloudUserAuthSourceRelationKey);
         if (cloudUserAuthSourceRelation == null || !StringUtils.hasText(cloudUserAuthSourceRelation.getUserId())) {
             //创建一个空的记录 但是他会抛出异常 所以他无法插入
-            SecurityException.throwException("User not found!");
+            SecurityException.throwException(I18nService.getMessage("user_not_found"));
         }
         CloudUser cloudUser = cloudUserMapper.selectByPrimaryKey(cloudUserAuthSourceRelation.getUserId());
         return cloudUser;
@@ -505,7 +505,7 @@ public class ExternalAuthSourceService {
         cloudUserAuthSourceRelationKey.setAuthUserUuid(uuid);
         CloudUserAuthSourceRelation cloudUserAuthSourceRelation = cloudUserAuthSourceRelationMapper.selectByPrimaryKey(cloudUserAuthSourceRelationKey);
         if (StringUtils.hasText(cloudUserAuthSourceRelation.getUserId()))
-            SecurityException.throwException("external user has bind!");
+            SecurityException.throwException(I18nService.getMessage("external_user_has_bind"));
         cloudUserAuthSourceRelation.setUserId(userId);
         cloudUserAuthSourceRelation.setUpdateTime(Calendar.getInstance().getTime());
         cloudUserAuthSourceRelationMapper.updateByPrimaryKeySelective(cloudUserAuthSourceRelation);
