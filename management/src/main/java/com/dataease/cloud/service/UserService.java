@@ -83,7 +83,7 @@ public class UserService {
         cloudUserExample.or().andEmailEqualTo(name);
         CloudUser cloudUser = cloudUserMapper.selectByExample(cloudUserExample).stream().findFirst().orElse(null);
         if (cloudUser == null)
-            SecurityException.throwException("user not found!");
+            SecurityException.throwException(I18nService.getMessage("user_not_found"));
         Set<SimpleGrantedAuthority> grantedAuthoritySet = getSimpleGrantedAuthorities(cloudUser);
         LocalUser localUser = new LocalUser();
         BeanUtil.copyProperties(cloudUser, localUser);
@@ -114,7 +114,7 @@ public class UserService {
     public LocalUser getUserById(String userId) {
         CloudUser cloudUser = cloudUserMapper.selectByPrimaryKey(userId);
         if (cloudUser == null) {
-            SecurityException.throwException("User Not Found!");
+            SecurityException.throwException(I18nService.getMessage("user_not_found"));
         }
         Set<SimpleGrantedAuthority> grantedAuthoritySet = getSimpleGrantedAuthorities(cloudUser);
         LocalUser localUser = new LocalUser();
@@ -131,7 +131,7 @@ public class UserService {
      */
     public LocalUser registerUser(CloudUser cloudUser) {
         if (StringUtils.hasText(cloudUser.getUserId()))
-            SecurityException.throwException("User Already exist!");
+            SecurityException.throwException(I18nService.getMessage("user_already_exist"));
         //判断参数
         validateUser(cloudUser);
         cloudUser.setUserId(IdUtil.randomUUID());
@@ -171,22 +171,22 @@ public class UserService {
     public void validateUser(CloudUser cloudUser) {
         //非空判断
         if (!StringUtils.hasText(cloudUser.getUserName()))
-            SecurityException.throwException("User userName is required!");
+            SecurityException.throwException(I18nService.getMessage("user_userName_is_required"));
         if (!StringUtils.hasText(cloudUser.getNickName()))
-            SecurityException.throwException("User nickName is required!");
+            SecurityException.throwException(I18nService.getMessage("user_nickName_is_required"));
         if (!StringUtils.hasText(cloudUser.getEmail()))
-            SecurityException.throwException("User email is required!");
+            SecurityException.throwException(I18nService.getMessage("user_email_is_required"));
         if (!StringUtils.hasText(cloudUser.getPhone()))
-            SecurityException.throwException("User phone is required!");
+            SecurityException.throwException(I18nService.getMessage("user_phone_is_required"));
         //正则判断
         if (!ReUtil.isMatch(RegxContants.PHONE_NUM_REGX, cloudUser.getPhone()))
-            SecurityException.throwException("The format of the phone is incorrect!");
+            SecurityException.throwException(I18nService.getMessage("the_format_of_the_phone_is_incorrect"));
         if (!ReUtil.isMatch(RegxContants.USER_NAME_REGX, cloudUser.getUserName()))
-            SecurityException.throwException("The format of the username is incorrect!");
+            SecurityException.throwException(I18nService.getMessage("the_format_of_the_username_is_incorrect"));
         if (!ReUtil.isMatch(RegxContants.EMAIL_REGX, cloudUser.getEmail()))
-            SecurityException.throwException("The format of the email is incorrect!");
+            SecurityException.throwException(I18nService.getMessage("the_format_of_the_email_is_incorrect"));
         if (StringUtils.hasText(cloudUser.getPassword()) && !ReUtil.isMatch(RegxContants.PASSWORD_REGX, cloudUser.getPassword()))
-            SecurityException.throwException("The format of the password is incorrect!");
+            SecurityException.throwException(I18nService.getMessage("the_format_of_the_password_is_incorrect"));
         //判断用户是否已经存在
         CloudUserExample cloudUserExample = new CloudUserExample();
         if (cloudUser.getUserId() != null) {
@@ -199,7 +199,7 @@ public class UserService {
             cloudUserExample.or().andEmailEqualTo(cloudUser.getEmail());
         }
         if (cloudUserMapper.countByExample(cloudUserExample) > 0)
-            SecurityException.throwException("User Already exist!");
+            SecurityException.throwException(I18nService.getMessage("user_already_exist"));
     }
 
     /**
@@ -222,13 +222,13 @@ public class UserService {
      */
     public LocalUser updateProfile(UserUpdateProfileRequest userUpdateProfileRequest) {
         if (userUpdateProfileRequest.getUserId() == null)
-            SecurityException.throwException("User Id required!");
+            SecurityException.throwException(I18nService.getMessage("user_id_required"));
         //判断用户是否存在
         CloudUser cloudUser = cloudUserMapper.selectByPrimaryKey(userUpdateProfileRequest.getUserId());
         if (cloudUser == null)
-            SecurityException.throwException("User not Found!");
+            SecurityException.throwException(I18nService.getMessage("user_not_found"));
         if (!cloudUser.getEnabled())
-            SecurityException.throwException("User not enable!");
+            SecurityException.throwException(I18nService.getMessage("user_not_enable"));
         //直接把数据拷贝过来 忽略空值
         BeanUtil.copyProperties(userUpdateProfileRequest, cloudUser, CopyOptions.create().ignoreNullValue());
         //将传过来的密码加密
