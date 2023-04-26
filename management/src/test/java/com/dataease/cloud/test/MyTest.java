@@ -2,11 +2,6 @@ package com.dataease.cloud.test;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
-import com.alibaba.fastjson.JSONObject;
-import com.dataease.cloud.constant.LanguageEnum;
-import com.dataease.cloud.utils.AddressUtils;
-import com.dataease.cloud.utils.ObjectMapperUtils;
-import com.fasterxml.jackson.databind.JsonNode;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.api.ProgressCallback;
 import org.mybatis.generator.config.Configuration;
@@ -14,7 +9,8 @@ import org.mybatis.generator.config.xml.ConfigurationParser;
 import org.mybatis.generator.internal.DefaultShellCallback;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * [描述当前类是什么作用]

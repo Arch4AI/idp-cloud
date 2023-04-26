@@ -6,6 +6,9 @@ import cn.hutool.core.util.IdUtil;
 import com.dataease.cloud.entity.file.UploadResult;
 import com.dataease.cloud.exception.CloudException;
 import com.dataease.cloud.service.file.FileManagerService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -17,11 +20,18 @@ import java.io.File;
  * @version v1.0
  * @date 2023/4/25 5:54 PM
  **/
+@Service
+@ConditionalOnProperty(prefix = "cloud.file",name = "provider",havingValue = "local",matchIfMissing = true)
+@Slf4j
 public class DefaultFileManagerServiceImpl implements FileManagerService {
 
     //默认放到tmp下面
     private static String DEFAULT_FILE_BASE_PATH="/tmp";
     private static String DEFAULT_FILE_FLODER_PATH = "file";
+
+    public DefaultFileManagerServiceImpl(){
+        log.info("init defalut file manager");
+    }
 
     @Override
     public UploadResult upload(MultipartFile file) throws Exception {

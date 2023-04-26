@@ -13,9 +13,9 @@ import com.tencentcloudapi.sms.v20210111.SmsClient;
 import com.tencentcloudapi.sms.v20210111.models.SendSmsRequest;
 import com.tencentcloudapi.sms.v20210111.models.SendSmsResponse;
 import com.tencentcloudapi.sms.v20210111.models.SendStatus;
-import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -30,10 +30,15 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @ConditionalOnProperty(prefix = "cloud.sms", name = "provider", havingValue = "tencent")
+@EnableConfigurationProperties(SmsProperties.class)
 public class TencentMessageServiceImpl implements MessageService {
 
-    @Resource
     private SmsProperties smsProperties;
+
+    public TencentMessageServiceImpl(SmsProperties smsProperties){
+        this.smsProperties = smsProperties;
+        log.info("init tencent sms impl");
+    }
 
     @Override
     public void sendCode(SmsSendType sendType, String phone, String code) {

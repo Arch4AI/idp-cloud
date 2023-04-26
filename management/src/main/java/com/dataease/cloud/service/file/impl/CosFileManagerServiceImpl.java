@@ -3,6 +3,7 @@ package com.dataease.cloud.service.file.impl;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.IdUtil;
 import com.dataease.cloud.entity.file.UploadResult;
+import com.dataease.cloud.properties.FileProperties;
 import com.dataease.cloud.properties.file.CosProperties;
 import com.dataease.cloud.service.file.FileManagerService;
 import com.qcloud.cos.COSClient;
@@ -17,6 +18,10 @@ import com.qcloud.cos.transfer.Download;
 import com.qcloud.cos.transfer.TransferManager;
 import com.qcloud.cos.transfer.TransferManagerConfiguration;
 import com.qcloud.cos.transfer.Upload;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -29,6 +34,10 @@ import java.util.concurrent.Executors;
  * @version v1.0
  * @date 2023/4/25 11:39 AM
  **/
+@Service
+@ConditionalOnProperty(prefix = "cloud.file",name = "provider",havingValue = "cos")
+@EnableConfigurationProperties(FileProperties.class)
+@Slf4j
 public class CosFileManagerServiceImpl implements FileManagerService {
 
     private static final int nThreads = 32;
@@ -36,6 +45,11 @@ public class CosFileManagerServiceImpl implements FileManagerService {
     private static final long minimumUploadPartSize = 1*1024*1024;
 
     private CosProperties cosProperties;
+
+    public CosFileManagerServiceImpl(FileProperties fileProperties){
+        this.cosProperties = fileProperties.getCos();
+        log.info("init cos file manager");
+    }
 
     @Override
     public UploadResult upload(MultipartFile file) throws Exception{
@@ -101,8 +115,8 @@ public class CosFileManagerServiceImpl implements FileManagerService {
      * @return
      */
     private COSClient createClient(){
-        COSCredentials cred = new BasicCOSCredentials(cosProperties.getAk(), cosProperties.getSk());
-        Region region = new Region(cosProperties.getRegion());
+        COSCredentials cred = new BasicCOSCredentials(cosProperties.getAccessKey(), cosProperties.getSecretKey());
+        Region region = new Region(cosProperties.getRegionId());
         ClientConfig clientConfig = new ClientConfig(region);
         clientConfig.setHttpProtocol(HttpProtocol.https);
         return new COSClient(cred, clientConfig);

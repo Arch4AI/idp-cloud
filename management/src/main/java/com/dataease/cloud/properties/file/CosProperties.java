@@ -8,13 +8,13 @@ import lombok.Data;
 @Data
 public class CosProperties {
     //ak
-    private String ak;
+    private String accessKey;
     //sk
-    private String sk;
+    private String secretKey;
     //存储文件夹
     private String folderPath;
     //region
-    private String region;
+    private String regionId;
     //桶
     private String bucket;
 }

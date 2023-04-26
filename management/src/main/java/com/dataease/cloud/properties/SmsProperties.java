@@ -5,7 +5,6 @@ import com.dataease.cloud.properties.sms.AliyunSmsProperties;
 import com.dataease.cloud.properties.sms.TencentSmsProperties;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 /**
  * 短信配置属性
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Component;
  * @version v1.0
  * @date 2023/4/11 2:39 PM
  **/
-@Component
 @ConfigurationProperties(value = "cloud.sms", ignoreUnknownFields = true)
 @Data
 public class SmsProperties {
@@ -22,7 +20,7 @@ public class SmsProperties {
     /**
      * 短信类型
      */
-    private SmsProvider provider;
+    private SmsProvider provider = SmsProvider.local;
 
     /**
      * 阿里云短信的配置

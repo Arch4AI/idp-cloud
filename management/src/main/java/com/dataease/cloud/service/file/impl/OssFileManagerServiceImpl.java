@@ -6,9 +6,13 @@ import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.*;
 import com.dataease.cloud.entity.file.UploadResult;
+import com.dataease.cloud.properties.FileProperties;
 import com.dataease.cloud.properties.file.OssProperties;
 import com.dataease.cloud.service.file.FileManagerService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -24,16 +28,24 @@ import java.util.List;
  * @date 2023/4/25 1:46 PM
  **/
 @Slf4j
+@Service
+@ConditionalOnProperty(prefix = "cloud.file",name = "provider",havingValue = "oss")
+@EnableConfigurationProperties(FileProperties.class)
 public class OssFileManagerServiceImpl implements FileManagerService {
 
     private OssProperties ossProperties;
 
+    public OssFileManagerServiceImpl(FileProperties fileProperties){
+        this.ossProperties = fileProperties.getOss();
+        log.info("init oss file manager");
+    }
+
     @Override
     public UploadResult upload(MultipartFile file) throws Exception {
-        OSS ossClient = new OSSClientBuilder().build(ossProperties.getEndpoint(),ossProperties.getAccessKeyId(),ossProperties.getAccessKeySecret());
+        OSS ossClient = new OSSClientBuilder().build(ossProperties.getEndpoint(),ossProperties.getAccessKey(),ossProperties.getSecretKey());
         String fileKey = ossProperties.getFolderPath() + "/" + IdUtil.randomUUID() + "." + FileUtil.extName(file.getOriginalFilename());
         try {
-            InitiateMultipartUploadRequest request = new InitiateMultipartUploadRequest(ossProperties.getBucketName(), fileKey);
+            InitiateMultipartUploadRequest request = new InitiateMultipartUploadRequest(ossProperties.getBucket(), fileKey);
             InitiateMultipartUploadResult upresult = ossClient.initiateMultipartUpload(request);
             String uploadId = upresult.getUploadId();
             List<PartETag> partETags =  new ArrayList<>();
@@ -47,7 +59,7 @@ public class OssFileManagerServiceImpl implements FileManagerService {
                 long startPos = i * partSize;
                 long curPartSize = (i + 1 == partCount) ? (fileLength - startPos) : partSize;
                 UploadPartRequest uploadPartRequest = new UploadPartRequest();
-                uploadPartRequest.setBucketName(ossProperties.getBucketName());
+                uploadPartRequest.setBucketName(ossProperties.getBucket());
                 uploadPartRequest.setKey(fileKey);
                 uploadPartRequest.setUploadId(uploadId);
                 // 设置上传的分片流。
@@ -65,7 +77,7 @@ public class OssFileManagerServiceImpl implements FileManagerService {
                 partETags.add(uploadPartResult.getPartETag());
             }
             CompleteMultipartUploadRequest completeMultipartUploadRequest =
-                    new CompleteMultipartUploadRequest(ossProperties.getBucketName(), fileKey, uploadId, partETags);
+                    new CompleteMultipartUploadRequest(ossProperties.getBucket(), fileKey, uploadId, partETags);
             CompleteMultipartUploadResult completeMultipartUploadResult = ossClient.completeMultipartUpload(completeMultipartUploadRequest);
             return UploadResult.builder()
                     .fileName(file.getOriginalFilename())
@@ -83,9 +95,9 @@ public class OssFileManagerServiceImpl implements FileManagerService {
 
     @Override
     public void downFile(String fileKey, File file) throws Exception {
-        OSS ossClient = new OSSClientBuilder().build(ossProperties.getEndpoint(),ossProperties.getAccessKeyId(),ossProperties.getAccessKeySecret());
+        OSS ossClient = new OSSClientBuilder().build(ossProperties.getEndpoint(),ossProperties.getAccessKey(),ossProperties.getSecretKey());
         try {
-            ossClient.getObject(new GetObjectRequest(ossProperties.getBucketName(), fileKey),file);
+            ossClient.getObject(new GetObjectRequest(ossProperties.getBucket(), fileKey),file);
         }catch (Exception e){
             log.error("oss down file error:",e);
             throw e;
@@ -97,8 +109,8 @@ public class OssFileManagerServiceImpl implements FileManagerService {
 
     @Override
     public void deleteFile(String fileKey) {
-        OSS ossClient = new OSSClientBuilder().build(ossProperties.getEndpoint(),ossProperties.getAccessKeyId(),ossProperties.getAccessKeySecret());
-        ossClient.deleteObject(ossProperties.getBucketName(),fileKey);
+        OSS ossClient = new OSSClientBuilder().build(ossProperties.getEndpoint(),ossProperties.getAccessKey(),ossProperties.getSecretKey());
+        ossClient.deleteObject(ossProperties.getBucket(),fileKey);
         if(ossClient != null)
             ossClient.shutdown();
     }

@@ -1,13 +1,14 @@
 package com.dataease.cloud.base.domain;
 
-import java.io.Serializable;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
 * 大字段实体
 * 表说明:
 *  oauth授权条目
-* 
+*
 * 表名:cloud_oauth2_authorization
 * Date: 2023/04/23
 */

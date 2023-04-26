@@ -11,7 +11,6 @@ import com.dataease.cloud.i18n.I18nService;
 import com.dataease.cloud.security.LocalUser;
 import com.dataease.cloud.security.exception.SecurityException;
 import com.dataease.cloud.security.external.request.ExternalSecurityRequest;
-import com.dataease.cloud.utils.ObjectMapperUtils;
 import com.fit2cloud.cloud.http.config.HttpConfig;
 import com.fit2cloud.cloud.oauth.config.AuthConfig;
 import com.fit2cloud.cloud.oauth.config.AuthDefaultSource;

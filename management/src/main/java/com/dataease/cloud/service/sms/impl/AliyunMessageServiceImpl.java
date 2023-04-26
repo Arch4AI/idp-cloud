@@ -12,13 +12,13 @@ import com.dataease.cloud.constant.SmsSendType;
 import com.dataease.cloud.entity.response.AliyunSmsCodeResponse;
 import com.dataease.cloud.exception.CloudException;
 import com.dataease.cloud.i18n.I18nService;
-import com.dataease.cloud.properties.sms.AliyunSmsProperties;
 import com.dataease.cloud.properties.SmsProperties;
+import com.dataease.cloud.properties.sms.AliyunSmsProperties;
 import com.dataease.cloud.service.sms.MessageService;
 import com.dataease.cloud.utils.ObjectMapperUtils;
-import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -33,10 +33,15 @@ import org.springframework.util.StringUtils;
 @Slf4j
 @Service
 @ConditionalOnProperty(prefix = "cloud.sms", name = "provider", havingValue = "aliyun")
+@EnableConfigurationProperties(SmsProperties.class)
 public class AliyunMessageServiceImpl implements MessageService {
 
-    @Resource
     private SmsProperties smsProperties;
+
+    public AliyunMessageServiceImpl(SmsProperties smsProperties){
+        this.smsProperties = smsProperties;
+        log.info("init aliyun sms impl");
+    }
 
     @Override
     public void sendCode(SmsSendType sendType, String phone, String code) {
