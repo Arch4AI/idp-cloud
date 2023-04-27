@@ -10,6 +10,16 @@ package com.dataease.cloud.constant;
 public class Constants {
 
     /**
+     * http请求
+     */
+    public static final String HTTP = "http://";
+
+    /**
+     * https请求
+     */
+    public static final String HTTPS = "https://";
+
+    /**
      * 短信验证码有效时间 分钟
      */
     public static final int SMS_CODE_EXPIRE_TIME = 5;
