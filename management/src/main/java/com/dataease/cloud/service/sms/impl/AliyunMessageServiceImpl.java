@@ -38,7 +38,7 @@ public class AliyunMessageServiceImpl implements MessageService {
 
     private SmsProperties smsProperties;
 
-    public AliyunMessageServiceImpl(SmsProperties smsProperties){
+    public AliyunMessageServiceImpl(SmsProperties smsProperties) {
         this.smsProperties = smsProperties;
         log.info("init aliyun sms impl");
     }

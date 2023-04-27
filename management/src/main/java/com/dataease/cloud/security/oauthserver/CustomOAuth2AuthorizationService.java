@@ -125,9 +125,9 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
         if (primaryKey == null) {
             // 只在新增的時候加入
             RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-            if(requestAttributes != null && requestAttributes instanceof ServletRequestAttributes){
+            if (requestAttributes != null && requestAttributes instanceof ServletRequestAttributes) {
                 HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
-                log.info("request session id:{},session id:{}",request.getRequestedSessionId(),request.getSession().getId());
+                log.info("request session id:{},session id:{}", request.getRequestedSessionId(), request.getSession().getId());
                 cloudOauth2AuthorizationWithBLOBs.setSessionId(request.getRequestedSessionId());
             }
             cloudOauth2AuthorizationMapper.insertSelective(cloudOauth2AuthorizationWithBLOBs);
@@ -187,7 +187,7 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
             if (bloBs != null) {
                 return entityRow(bloBs);
             }
-        } else if(OidcParameterNames.ID_TOKEN.equals(tokenType.getValue())){
+        } else if (OidcParameterNames.ID_TOKEN.equals(tokenType.getValue())) {
             example.createCriteria().andOidcIdTokenValueEqualTo(token);
             CloudOauth2AuthorizationWithBLOBs bloBs = cloudOauth2AuthorizationMapper.selectByExampleWithBLOBs(example).stream().findFirst().orElse(null);
             if (bloBs != null) {

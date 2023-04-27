@@ -35,7 +35,7 @@ public class TencentMessageServiceImpl implements MessageService {
 
     private SmsProperties smsProperties;
 
-    public TencentMessageServiceImpl(SmsProperties smsProperties){
+    public TencentMessageServiceImpl(SmsProperties smsProperties) {
         this.smsProperties = smsProperties;
         log.info("init tencent sms impl");
     }

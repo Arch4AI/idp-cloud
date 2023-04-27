@@ -38,7 +38,7 @@ public class AddressUtils {
                     log.error("获取地理位置异常 {}", ip);
                     return UNKNOWN;
                 }
-                Map<String,String> obj = ObjectMapperUtils.simpleObjectMapper.readValue(rspStr, Map.class);
+                Map<String, String> obj = ObjectMapperUtils.simpleObjectMapper.readValue(rspStr, Map.class);
                 String region = obj.get("pro");
                 String city = obj.get("city");
                 return String.format("%s %s", region, city);

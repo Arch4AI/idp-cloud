@@ -71,7 +71,7 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
         cloudUserLoginLog.setMsg("登录失败：" + exception.getLocalizedMessage());
         cloudUserLoginLogMapper.insertSelective(cloudUserLoginLog);
 //        Result result = Result.error(exception, I18nService.getMessage("login_error_msg"));
-        Result result = Result.error(exception,getMessageByException(exception));
+        Result result = Result.error(exception, getMessageByException(exception));
         PrintWriter out = response.getWriter();
         out.write(jacksonObjectMapper.writeValueAsString(result));
         out.flush();
@@ -80,9 +80,12 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
 
     /**
      * 根据异常返回提示信息
+     *
      * @param exception
      * @return
      */
+    private String getMessageByException(AuthenticationException exception) {
+        String message = I18nService.getMessage("login_error_msg");
     private String getMessageByException(AuthenticationException exception){
         String message = I18nService.getMessage("login_error_msg") + exception.getMessage();
         return message;

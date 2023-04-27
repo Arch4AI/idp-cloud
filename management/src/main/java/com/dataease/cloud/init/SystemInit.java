@@ -114,15 +114,15 @@ public class SystemInit {
     /**
      * 初始化一个测试应用客户端
      */
-    private void initRegisteredClient(){
+    private void initRegisteredClient() {
         Oauth2RegisteredClientSerive registeredClientSerive = CommonBeanFactory.getBean(Oauth2RegisteredClientSerive.class);
         List<CloudOauth2RegisteredClient> clientList = registeredClientSerive.list(new RegisteredClientQueryReq());
-        if(clientList.isEmpty()){
+        if (clientList.isEmpty()) {
             CloudOauth2RegisteredClient client = new CloudOauth2RegisteredClient();
             client.setClientId("idp_cloud");
             client.setClientSecret("123456");
             client.setClientName("测试应用");
-            client.setRedirectUris(StringUtils.collectionToCommaDelimitedString(new HashSet<>(){{
+            client.setRedirectUris(StringUtils.collectionToCommaDelimitedString(new HashSet<>() {{
                 add("https://www.baidu.com");
                 add("http://127.0.0.1:4000");
             }}));

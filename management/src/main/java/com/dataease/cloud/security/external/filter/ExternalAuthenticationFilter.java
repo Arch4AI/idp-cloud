@@ -64,7 +64,7 @@ public class ExternalAuthenticationFilter extends AbstractAuthenticationProcessi
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
         if (!Objects.equals(request.getMethod(), HttpMethod.POST.name())) {
-            SecurityException.throwException(I18nService.getMessage("auth_method_not_support",request.getMethod()));
+            SecurityException.throwException(I18nService.getMessage("auth_method_not_support", request.getMethod()));
         }
         // 后面可能还有编码 默认UTF-8
         if (!request.getHeader(Headers.CONTENT_TYPE_STRING).startsWith(MediaType.APPLICATION_JSON.toString())) {

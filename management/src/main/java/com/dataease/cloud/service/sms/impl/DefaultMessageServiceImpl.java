@@ -16,10 +16,10 @@ import org.springframework.stereotype.Service;
  **/
 @Slf4j
 @Service
-@ConditionalOnProperty(prefix = "cloud.sms", name = "provider", havingValue = "local",matchIfMissing = true)
+@ConditionalOnProperty(prefix = "cloud.sms", name = "provider", havingValue = "local", matchIfMissing = true)
 public class DefaultMessageServiceImpl implements MessageService {
 
-    public DefaultMessageServiceImpl(){
+    public DefaultMessageServiceImpl() {
         log.info("init defalut sms impl");
     }
 

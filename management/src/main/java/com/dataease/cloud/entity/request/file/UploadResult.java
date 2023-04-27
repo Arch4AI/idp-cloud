@@ -1,4 +1,4 @@
-package com.dataease.cloud.entity.file;
+package com.dataease.cloud.entity.request.file;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

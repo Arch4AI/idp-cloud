@@ -16,7 +16,7 @@
         <maven.compiler.target>17</maven.compiler.target>
         <lettuce-core.version>6.2.3.RELEASE</lettuce-core.version>
         <mysql-connector.version>8.0.32</mysql-connector.version>
-        <hutool.version>5.8.14</hutool.version>
+        <hutool.version>5.8.18</hutool.version>
         <oauth2-authorization-server.verison>1.0.1</oauth2-authorization-server.verison>
         <aliyun-sdk-core.version>4.6.3</aliyun-sdk-core.version>
         <mybatis.version>3.0.0</mybatis.version>
@@ -26,6 +26,9 @@
         <tencent-cloud-sdk.version>3.1.743</tencent-cloud-sdk.version>
         <cos-api.version>5.6.141</cos-api.version>
         <aliyun-sdk-oss.version>3.16.2</aliyun-sdk-oss.version>
+        <wx-pay.version>0.2.7</wx-pay.version>
+        <alipay-sdk-java.version>4.35.110.ALL</alipay-sdk-java.version>
+        <guava.version>31.1-jre</guava.version>
     </properties>
 
     <dependencies>
@@ -231,7 +234,21 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>31.1-jre</version>
+            <version>${guava.version}</version>
+        </dependency>
+
+        <!-- https://pay.weixin.qq.com/ -->
+        <dependency>
+            <groupId>com.github.wechatpay-apiv3</groupId>
+            <artifactId>wechatpay-java</artifactId>
+            <version>${wx-pay.version}</version>
+        </dependency>
+
+        <!-- 支付寶對接 這裡也有oauth2.0的包 -->
+        <dependency>
+            <groupId>com.alipay.sdk</groupId>
+            <artifactId>alipay-sdk-java</artifactId>
+            <version>${alipay-sdk-java.version}</version>
         </dependency>
 
     </dependencies>

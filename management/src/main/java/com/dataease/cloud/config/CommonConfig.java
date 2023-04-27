@@ -27,6 +27,7 @@ public class CommonConfig {
     /**
      * 系统初始化
      * 后续需要去掉
+     *
      * @param cloudUserMapper
      * @param cloudUserRoleMapper
      * @param externalAuthSourceService
@@ -51,11 +52,12 @@ public class CommonConfig {
 
     /**
      * 国际化的注入
+     *
      * @param messageSource
      * @return
      */
     @Bean
-    public I18nService i18nService(MessageSource messageSource){
+    public I18nService i18nService(MessageSource messageSource) {
         return new I18nService(messageSource);
     }
 
