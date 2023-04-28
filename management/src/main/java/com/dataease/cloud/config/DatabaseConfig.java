@@ -26,7 +26,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
-
 import javax.sql.DataSource;
 import java.beans.PropertyDescriptor;
 import java.util.Properties;
@@ -95,7 +94,7 @@ public class DatabaseConfig {
      * @return
      */
     @Primary
-    @Bean
+    @Bean(name = "baseTransactionManager")
     @ConditionalOnBean(DataSource.class)
     PlatformTransactionManager transactionManager(DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);

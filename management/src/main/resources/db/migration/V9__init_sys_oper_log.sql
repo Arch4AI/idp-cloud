@@ -1,4 +1,4 @@
-CREATE TABLE sys_oper_log
+CREATE TABLE cloud_sys_oper_log
 (
     `oper_id`       bigint(20) NOT NULL AUTO_INCREMENT COMMENT '日志主键',
     `oper_title`    varchar(255) NULL COMMENT '操作描述',

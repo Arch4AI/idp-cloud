@@ -24,6 +24,8 @@ public class UserController {
      *
      * @return
      */
+
+//    @SysLog(title = "返回个人信息", logBusinessType = LogBusinessType.SELECT)
     @GetMapping("me")
     public Result me(Authentication authentication) {
         if (authentication != null && authentication.isAuthenticated()) {
