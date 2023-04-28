@@ -9,6 +9,10 @@ package com.dataease.cloud.constant;
  **/
 public enum SmsProvider {
     /**
+     * 本地实现 只是打印了
+     */
+    local,
+    /**
      * 阿里云短信
      */
     aliyun,

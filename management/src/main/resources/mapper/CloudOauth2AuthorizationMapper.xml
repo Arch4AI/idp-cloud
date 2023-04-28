@@ -22,6 +22,7 @@
         <result column="oidc_id_token_expires_at" jdbcType="TIMESTAMP" property="oidcIdTokenExpiresAt"/>
         <result column="refresh_token_issued_at" jdbcType="TIMESTAMP" property="refreshTokenIssuedAt"/>
         <result column="refresh_token_expires_at" jdbcType="TIMESTAMP" property="refreshTokenExpiresAt"/>
+        <result column="session_id" jdbcType="CHAR" property="sessionId"/>
     </resultMap>
     <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs"
                type="com.dataease.cloud.base.domain.CloudOauth2AuthorizationWithBLOBs">
@@ -115,7 +116,7 @@
         id, registered_client_id, user_id, authorization_grant_type, authorized_scopes, `state`,
         authorization_code_issued_at, authorization_code_expires_at, access_token_issued_at,
         access_token_expires_at, access_token_type, access_token_scopes, oidc_id_token_issued_at,
-        oidc_id_token_expires_at, refresh_token_issued_at, refresh_token_expires_at
+        oidc_id_token_expires_at, refresh_token_issued_at, refresh_token_expires_at, session_id
     </sql>
     <sql id="Blob_Column_List">
         <!--
@@ -207,7 +208,7 @@
         access_token_issued_at, access_token_expires_at,
         access_token_type, access_token_scopes, oidc_id_token_issued_at,
         oidc_id_token_expires_at, refresh_token_issued_at,
-        refresh_token_expires_at, `attributes`,
+        refresh_token_expires_at, session_id, `attributes`,
         authorization_code_value, authorization_code_metadata,
         access_token_value, access_token_metadata,
         oidc_id_token_value, oidc_id_token_metadata,
@@ -221,7 +222,7 @@
         #{accessTokenType,jdbcType=VARCHAR}, #{accessTokenScopes,jdbcType=VARCHAR},
         #{oidcIdTokenIssuedAt,jdbcType=TIMESTAMP},
         #{oidcIdTokenExpiresAt,jdbcType=TIMESTAMP}, #{refreshTokenIssuedAt,jdbcType=TIMESTAMP},
-        #{refreshTokenExpiresAt,jdbcType=TIMESTAMP}, #{attributes,jdbcType=LONGVARCHAR},
+        #{refreshTokenExpiresAt,jdbcType=TIMESTAMP}, #{sessionId,jdbcType=CHAR}, #{attributes,jdbcType=LONGVARCHAR},
         #{authorizationCodeValue,jdbcType=LONGVARCHAR}, #{authorizationCodeMetadata,jdbcType=LONGVARCHAR},
         #{accessTokenValue,jdbcType=LONGVARCHAR}, #{accessTokenMetadata,jdbcType=LONGVARCHAR},
         #{oidcIdTokenValue,jdbcType=LONGVARCHAR}, #{oidcIdTokenMetadata,jdbcType=LONGVARCHAR},
@@ -282,6 +283,9 @@
             </if>
             <if test="refreshTokenExpiresAt != null">
                 refresh_token_expires_at,
+            </if>
+            <if test="sessionId != null">
+                session_id,
             </if>
             <if test="attributes != null">
                 `attributes`,
@@ -359,6 +363,9 @@
             </if>
             <if test="refreshTokenExpiresAt != null">
                 #{refreshTokenExpiresAt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="sessionId != null">
+                #{sessionId,jdbcType=CHAR},
             </if>
             <if test="attributes != null">
                 #{attributes,jdbcType=LONGVARCHAR},
@@ -455,6 +462,9 @@
             <if test="row.refreshTokenExpiresAt != null">
                 refresh_token_expires_at = #{row.refreshTokenExpiresAt,jdbcType=TIMESTAMP},
             </if>
+            <if test="row.sessionId != null">
+                session_id = #{row.sessionId,jdbcType=CHAR},
+            </if>
             <if test="row.attributes != null">
                 `attributes` = #{row.attributes,jdbcType=LONGVARCHAR},
             </if>
@@ -509,6 +519,7 @@
         oidc_id_token_expires_at = #{row.oidcIdTokenExpiresAt,jdbcType=TIMESTAMP},
         refresh_token_issued_at = #{row.refreshTokenIssuedAt,jdbcType=TIMESTAMP},
         refresh_token_expires_at = #{row.refreshTokenExpiresAt,jdbcType=TIMESTAMP},
+        session_id = #{row.sessionId,jdbcType=CHAR},
         `attributes` = #{row.attributes,jdbcType=LONGVARCHAR},
         authorization_code_value = #{row.authorizationCodeValue,jdbcType=LONGVARCHAR},
         authorization_code_metadata = #{row.authorizationCodeMetadata,jdbcType=LONGVARCHAR},
@@ -543,7 +554,8 @@
         oidc_id_token_issued_at = #{row.oidcIdTokenIssuedAt,jdbcType=TIMESTAMP},
         oidc_id_token_expires_at = #{row.oidcIdTokenExpiresAt,jdbcType=TIMESTAMP},
         refresh_token_issued_at = #{row.refreshTokenIssuedAt,jdbcType=TIMESTAMP},
-        refresh_token_expires_at = #{row.refreshTokenExpiresAt,jdbcType=TIMESTAMP}
+        refresh_token_expires_at = #{row.refreshTokenExpiresAt,jdbcType=TIMESTAMP},
+        session_id = #{row.sessionId,jdbcType=CHAR}
         <if test="example != null">
             <include refid="Update_By_Example_Where_Clause"/>
         </if>
@@ -601,6 +613,9 @@
             <if test="refreshTokenExpiresAt != null">
                 refresh_token_expires_at = #{refreshTokenExpiresAt,jdbcType=TIMESTAMP},
             </if>
+            <if test="sessionId != null">
+                session_id = #{sessionId,jdbcType=CHAR},
+            </if>
             <if test="attributes != null">
                 `attributes` = #{attributes,jdbcType=LONGVARCHAR},
             </if>
@@ -653,6 +668,7 @@
         oidc_id_token_expires_at = #{oidcIdTokenExpiresAt,jdbcType=TIMESTAMP},
         refresh_token_issued_at = #{refreshTokenIssuedAt,jdbcType=TIMESTAMP},
         refresh_token_expires_at = #{refreshTokenExpiresAt,jdbcType=TIMESTAMP},
+        session_id = #{sessionId,jdbcType=CHAR},
         `attributes` = #{attributes,jdbcType=LONGVARCHAR},
         authorization_code_value = #{authorizationCodeValue,jdbcType=LONGVARCHAR},
         authorization_code_metadata = #{authorizationCodeMetadata,jdbcType=LONGVARCHAR},
@@ -684,7 +700,8 @@
         oidc_id_token_issued_at = #{oidcIdTokenIssuedAt,jdbcType=TIMESTAMP},
         oidc_id_token_expires_at = #{oidcIdTokenExpiresAt,jdbcType=TIMESTAMP},
         refresh_token_issued_at = #{refreshTokenIssuedAt,jdbcType=TIMESTAMP},
-        refresh_token_expires_at = #{refreshTokenExpiresAt,jdbcType=TIMESTAMP}
+        refresh_token_expires_at = #{refreshTokenExpiresAt,jdbcType=TIMESTAMP},
+        session_id = #{sessionId,jdbcType=CHAR}
         where id = #{id,jdbcType=VARCHAR}
     </update>
 </mapper>

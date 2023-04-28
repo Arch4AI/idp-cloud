@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -50,6 +51,11 @@ public class CommonProperties {
      * 限流时间默认单位 默认是微秒
      */
     private static TimeUnit rateLimitTimeUnit = TimeUnit.MICROSECONDS;
+
+    /**
+     * 用于oidc,oauthserver的发行地址 默认为空取当前应用的基础地址
+     */
+    private URL issuerUrl;
 
 
     public static boolean isEnableRequestBodyEncrypt() {

@@ -3,7 +3,7 @@ package com.dataease.cloud.annotation;
 import java.lang.annotation.*;
 
 /**
- * 不返回
+ * 不返回Result格式
  */
 @Documented
 @Inherited

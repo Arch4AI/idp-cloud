@@ -2,8 +2,9 @@ package com.dataease.cloud.service.sms.impl;
 
 import com.dataease.cloud.constant.SmsSendType;
 import com.dataease.cloud.exception.CloudException;
+import com.dataease.cloud.i18n.I18nService;
 import com.dataease.cloud.properties.SmsProperties;
-import com.dataease.cloud.properties.TencentSmsProperties;
+import com.dataease.cloud.properties.sms.TencentSmsProperties;
 import com.dataease.cloud.service.sms.MessageService;
 import com.tencentcloudapi.common.Credential;
 import com.tencentcloudapi.common.profile.ClientProfile;
@@ -12,9 +13,9 @@ import com.tencentcloudapi.sms.v20210111.SmsClient;
 import com.tencentcloudapi.sms.v20210111.models.SendSmsRequest;
 import com.tencentcloudapi.sms.v20210111.models.SendSmsResponse;
 import com.tencentcloudapi.sms.v20210111.models.SendStatus;
-import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -29,15 +30,20 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @ConditionalOnProperty(prefix = "cloud.sms", name = "provider", havingValue = "tencent")
+@EnableConfigurationProperties(SmsProperties.class)
 public class TencentMessageServiceImpl implements MessageService {
 
-    @Resource
     private SmsProperties smsProperties;
+
+    public TencentMessageServiceImpl(SmsProperties smsProperties) {
+        this.smsProperties = smsProperties;
+        log.info("init tencent sms impl");
+    }
 
     @Override
     public void sendCode(SmsSendType sendType, String phone, String code) {
         if (smsProperties.getTencent() == null)
-            CloudException.throwException("tencent sms config required");
+            CloudException.throwException(I18nService.getMessage("tencent_sms_config_required"));
         String[] templateParamSet = {code};
         String[] phoneNumberSet = {phone};
         TencentSmsProperties tencent = smsProperties.getTencent();
@@ -65,12 +71,12 @@ public class TencentMessageServiceImpl implements MessageService {
             // 我们发送的时候默认只发送了一个
             for (SendStatus sendStatus : res.getSendStatusSet()) {
                 if (!sendStatus.getCode().equalsIgnoreCase(HttpStatus.OK.name())) {
-                    CloudException.throwException(sendStatus.getMessage());
+                    CloudException.throwException(I18nService.getMessage("tencent_send_status_error") + sendStatus.getMessage());
                 }
             }
         } catch (Exception e) {
             log.error(String.format("腾讯云短信发送失败: %s", e.getMessage()));
-            CloudException.throwException("Tencent Send Message Error:" + e.getMessage());
+            CloudException.throwException(I18nService.getMessage("tencent_send_message_error") + e.getMessage());
         }
     }
 }

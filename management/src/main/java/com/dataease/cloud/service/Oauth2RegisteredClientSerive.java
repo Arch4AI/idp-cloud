@@ -13,6 +13,7 @@ import com.dataease.cloud.constant.RegxContants;
 import com.dataease.cloud.entity.request.RegisteredClientModifyReq;
 import com.dataease.cloud.entity.request.RegisteredClientQueryReq;
 import com.dataease.cloud.exception.CloudException;
+import com.dataease.cloud.i18n.I18nService;
 import jakarta.annotation.Resource;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
@@ -47,10 +48,10 @@ public class Oauth2RegisteredClientSerive {
     private CloudOauth2AuthorizationConsentMapper cloudOauth2AuthorizationConsentMapper;
 
     //默认的授权类型
-    private static List<AuthorizationGrantType> defaultGrantTypes = new ArrayList<>() {{
-        add(AuthorizationGrantType.AUTHORIZATION_CODE);
-        add(AuthorizationGrantType.REFRESH_TOKEN);
-        add(AuthorizationGrantType.CLIENT_CREDENTIALS);
+    private static List<String> defaultGrantTypes = new ArrayList<>() {{
+        add(AuthorizationGrantType.AUTHORIZATION_CODE.getValue());
+        add(AuthorizationGrantType.REFRESH_TOKEN.getValue());
+        add(AuthorizationGrantType.CLIENT_CREDENTIALS.getValue());
     }};
 
     //默认给的作用域
@@ -92,18 +93,18 @@ public class Oauth2RegisteredClientSerive {
     public void resetClientSecret(String id, String secret) {
         CloudOauth2RegisteredClient client = cloudOauth2RegisteredClientMapper.selectByPrimaryKey(id);
         if (client == null)
-            CloudException.throwException("client not found");
+            CloudException.throwException(I18nService.getMessage("client_not_found"));
         // 如果不为空且已经到期的话需要修改他为null
         if (client.getClientSecretExpiresAt() != null && client.getClientSecretExpiresAt().before(Calendar.getInstance().getTime()))
             client.setClientSecretExpiresAt(null);
         if (StringUtils.hasText(secret)) {
             //需要判断密钥是不是已经存在或者是不是和现在的一致
             if (client.getClientSecret().equals(secret))
-                CloudException.throwException("client secret not modify");
+                CloudException.throwException(I18nService.getMessage("client_secret_not_modify"));
             CloudOauth2RegisteredClientExample clientExample = new CloudOauth2RegisteredClientExample();
             clientExample.createCriteria().andClientSecretEqualTo(secret);
             if (cloudOauth2RegisteredClientMapper.countByExample(clientExample) > 0)
-                CloudException.throwException("client secret exist");
+                CloudException.throwException(I18nService.getMessage("client_secret_exist"));
             client.setClientSecret(secret);
         } else {
             client.setClientSecret(IdUtil.nanoId(32));
@@ -122,11 +123,11 @@ public class Oauth2RegisteredClientSerive {
     public void updateClient(String id, RegisteredClientModifyReq req) {
         CloudOauth2RegisteredClient client = cloudOauth2RegisteredClientMapper.selectByPrimaryKey(id);
         if (client == null)
-            CloudException.throwException("client not found");
+            CloudException.throwException(I18nService.getMessage("client_not_found"));
         if (!StringUtils.hasText(req.getClientName()) && !StringUtils.hasText(req.getScopes()) && req.getClientSecretExpiresAt() == null)
-            CloudException.throwException("Confirm the attributes that you want to modify");
+            CloudException.throwException(I18nService.getMessage("confirm_the_attributes_that_you_want_to_modify"));
         if (StringUtils.hasText(req.getScopes()) && notContains(stringtoSet(req.getScopes()), supportSocops()))
-            CloudException.throwException("scope not support");
+            CloudException.throwException(I18nService.getMessage("scope_not_support"));
         //判断是不是符合要求
         client = new CloudOauth2RegisteredClient();
         client.setId(id);
@@ -180,7 +181,7 @@ public class Oauth2RegisteredClientSerive {
         example.createCriteria().andClientSecretEqualTo(client.getClientId());
         example.or().andClientSecretEqualTo(client.getClientSecret());
         if (cloudOauth2RegisteredClientMapper.countByExample(example) > 0)
-            CloudException.throwException("oauth client exist");
+            CloudException.throwException(I18nService.getMessage("oauth_client_exist"));
         cloudOauth2RegisteredClientMapper.insertSelective(client);
     }
 
@@ -191,30 +192,30 @@ public class Oauth2RegisteredClientSerive {
      */
     public void validateClient(CloudOauth2RegisteredClient client) {
         if (!StringUtils.hasText(client.getClientName()))
-            CloudException.throwException("Oauth client name required");
+            CloudException.throwException(I18nService.getMessage("oauth_client_name_required"));
         if (!StringUtils.hasText(client.getScopes()))
-            CloudException.throwException("Oauth client scope required");
+            CloudException.throwException(I18nService.getMessage("oauth_client_scope_required"));
         //判断回调地址也不能为空
         if (!StringUtils.hasText(client.getRedirectUris()))
-            CloudException.throwException("Oauth redirect uris required");
+            CloudException.throwException(I18nService.getMessage("oauth_redirect_uris_required"));
         //判断回调地址是否符合规则
         if (stringtoSet(client.getRedirectUris()).stream().filter(uri -> !ReUtil.isMatch(RegxContants.URL_REGX, uri)).count() > 0)
-            CloudException.throwException("Oauth redirect uri not conforming to the rules");
+            CloudException.throwException(I18nService.getMessage("oauth_redirect_uri_not_conforming_to_the_rules"));
         //判断认证方法
         if (notContains(stringtoSet(client.getClientAuthenticationMethods()), supportAuthenticaitionMethods()))
-            CloudException.throwException("Oauth authentication method not support");
+            CloudException.throwException(I18nService.getMessage("oauth_authentication_method_not_support"));
         //判断授权类型
         if (notContains(stringtoSet(client.getAuthorizationGrantTypes()), supportGrantTypes()))
-            CloudException.throwException("Oauth authentication grant type not support");
+            CloudException.throwException(I18nService.getMessage("oauth_authentication_grant_type_not_support"));
         //判断作用域
         if (notContains(stringtoSet(client.getScopes()), supportSocops()))
-            CloudException.throwException("Oauth scope not support");
+            CloudException.throwException(I18nService.getMessage("oauth_scope_not_support"));
         //判断accesstoken的格式化
         if (StringUtils.hasText(client.getAccessTokenFormat()) && !supportTokenFormats().contains(client.getAccessTokenFormat()))
-            CloudException.throwException("Oauth access token format not support");
+            CloudException.throwException(I18nService.getMessage("oauth_access_token_format_not_support"));
         //判断id token的加密方式
         if (StringUtils.hasText(client.getIdTokenSignatureAlgorithm()) && !supportIdTokenSignatureAlgorithms().contains(client.getIdTokenSignatureAlgorithm()))
-            CloudException.throwException("Oauth id token  signature algorithm not support");
+            CloudException.throwException(I18nService.getMessage("oauth_id_token_signature_algorithm_not_support"));
     }
 
     /**

@@ -1,23 +1,26 @@
 package com.dataease.cloud.init;
 
 import cn.hutool.core.util.IdUtil;
-import com.dataease.cloud.base.domain.CloudExternalAuthSource;
-import com.dataease.cloud.base.domain.CloudUser;
-import com.dataease.cloud.base.domain.CloudUserExample;
-import com.dataease.cloud.base.domain.CloudUserRole;
+import com.dataease.cloud.base.domain.*;
 import com.dataease.cloud.base.mapper.CloudUserMapper;
 import com.dataease.cloud.base.mapper.CloudUserRoleMapper;
 import com.dataease.cloud.constant.GenderEnum;
 import com.dataease.cloud.constant.LanguageEnum;
 import com.dataease.cloud.constant.RoleEnum;
+import com.dataease.cloud.entity.request.RegisteredClientQueryReq;
 import com.dataease.cloud.service.ExternalAuthSourceService;
+import com.dataease.cloud.service.Oauth2RegisteredClientSerive;
+import com.dataease.cloud.utils.CommonBeanFactory;
 import com.fit2cloud.cloud.oauth.config.AuthDefaultSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.util.StringUtils;
 
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * 系统初始化
@@ -46,6 +49,8 @@ public class SystemInit {
         initAdmin();
         // 创建一个keycloak的认证
         initDefaultProvider();
+        //创建一个RegisteredClient
+        initRegisteredClient();
     }
 
     /**
@@ -104,5 +109,24 @@ public class SystemInit {
                     cloudUserRole.setUpdateTime(Calendar.getInstance().getTime());
                     cloudUserRoleMapper.insertSelective(cloudUserRole);
                 });
+    }
+
+    /**
+     * 初始化一个测试应用客户端
+     */
+    private void initRegisteredClient() {
+        Oauth2RegisteredClientSerive registeredClientSerive = CommonBeanFactory.getBean(Oauth2RegisteredClientSerive.class);
+        List<CloudOauth2RegisteredClient> clientList = registeredClientSerive.list(new RegisteredClientQueryReq());
+        if (clientList.isEmpty()) {
+            CloudOauth2RegisteredClient client = new CloudOauth2RegisteredClient();
+            client.setClientId("idp_cloud");
+            client.setClientSecret("123456");
+            client.setClientName("测试应用");
+            client.setRedirectUris(StringUtils.collectionToCommaDelimitedString(new HashSet<>() {{
+                add("https://www.baidu.com");
+                add("http://127.0.0.1:4000");
+            }}));
+            registeredClientSerive.createRegisteredClient(client);
+        }
     }
 }

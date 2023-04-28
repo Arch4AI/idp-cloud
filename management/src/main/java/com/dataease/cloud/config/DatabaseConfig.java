@@ -50,6 +50,7 @@ public class DatabaseConfig {
     /**
      * 注册一个mybatis分页插件
      * 默认不允许重复注册
+     *
      * @return
      */
     @Bean

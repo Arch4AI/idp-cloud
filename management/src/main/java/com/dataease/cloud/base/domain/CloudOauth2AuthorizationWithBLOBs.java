@@ -10,7 +10,7 @@ import java.io.Serializable;
  * oauth授权条目
  * <p>
  * 表名:cloud_oauth2_authorization
- * Date: 2023/04/13
+ * Date: 2023/04/23
  */
 @Data
 public class CloudOauth2AuthorizationWithBLOBs extends CloudOauth2Authorization implements Serializable {

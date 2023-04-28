@@ -64,7 +64,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
             response.setContentType(MediaType.APPLICATION_JSON.toString());
             response.setStatus(HttpStatus.FORBIDDEN.value());
             PrintWriter out = response.getWriter();
-            out.write(jacksonObjectMapper.writeValueAsString(Result.error(HttpStatus.FORBIDDEN, authException, I18nService.getMessage("user_not_login")+","+I18nService.getMessage("access_denied_msg"))));
+            out.write(jacksonObjectMapper.writeValueAsString(Result.error(HttpStatus.FORBIDDEN, authException, I18nService.getMessage("user_not_login") + "," + I18nService.getMessage("access_denied_msg"))));
             out.flush();
             out.close();
         }

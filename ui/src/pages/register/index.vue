@@ -14,6 +14,7 @@ import SlideVerify, { SlideVerifyInstance } from 'vue3-slide-verify'
 import 'vue3-slide-verify/dist/style.css'
 import userStore from '@/store/user'
 import externalInfoStore from '@/store/externalUser'
+import { UserRegisterReq } from '@/api/login/types'
 
 const block = ref<SlideVerifyInstance>()
 const imgs = ref(['assets/1.jpeg', 'assets/2.jpeg', 'assets/3.jpeg'])

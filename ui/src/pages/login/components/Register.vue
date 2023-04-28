@@ -14,6 +14,7 @@ import SlideVerify, { SlideVerifyInstance } from 'vue3-slide-verify'
 import 'vue3-slide-verify/dist/style.css'
 import userStore from '@/store/user'
 import externalInfoStore from '@/store/externalUser'
+import { UserRegisterReq } from '@/api/login/types'
 
 const block = ref<SlideVerifyInstance>()
 const imgs = ref(['assets/1.jpeg', 'assets/2.jpeg', 'assets/3.jpeg'])
@@ -87,7 +88,7 @@ const validatePassword = (val: string) => {
 }
 
 // 校验密码是否一致
-const checkConfirmPassword = (val: string) => {
+const checkConfirmPassword = () => {
   if (formData.password === formData.confirmPassword) {
     return { result: true }
   }
@@ -203,13 +204,13 @@ const onAgain = () => {
 
 const timer = ref()
 
-const onSuccess = (times: number) => {
+const onSuccess = () => {
   showVerify.value = false
   //这里去发送短信
   sendSms({ phone: formData.phone })
     .then((res) => {
       if (res.code == 200) {
-        formData.code = res.data.code
+        // formData.code = res.data.code
         //开启倒计时
         showIntervel.value = true
         //去发送一个短信验证码 并且后面的那个发送的时间需要改成一个倒计时

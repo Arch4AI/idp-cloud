@@ -1,17 +1,17 @@
 // 发送短信
-interface SmsSendReq {
+export interface SmsSendReq {
   phone: string
 }
 
 // 发送短信回复的
-interface SmsSendResp {
+export interface SmsSendResp {
   phone: string
   // code: string
   expireTime: Date
 }
 
 // 短信校验
-interface SmsCheckReq {
+export interface SmsCheckReq {
   phone: string
   code: string
 }

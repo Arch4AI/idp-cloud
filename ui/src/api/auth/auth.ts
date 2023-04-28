@@ -1,4 +1,5 @@
 import apiRequest from '@/request/request'
+import { ExternalAuthSource, ExternalLoginUri } from './types'
 
 // 获取所有的内容
 export const listActiveProviders = () => {

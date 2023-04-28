@@ -1,7 +1,7 @@
 package com.dataease.cloud.utils;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.StringUtils;
 
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
@@ -36,7 +36,7 @@ public class CodingUtil {
      */
     public static String md5(String src, String charset) {
         try {
-            byte[] strTemp = StringUtils.isEmpty(charset) ? src.getBytes() : src.getBytes(charset);
+            byte[] strTemp = !StringUtils.hasText(charset) ? src.getBytes() : src.getBytes(charset);
             MessageDigest mdTemp = MessageDigest.getInstance("MD5");
             mdTemp.update(strTemp);
 
@@ -103,7 +103,7 @@ public class CodingUtil {
      * @return 加密后字符串
      */
     public static String aesEncrypt(String src, String secretKey, String iv) {
-        if (StringUtils.isBlank(secretKey)) {
+        if (!StringUtils.hasText(secretKey)) {
             throw new RuntimeException("secretKey is empty");
         }
 
@@ -131,7 +131,7 @@ public class CodingUtil {
      * @return 解密后字符串
      */
     public static String aesDecrypt(String src, String secretKey, String iv) {
-        if (StringUtils.isBlank(secretKey)) {
+        if (!StringUtils.hasText(secretKey)) {
             throw new RuntimeException("secretKey is empty");
         }
         try {

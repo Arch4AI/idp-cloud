@@ -11,13 +11,14 @@ import java.util.Locale;
  **/
 public enum LanguageEnum {
 
-    ZH_CN("zh_CN",Locale.SIMPLIFIED_CHINESE),
-    ZH_TW("zh_TW",Locale.TRADITIONAL_CHINESE),
-    EN_US("en_US",Locale.US);
+    ZH_CN("zh_CN", Locale.SIMPLIFIED_CHINESE),
+    ZH_TW("zh_TW", Locale.TRADITIONAL_CHINESE),
+    EN_US("en_US", Locale.US);
 
     private String name;
     private Locale locale;
-    LanguageEnum(String name, Locale locale){
+
+    LanguageEnum(String name, Locale locale) {
         this.name = name;
         this.locale = locale;
     }
@@ -32,12 +33,13 @@ public enum LanguageEnum {
 
     /**
      * 根据名称返回Locale
+     *
      * @param name
      * @return
      */
-    public static Locale getLocalByName(String name){
+    public static Locale getLocalByName(String name) {
         for (LanguageEnum value : values()) {
-            if(value.name.equalsIgnoreCase(name)){
+            if (value.name.equalsIgnoreCase(name)) {
                 return value.locale;
             }
         }

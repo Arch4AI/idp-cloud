@@ -12,12 +12,12 @@
     },
     {
       "name": "cloud.sms.aliyun",
-      "type": "com.dataease.cloud.properties.AliyunSmsProperties",
+      "type": "com.dataease.cloud.properties.sms.AliyunSmsProperties",
       "sourceType": "com.dataease.cloud.properties.SmsProperties"
     },
     {
       "name": "cloud.sms.tencent",
-      "type": "com.dataease.cloud.properties.TencentSmsProperties",
+      "type": "com.dataease.cloud.properties.sms.TencentSmsProperties",
       "sourceType": "com.dataease.cloud.properties.SmsProperties"
     },
     {
@@ -29,6 +29,21 @@
       "name": "cloud.session",
       "type": "com.dataease.cloud.properties.SessionProperties",
       "sourceType": "com.dataease.cloud.properties.SessionProperties"
+    },
+    {
+      "name": "cloud.file",
+      "type": "com.dataease.cloud.properties.FileProperties",
+      "sourceType": "com.dataease.cloud.properties.FileProperties"
+    },
+    {
+      "name": "cloud.file.cos",
+      "type": "com.dataease.cloud.properties.file.CosProperties",
+      "sourceType": "com.dataease.cloud.properties.file.CosProperties"
+    },
+    {
+      "name": "cloud.file.oss",
+      "type": "com.dataease.cloud.properties.file.OssProperties",
+      "sourceType": "com.dataease.cloud.properties.file.OssProperties"
     }
   ],
   "properties": [
@@ -82,82 +97,88 @@
       "defaultValue": "microseconds"
     },
     {
+      "name": "cloud.common.issuer-url",
+      "type": "java.net.URL",
+      "description": "用于创建oidc/oauthserver的发行地址，用于有上层代理后的配置,主要用于/.well-known/openid-configuration与/.well-known/oauth-authorization-server",
+      "sourceType": "com.dataease.cloud.properties.CommonProperties"
+    },
+    {
       "name": "cloud.sms.provider",
       "type": "com.dataease.cloud.constant.SmsProvider",
-      "description": "短信提供商",
+      "description": "短信提供商,默认是local",
       "sourceType": "com.dataease.cloud.properties.SmsProperties"
     },
     {
       "name": "cloud.sms.aliyun.region-id",
       "type": "java.lang.String",
-      "description": "阿里云regionId",
-      "sourceType": "com.dataease.cloud.properties.AliyunSmsProperties"
+      "description": "阿里云regionId，如cn-hangzhou",
+      "sourceType": "com.dataease.cloud.properties.sms.AliyunSmsProperties"
     },
     {
       "name": "cloud.sms.aliyun.access-key",
       "type": "java.lang.String",
       "description": "阿里云ak",
-      "sourceType": "com.dataease.cloud.properties.AliyunSmsProperties"
+      "sourceType": "com.dataease.cloud.properties.sms.AliyunSmsProperties"
     },
     {
       "name": "cloud.sms.aliyun.secret-key",
       "type": "java.lang.String",
       "description": "阿里云sk",
-      "sourceType": "com.dataease.cloud.properties.AliyunSmsProperties"
+      "sourceType": "com.dataease.cloud.properties.sms.AliyunSmsProperties"
     },
     {
       "name": "cloud.sms.aliyun.sign-name",
       "type": "java.lang.String",
       "description": "阿里云短信签名",
-      "sourceType": "com.dataease.cloud.properties.AliyunSmsProperties"
+      "sourceType": "com.dataease.cloud.properties.sms.AliyunSmsProperties"
     },
     {
       "name": "cloud.sms.aliyun.defalut-template",
       "type": "java.lang.String",
       "description": "阿里云默认短信模版",
-      "sourceType": "com.dataease.cloud.properties.AliyunSmsProperties"
+      "sourceType": "com.dataease.cloud.properties.sms.AliyunSmsProperties"
     },
     {
       "name": "cloud.sms.aliyun.template",
       "type": "java.util.Map<com.dataease.cloud.constant.SmsSendType,java.lang.String>",
       "description": "阿里云短信模版集合,需要与SmsSendType的枚举一致",
-      "sourceType": "com.dataease.cloud.properties.AliyunSmsProperties"
+      "sourceType": "com.dataease.cloud.properties.sms.AliyunSmsProperties"
     },
     {
       "name": "cloud.sms.tencent.access-key",
       "type": "java.lang.String",
       "description": "腾讯云ak",
-      "sourceType": "com.dataease.cloud.properties.TencentSmsProperties"
+      "sourceType": "com.dataease.cloud.properties.sms.TencentSmsProperties"
     },
     {
       "name": "cloud.sms.tencent.secret-key",
       "type": "java.lang.String",
       "description": "腾讯云sk",
-      "sourceType": "com.dataease.cloud.properties.TencentSmsProperties"
+      "sourceType": "com.dataease.cloud.properties.sms.TencentSmsProperties"
     },
     {
       "name": "cloud.sms.tencent.app-id",
       "type": "java.lang.String",
       "description": "腾讯云短信应用ID",
-      "sourceType": "com.dataease.cloud.properties.TencentSmsProperties"
+      "sourceType": "com.dataease.cloud.properties.sms.TencentSmsProperties"
     },
     {
       "name": "cloud.sms.tencent.sign-name",
       "type": "java.lang.String",
       "description": "腾讯云短信签名",
-      "sourceType": "com.dataease.cloud.properties.TencentSmsProperties"
+      "sourceType": "com.dataease.cloud.properties.sms.TencentSmsProperties"
     },
     {
       "name": "cloud.sms.tencent.defalut-template",
       "type": "java.lang.String",
       "description": "腾讯云短信默认模版",
-      "sourceType": "com.dataease.cloud.properties.TencentSmsProperties"
+      "sourceType": "com.dataease.cloud.properties.sms.TencentSmsProperties"
     },
     {
       "name": "cloud.sms.tencent.template",
       "type": "java.util.Map<com.dataease.cloud.constant.SmsSendType,java.lang.String>",
       "description": "腾讯云短信模版集合,需要与SmsSendType的枚举一致",
-      "sourceType": "com.dataease.cloud.properties.TencentSmsProperties"
+      "sourceType": "com.dataease.cloud.properties.sms.TencentSmsProperties"
     },
     {
       "name": "cloud.quartz.enabled",
@@ -269,6 +290,72 @@
       "description": "redis默认的值",
       "sourceType": "com.dataease.cloud.properties.SessionProperties",
       "defaultValue": "spring:session"
+    },
+    {
+      "name": "cloud.file.provider",
+      "type": "com.dataease.cloud.constant.FileProvider",
+      "description": "文件存储类型，默认是local，可选oss/cos",
+      "sourceType": "com.dataease.cloud.properties.FileProperties"
+    },
+    {
+      "name": "cloud.file.cos.access-key",
+      "type": "java.lang.String",
+      "description": "腾讯云cos的accessKey",
+      "sourceType": "com.dataease.cloud.properties.file.CosProperties"
+    },
+    {
+      "name": "cloud.file.cos.secret-key",
+      "type": "java.lang.String",
+      "description": "腾讯云cos的secretKey",
+      "sourceType": "com.dataease.cloud.properties.file.CosProperties"
+    },
+    {
+      "name": "cloud.file.cos.folder-path",
+      "type": "java.lang.String",
+      "description": "腾讯云cos的存储文件地址 如：tmp",
+      "sourceType": "com.dataease.cloud.properties.file.CosProperties"
+    },
+    {
+      "name": "cloud.file.cos.region-id",
+      "type": "java.lang.String",
+      "description": "腾讯云cos区域 如：ap-nanjing",
+      "sourceType": "com.dataease.cloud.properties.file.CosProperties"
+    },
+    {
+      "name": "cloud.file.cos.bucket",
+      "type": "java.lang.String",
+      "description": "腾讯云Cos存储桶名称 如：test-1254131983",
+      "sourceType": "com.dataease.cloud.properties.file.CosProperties"
+    },
+    {
+      "name": "cloud.file.oss.endpoint",
+      "type": "java.lang.String",
+      "description": "阿里云oss地址 如：https://oss-cn-hangzhou.aliyuncs.com",
+      "sourceType": "com.dataease.cloud.properties.file.OssProperties"
+    },
+    {
+      "name": "cloud.file.oss.access-key",
+      "type": "java.lang.String",
+      "description": "阿里云oss accessKey",
+      "sourceType": "com.dataease.cloud.properties.file.OssProperties"
+    },
+    {
+      "name": "cloud.file.oss.secret-key",
+      "type": "java.lang.String",
+      "description": "阿里云oss secretKey",
+      "sourceType": "com.dataease.cloud.properties.file.OssProperties"
+    },
+    {
+      "name": "cloud.file.oss.bucket",
+      "type": "java.lang.String",
+      "description": "阿里云oss存储桶，如：examplebucket",
+      "sourceType": "com.dataease.cloud.properties.file.OssProperties"
+    },
+    {
+      "name": "cloud.file.oss.folder-path",
+      "type": "java.lang.String",
+      "description": "阿里云oss存放文件目录，如：exampledir",
+      "sourceType": "com.dataease.cloud.properties.file.OssProperties"
     }
   ]
 }

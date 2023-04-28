@@ -1,5 +1,5 @@
 // 外部登录源
-interface ExternalAuthSource {
+export interface ExternalAuthSource {
   id: string
   displayName: string
   providerIcon: string
@@ -28,7 +28,7 @@ interface ExternalAuthSource {
 }
 
 // 获取到的登录信息
-interface ExternalLoginUri {
+export interface ExternalLoginUri {
   id: string
   clientType: string
   uri: string

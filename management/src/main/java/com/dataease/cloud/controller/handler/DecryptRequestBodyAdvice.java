@@ -3,6 +3,7 @@ package com.dataease.cloud.controller.handler;
 import cn.hutool.core.io.IoUtil;
 import com.dataease.cloud.annotation.NoDecryptBody;
 import com.dataease.cloud.exception.CloudException;
+import com.dataease.cloud.i18n.I18nService;
 import com.dataease.cloud.utils.EncryptUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -45,7 +46,7 @@ public class DecryptRequestBodyAdvice implements RequestBodyAdvice {
         String body = IoUtil.readUtf8(inputMessage.getBody());
         String decryptBody = String.valueOf(EncryptUtils.aesDecrypt(body));
         if (!StringUtils.hasText(decryptBody) || body.equals(decryptBody))
-            CloudException.throwException("Decrypt request body error");
+            CloudException.throwException(I18nService.getMessage("decrypt_request_body_error"));
         return new HttpInputMessage() {
             @Override
             public HttpHeaders getHeaders() {

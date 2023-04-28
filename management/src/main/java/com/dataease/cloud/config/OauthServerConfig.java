@@ -4,6 +4,8 @@ import com.dataease.cloud.base.mapper.CloudOauth2AuthorizationConsentMapper;
 import com.dataease.cloud.base.mapper.CloudOauth2AuthorizationMapper;
 import com.dataease.cloud.base.mapper.CloudOauth2RegisteredClientMapper;
 import com.dataease.cloud.entity.response.Result;
+import com.dataease.cloud.i18n.I18nService;
+import com.dataease.cloud.properties.CommonProperties;
 import com.dataease.cloud.security.handler.CustomAccessDeniedHandler;
 import com.dataease.cloud.security.handler.CustomAuthenticationEntryPoint;
 import com.dataease.cloud.security.oauthserver.CustomOAuth2AuthorizationConsentService;
@@ -18,6 +20,8 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +30,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
@@ -33,6 +39,7 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.web.SecurityFilterChain;
 
+import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -64,8 +71,30 @@ public class OauthServerConfig {
                                                                       UserService userService) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
+                .authorizationEndpoint(oAuth2AuthorizationEndpointConfigurer -> {
+                    // 错误的信息
+                    oAuth2AuthorizationEndpointConfigurer.errorResponseHandler((HttpServletRequest request, HttpServletResponse response,
+                                                                                AuthenticationException exception) -> {
+                        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+                        response.setContentType(MediaType.APPLICATION_JSON.toString());
+                        response.setStatus(HttpStatus.FORBIDDEN.value());
+                        PrintWriter out = response.getWriter();
+                        out.write(ObjectMapperUtils.simpleObjectMapper.writeValueAsString(Result.error(HttpStatus.FORBIDDEN, exception, I18nService.getMessage("request_param_error"))));
+                        out.flush();
+                        out.close();
+                    });
+                })
                 .oidc(oidcConfigurer -> oidcConfigurer.userInfoEndpoint(oidcUserInfoEndpointConfigurer ->
-                        oidcUserInfoEndpointConfigurer.userInfoMapper(new CustomUserInfoMapper(userService))));
+                                //自定义Mapper返回解析
+                                oidcUserInfoEndpointConfigurer.userInfoMapper(new CustomUserInfoMapper(userService)))
+                        .providerConfigurationEndpoint(oidcProviderConfigurationEndpointConfigurer ->
+                                //自定义scope的范围 如果还要加也可以
+                                oidcProviderConfigurationEndpointConfigurer.providerConfigurationCustomizer(customizer -> {
+                                    customizer.scope(OidcScopes.PROFILE)
+                                            .scope(OidcScopes.EMAIL)
+                                            .scope(OidcScopes.PHONE)
+                                            .build();
+                                })));
         http
                 .exceptionHandling()
                 .authenticationEntryPoint(customAuthenticationEntryPoint)
@@ -78,6 +107,15 @@ public class OauthServerConfig {
         return http.build();
     }
 
+    /**
+     * 通过oauth授权的API访问 暂时无效 后续可以写入到
+     * .well-known/openid-configuration
+     * .well-known/oauth-authorization-server
+     *
+     * @param http
+     * @return
+     * @throws Exception
+     */
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE + 1)
     public SecurityFilterChain resourceServerSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -106,42 +144,6 @@ public class OauthServerConfig {
      */
     @Bean
     public RegisteredClientRepository registeredClientRepository(CloudOauth2RegisteredClientMapper cloudOauth2RegisteredClientMapper) {
-//        String clientId = "idp_cloud";
-//        CustomRegisteredClientRepository registeredClientRepository = new CustomRegisteredClientRepository(cloudOauth2RegisteredClientMapper);
-//        RegisteredClient client = registeredClientRepository.findByClientId(clientId);
-//        String id = IdUtil.randomUUID();
-//        if (client != null) {
-//            id = client.getId();
-//        }
-//
-//        RegisteredClient registeredClient = RegisteredClient.withId(id)
-//                //客户端ID
-//                .clientId(clientId)
-//                //客服端密钥 建议自己生成 生成后展示给客户端即可 需要加密
-//                .clientSecret("123456")
-//                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
-//                // 授权模式 固定即可
-//                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-//                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-//                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-//                // 这个地方必须是全路径
-//                .redirectUri("https://www.baidu.com")
-//                //这里的scope理论上也可以定义 但是需要结合你实际接口需要的权限 建议这里用枚举 因为本身这个支持OIDC v1 所以默认带了OIDC的2个profile
-//                .scope(OidcScopes.OPENID)
-//                .scope(OidcScopes.PROFILE)
-//                .scope(OidcScopes.EMAIL)
-//                .scope(OidcScopes.PHONE)
-//                //客户端配置
-//                .clientSettings(ClientSettings.builder()
-//                        .requireAuthorizationConsent(false).build())
-//                .tokenSettings(TokenSettings.builder()
-//                        .authorizationCodeTimeToLive(Duration.ofMinutes(10))//code 10分钟有效
-//                        .accessTokenTimeToLive(Duration.ofMinutes(30))//token 限制30分钟
-//                        //默认refreshToken 是60分钟
-//                        .build())
-//                .build();
-//        registeredClientRepository.save(registeredClient);
-//        return registeredClientRepository;
         return new CustomRegisteredClientRepository(cloudOauth2RegisteredClientMapper);
     }
 
@@ -188,11 +190,19 @@ public class OauthServerConfig {
     /**
      * 配置端点 一般直接默认即可 当然也可以做成自定义的 切记这个是固定的 在服务器启动的时候生效 因为要写入Filter的PathMatcher
      * 建议做成配置文件
+     * .well-known/oauth-authorization-server
+     * .well-known/openid-configuration
+     * 可以从这2个地址进行获取
      *
      * @return
      */
     @Bean
-    public AuthorizationServerSettings authorizationServerSettings() {
-        return AuthorizationServerSettings.builder().build();
+    public AuthorizationServerSettings authorizationServerSettings(CommonProperties commonProperties) {
+        //这里可以定义基础访问路径 issuer指定基础路径
+        AuthorizationServerSettings.Builder builder = AuthorizationServerSettings.builder();
+        if (commonProperties.getIssuerUrl() != null) {
+            builder.issuer(commonProperties.getIssuerUrl().toString());
+        }
+        return builder.build();
     }
 }

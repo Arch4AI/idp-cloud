@@ -6,6 +6,7 @@ import com.dataease.cloud.constant.Constants;
 import com.dataease.cloud.entity.request.SmsRequest;
 import com.dataease.cloud.entity.response.SmsCodeResponse;
 import com.dataease.cloud.exception.CloudException;
+import com.dataease.cloud.i18n.I18nService;
 import com.dataease.cloud.service.sms.MessageService;
 import jakarta.annotation.Resource;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -39,9 +40,9 @@ public class SmsService {
      */
     public SmsCodeResponse sendCode(SmsRequest smsRequest) {
         if (!StringUtils.hasText(smsRequest.getPhone()))
-            CloudException.throwException("Phone num is Required!");
+            CloudException.throwException(I18nService.getMessage("phone_num_is_required"));
         if (stringRedisTemplate.hasKey(smsRequest.getPhone()))
-            CloudException.throwException("Code already exist");
+            CloudException.throwException(I18nService.getMessage("code_already_exist"));
         String code = RandomUtil.randomNumbers(6);
         Date offsetMinute = DateUtil.offsetMinute(new Date(), Constants.SMS_CODE_EXPIRE_TIME);
         //发送短信
@@ -62,14 +63,14 @@ public class SmsService {
     public void checkCode(SmsRequest smsRequest) {
         //获取phone
         if (!StringUtils.hasText(smsRequest.getPhone()))
-            CloudException.throwException("Phone num is Required!");
+            CloudException.throwException(I18nService.getMessage("phone_num_is_required"));
         if (!StringUtils.hasText(smsRequest.getCode()))
-            CloudException.throwException("Code is Required!");
+            CloudException.throwException(I18nService.getMessage("code_is_required"));
         if (!stringRedisTemplate.hasKey(smsRequest.getPhone()))
-            CloudException.throwException("Phone code is Lost,Please send again!");
+            CloudException.throwException(I18nService.getMessage("phone_code_is_lost"));
         String code = stringRedisTemplate.opsForValue().get(smsRequest.getPhone());
         if (!code.equals(smsRequest.getCode())) {
-            CloudException.throwException("Code is not match!");
+            CloudException.throwException(I18nService.getMessage("code_is_not_match"));
         } else {
             //校验成功后销毁
             stringRedisTemplate.delete(smsRequest.getPhone());

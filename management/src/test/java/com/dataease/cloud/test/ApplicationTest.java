@@ -64,7 +64,7 @@ public class ApplicationTest {
     }
 
     @Test
-    public void getI18n(){
+    public void getI18n() {
         LocaleContextHolder.setLocale(Locale.US);
         System.out.println(I18nService.getMessage("user_not_login"));
     }

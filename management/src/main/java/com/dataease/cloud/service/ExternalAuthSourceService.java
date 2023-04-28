@@ -7,6 +7,7 @@ import com.dataease.cloud.base.mapper.CloudUserAuthSourceRelationMapper;
 import com.dataease.cloud.base.mapper.CloudUserMapper;
 import com.dataease.cloud.entity.response.ExternalLoginUri;
 import com.dataease.cloud.exception.CloudException;
+import com.dataease.cloud.i18n.I18nService;
 import com.dataease.cloud.security.LocalUser;
 import com.dataease.cloud.security.exception.SecurityException;
 import com.dataease.cloud.security.external.request.ExternalSecurityRequest;
@@ -89,16 +90,16 @@ public class ExternalAuthSourceService {
     public ExternalLoginUri getSettingById(String id) {
         CloudExternalAuthSource setting = cloudExternalAuthSourceMapper.selectByPrimaryKey(id);
         if (setting == null)
-            CloudException.throwException("Provider setting not found!");
+            CloudException.throwException(I18nService.getMessage("provider_setting_not_found"));
         if (!setting.getEnable())
-            CloudException.throwException("Provider not enable!");
+            CloudException.throwException(I18nService.getMessage("provider_not_enable"));
         String state = Base64.encode(id);
         AuthDefaultSource source = Arrays.stream(AuthDefaultSource.values()).filter(defaultSource -> defaultSource.name().equals(setting.getClientType())).findFirst().orElse(null);
         if (source == null)
-            CloudException.throwException("Provider not support!");
+            CloudException.throwException(I18nService.getMessage("provider_not_support"));
         AuthDefaultRequest authDefaultRequest = getRequestBySource(source, setting);
         if (authDefaultRequest == null)
-            CloudException.throwException("Auth request not found!");
+            CloudException.throwException(I18nService.getMessage("auth_request_not_found"));
         String uri = authDefaultRequest.authorize(state);
         return ExternalLoginUri
                 .builder()
@@ -318,50 +319,50 @@ public class ExternalAuthSourceService {
      */
     private void validateProviderSetting(CloudExternalAuthSource setting) {
         if (!StringUtils.hasText(setting.getDisplayName()))
-            CloudException.throwException("auth provider displayName required!");
+            CloudException.throwException(I18nService.getMessage("auth_provider_displayName_required"));
         if (!StringUtils.hasText(setting.getClientId()))
-            CloudException.throwException("auth provider clientId required!");
+            CloudException.throwException(I18nService.getMessage("auth_provider_clientId_required"));
         if (!StringUtils.hasText(setting.getClientSecret()))
-            CloudException.throwException("auth provider clientSecret required!");
+            CloudException.throwException(I18nService.getMessage("auth_provider_clientSecret_required"));
         if (!StringUtils.hasText(setting.getClientType()))
-            CloudException.throwException("auth provider clientType required!");
+            CloudException.throwException(I18nService.getMessage("auth_provider_clientType_required"));
         boolean support = Arrays.stream(AuthDefaultSource.values()).filter(authDefaultSource -> authDefaultSource.name().equals(setting.getClientType())).count() > 0;
         if (!support)
-            CloudException.throwException("auth provider clientType not support!");
+            CloudException.throwException(I18nService.getMessage("auth_provider_clientType_not_support"));
         if (!StringUtils.hasText(setting.getRedirectUri()))
-            CloudException.throwException("auth provider redirectUri required!");
+            CloudException.throwException(I18nService.getMessage("auth_provider_redirectUri_required"));
         if (setting.getEnable() == null)
-            CloudException.throwException("auth provider enable required!");
+            CloudException.throwException(I18nService.getMessage("auth_provider_enable_required"));
         String clientType = setting.getClientType();
         // 支付宝
         if (AuthDefaultSource.ALIPAY.name().equals(clientType)) {
             if (!StringUtils.hasText(setting.getAlipayPublicKey()))
-                CloudException.throwException("Alipay provider alipayPublicKey required!");
+                CloudException.throwException(I18nService.getMessage("alipay_provider_alipayPublicKey_required"));
         }
         //stack_overflow
         if (AuthDefaultSource.STACK_OVERFLOW.name().equals(clientType)) {
             if (!StringUtils.hasText(setting.getStackOverflowKey()))
-                CloudException.throwException("Stackoverflow provider stackOverflowKey required!");
+                CloudException.throwException(I18nService.getMessage("stackoverflow_provider_stackOverflowKey_required"));
         }
         //企业微信 内部登录
         if (AuthDefaultSource.WECHAT_ENTERPRISE.name().equals(clientType)) {
             if (!StringUtils.hasText(setting.getAgentId()))
-                CloudException.throwException("Wechat enterprise provider agentId required!");
+                CloudException.throwException(I18nService.getMessage("wechat_enterprise_provider_agentId_required"));
         }
         //企业微信扫码
         if (AuthDefaultSource.WECHAT_ENTERPRISE_QRCODE_THIRD.name().equals(clientType)) {
             if (!StringUtils.hasText(setting.getUserType()))
-                CloudException.throwException("wechat enterprise qrcode third provider userType required!");
+                CloudException.throwException(I18nService.getMessage("wechat_enterprise_qrcode_third_provider_userType_required"));
         }
 
         if (AuthDefaultSource.CODING.name().equals(clientType) || AuthDefaultSource.OKTA.name().equals(clientType)) {
             if (!StringUtils.hasText(setting.getDomainPrefix()))
-                CloudException.throwException("provider domainPrefix required!");
+                CloudException.throwException(I18nService.getMessage("provider_domainPrefix_required"));
         }
 
         if (AuthDefaultSource.XMLY.name().equals(clientType)) {
             if (!StringUtils.hasText(setting.getDeviceId()))
-                CloudException.throwException("provider deviceId required!");
+                CloudException.throwException(I18nService.getMessage("provider_deviceId_required"));
         }
 
         if (AuthDefaultSource.OKTA.name().equals(clientType) && !StringUtils.hasText(setting.getAuthServerId()))
@@ -369,11 +370,11 @@ public class ExternalAuthSourceService {
 
         if (AuthDefaultSource.OIDC.name().equals(clientType)) {
             if (!StringUtils.hasText(setting.getAuthUri()))
-                CloudException.throwException("provider authUri required!");
+                CloudException.throwException(I18nService.getMessage("provider_authUri_required"));
             if (!StringUtils.hasText(setting.getTokenUri()))
-                CloudException.throwException("provider tokenUri required!");
+                CloudException.throwException(I18nService.getMessage("provider_tokenUri_required"));
             if (!StringUtils.hasText(setting.getUserInfoUri()))
-                CloudException.throwException("provider userInfoUri required!");
+                CloudException.throwException(I18nService.getMessage("provider_userInfoUri_required"));
         }
     }
 
@@ -386,12 +387,12 @@ public class ExternalAuthSourceService {
         String sourceId = Base64.decodeStr(externalSecurityRequest.getState());
         CloudExternalAuthSource setting = cloudExternalAuthSourceMapper.selectByPrimaryKey(sourceId);
         if (setting == null)
-            SecurityException.throwException("Provider not found!");
+            SecurityException.throwException(I18nService.getMessage("provider_not_found"));
         if (!setting.getEnable())
-            SecurityException.throwException("Provider not enable!");
+            SecurityException.throwException(I18nService.getMessage("provider_not_enable"));
         AuthDefaultSource source = Arrays.stream(AuthDefaultSource.values()).filter(defaultSource -> defaultSource.name().equals(setting.getClientType())).findFirst().orElse(null);
         if (source == null)
-            SecurityException.throwException("provider not support!");
+            SecurityException.throwException(I18nService.getMessage("provider_not_support"));
         AuthDefaultRequest authDefaultRequest = getRequestBySource(source, setting);
         AuthResponse authResponse = authDefaultRequest.login(externalSecurityRequest);
         if (!authResponse.ok())
@@ -410,19 +411,19 @@ public class ExternalAuthSourceService {
         String sourceId = Base64.decodeStr(state);
         LocalUser localUser = (LocalUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (localUser == null)
-            SecurityException.throwException("User not found!");
+            SecurityException.throwException(I18nService.getMessage("user_not_found"));
         //查询用户是否是可用
         CloudUser cloudUser = cloudUserMapper.selectByPrimaryKey(localUser.getUserId());
         if (cloudUser == null)
-            SecurityException.throwException("User not found!");
+            SecurityException.throwException(I18nService.getMessage("user_not_found"));
         if (!cloudUser.getEnabled())
-            SecurityException.throwException("User has disabled!");
+            SecurityException.throwException(I18nService.getMessage("user_has_disabled"));
         CloudUserAuthSourceRelationKey cloudUserAuthSourceRelationKey = new CloudUserAuthSourceRelationKey();
         cloudUserAuthSourceRelationKey.setAuthSourceId(sourceId);
         cloudUserAuthSourceRelationKey.setAuthUserUuid(authUser.getUuid());
         CloudUserAuthSourceRelation cloudUserAuthSourceRelation = cloudUserAuthSourceRelationMapper.selectByPrimaryKey(cloudUserAuthSourceRelationKey);
         if (cloudUserAuthSourceRelation != null)
-            SecurityException.throwException("Auth User has binded!");
+            SecurityException.throwException(I18nService.getMessage("auth_user_has_binded"));
         addUserRelation(authUser, sourceId, localUser.getUserId());
     }
 
@@ -438,7 +439,7 @@ public class ExternalAuthSourceService {
         cloudUserAuthSourceRelation = new CloudUserAuthSourceRelation();
         cloudUserAuthSourceRelation.setAuthSourceId(sourceId);
         cloudUserAuthSourceRelation.setAuthUserUuid(authUser.getUuid());
-        cloudUserAuthSourceRelation.setAuthUserRaw(authUser.getRawUserInfo().toJSONString());
+        cloudUserAuthSourceRelation.setAuthUserRaw(authUser.getRawUserInfo().toString());
         cloudUserAuthSourceRelation.setUserId(userId);
         cloudUserAuthSourceRelation.setAuthSource(authUser.getSource());
         cloudUserAuthSourceRelation.setAuthAvatar(authUser.getAvatar());
@@ -465,7 +466,7 @@ public class ExternalAuthSourceService {
         CloudUserAuthSourceRelation cloudUserAuthSourceRelation = cloudUserAuthSourceRelationMapper.selectByPrimaryKey(cloudUserAuthSourceRelationKey);
         if (cloudUserAuthSourceRelation == null || !StringUtils.hasText(cloudUserAuthSourceRelation.getUserId())) {
             //创建一个空的记录 但是他会抛出异常 所以他无法插入
-            SecurityException.throwException("User not found!");
+            SecurityException.throwException(I18nService.getMessage("user_not_found"));
         }
         CloudUser cloudUser = cloudUserMapper.selectByPrimaryKey(cloudUserAuthSourceRelation.getUserId());
         return cloudUser;
@@ -503,7 +504,7 @@ public class ExternalAuthSourceService {
         cloudUserAuthSourceRelationKey.setAuthUserUuid(uuid);
         CloudUserAuthSourceRelation cloudUserAuthSourceRelation = cloudUserAuthSourceRelationMapper.selectByPrimaryKey(cloudUserAuthSourceRelationKey);
         if (StringUtils.hasText(cloudUserAuthSourceRelation.getUserId()))
-            SecurityException.throwException("external user has bind!");
+            SecurityException.throwException(I18nService.getMessage("external_user_has_bind"));
         cloudUserAuthSourceRelation.setUserId(userId);
         cloudUserAuthSourceRelation.setUpdateTime(Calendar.getInstance().getTime());
         cloudUserAuthSourceRelationMapper.updateByPrimaryKeySelective(cloudUserAuthSourceRelation);
