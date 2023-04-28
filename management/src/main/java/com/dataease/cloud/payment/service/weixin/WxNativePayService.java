@@ -1,11 +1,13 @@
-package com.dataease.cloud.pay.weixin;
+package com.dataease.cloud.payment.service.weixin;
 
-import com.dataease.cloud.constant.PayStatusEnum;
-import com.dataease.cloud.entity.request.pay.PayOrderRequest;
-import com.dataease.cloud.entity.response.pay.PayOrderResponse;
-import com.dataease.cloud.entity.response.pay.PayResultResponse;
-import com.dataease.cloud.pay.AbstractPayService;
-import com.dataease.cloud.properties.pay.WeixinPayProperties;
+import com.dataease.cloud.payment.annotation.PayTypeAnnotation;
+import com.dataease.cloud.payment.constant.PayProvider;
+import com.dataease.cloud.payment.constant.PayStatusEnum;
+import com.dataease.cloud.payment.entity.request.PayOrderRequest;
+import com.dataease.cloud.payment.entity.response.PayOrderResponse;
+import com.dataease.cloud.payment.entity.response.PayResultResponse;
+import com.dataease.cloud.payment.properties.WeixinPayProperties;
+import com.dataease.cloud.payment.service.AbstractPayService;
 import com.wechat.pay.java.core.Config;
 import com.wechat.pay.java.core.RSAAutoCertificateConfig;
 import com.wechat.pay.java.core.notification.NotificationConfig;
@@ -20,38 +22,37 @@ import com.wechat.pay.java.service.payments.nativepay.model.QueryOrderByOutTrade
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
- * 微信支付
+ * 微信Native支付
  *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/4/26 6:00 PM
  **/
-public class WeixinPayService extends AbstractPayService {
+@PayTypeAnnotation(PayProvider.WX_NATIVE)
+public class WxNativePayService extends AbstractPayService<WeixinPayProperties> {
 
-    private WeixinPayProperties weixinPayProperties;
-
-    public WeixinPayService(WeixinPayProperties weixinPayProperties) {
-        this.weixinPayProperties = weixinPayProperties;
+    public WxNativePayService(WeixinPayProperties properties) {
+        super(properties);
     }
 
     @Override
     public PayOrderResponse createPayOrder(PayOrderRequest payOrderRequest) {
         Config config =
                 new RSAAutoCertificateConfig.Builder()
-                        .merchantId(weixinPayProperties.getMerchantId())
-                        .privateKey(weixinPayProperties.getPrivateKey())
-                        .merchantSerialNumber(weixinPayProperties.getMerchantSerialNumber())
-                        .apiV3Key(weixinPayProperties.getApiV3Key())
+                        .merchantId(properties.getMerchantId())
+                        .privateKey(properties.getPrivateKey())
+                        .merchantSerialNumber(properties.getMerchantSerialNumber())
+                        .apiV3Key(properties.getApiV3Key())
                         .build();
         NativePayService service = new NativePayService.Builder().config(config).build();
         PrepayRequest request = new PrepayRequest();
         Amount amount = new Amount();
         amount.setTotal(payOrderRequest.getAmount());
         request.setAmount(amount);
-        request.setAppid(weixinPayProperties.getAppId());
-        request.setMchid(weixinPayProperties.getMerchantId());
+        request.setAppid(properties.getAppId());
+        request.setMchid(properties.getMerchantId());
         request.setDescription(payOrderRequest.getDescription());
-        request.setNotifyUrl(weixinPayProperties.getNotifyUrl());
+        request.setNotifyUrl(properties.getNotifyUrl());
         request.setOutTradeNo(payOrderRequest.getOrderId());
         // 调用下单方法，得到应答
         PrepayResponse response = service.prepay(request);
@@ -65,14 +66,14 @@ public class WeixinPayService extends AbstractPayService {
     public PayResultResponse queryPayResult(String orderId) {
         Config config =
                 new RSAAutoCertificateConfig.Builder()
-                        .merchantId(weixinPayProperties.getMerchantId())
-                        .privateKey(weixinPayProperties.getPrivateKey())
-                        .merchantSerialNumber(weixinPayProperties.getMerchantSerialNumber())
-                        .apiV3Key(weixinPayProperties.getApiV3Key())
+                        .merchantId(properties.getMerchantId())
+                        .privateKey(properties.getPrivateKey())
+                        .merchantSerialNumber(properties.getMerchantSerialNumber())
+                        .apiV3Key(properties.getApiV3Key())
                         .build();
         NativePayService service = new NativePayService.Builder().config(config).build();
         QueryOrderByOutTradeNoRequest queryOrderByIdRequest = new QueryOrderByOutTradeNoRequest();
-        queryOrderByIdRequest.setMchid(weixinPayProperties.getMerchantId());
+        queryOrderByIdRequest.setMchid(properties.getMerchantId());
         queryOrderByIdRequest.setOutTradeNo(orderId);
         Transaction transaction = service.queryOrderByOutTradeNo(queryOrderByIdRequest);
         return PayResultResponse.builder()
@@ -93,7 +94,7 @@ public class WeixinPayService extends AbstractPayService {
         String signature = request.getHeader("Wechatpay-Signature");
         String timestamp = request.getHeader("Wechatpay-Timestamp");
         RequestParam requestParam = new RequestParam.Builder()
-                .serialNumber(weixinPayProperties.getMerchantSerialNumber())
+                .serialNumber(properties.getMerchantSerialNumber())
                 .nonce(nonce)
                 .signature(signature)
                 .timestamp(timestamp)
@@ -101,10 +102,10 @@ public class WeixinPayService extends AbstractPayService {
                 .build();
         NotificationConfig config =
                 new RSAAutoCertificateConfig.Builder()
-                        .merchantId(weixinPayProperties.getMerchantId())
-                        .privateKey(weixinPayProperties.getPrivateKey())
-                        .merchantSerialNumber(weixinPayProperties.getMerchantSerialNumber())
-                        .apiV3Key(weixinPayProperties.getApiV3Key())
+                        .merchantId(properties.getMerchantId())
+                        .privateKey(properties.getPrivateKey())
+                        .merchantSerialNumber(properties.getMerchantSerialNumber())
+                        .apiV3Key(properties.getApiV3Key())
                         .build();
         NotificationParser parser = new NotificationParser(config);
         Transaction transaction = parser.parse(requestParam, Transaction.class);

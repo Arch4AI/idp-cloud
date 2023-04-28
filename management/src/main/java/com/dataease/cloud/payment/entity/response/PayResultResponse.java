@@ -1,6 +1,6 @@
-package com.dataease.cloud.entity.response.pay;
+package com.dataease.cloud.payment.entity.response;
 
-import com.dataease.cloud.constant.PayStatusEnum;
+import com.dataease.cloud.payment.constant.PayStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

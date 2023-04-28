@@ -1,4 +1,4 @@
-package com.dataease.cloud.pay.alipay;
+package com.dataease.cloud.payment.service.alipay;
 
 import cn.hutool.core.util.NumberUtil;
 import com.alipay.api.AlipayClient;
@@ -11,47 +11,50 @@ import com.alipay.api.request.AlipayTradePagePayRequest;
 import com.alipay.api.request.AlipayTradeQueryRequest;
 import com.alipay.api.response.AlipayTradePagePayResponse;
 import com.alipay.api.response.AlipayTradeQueryResponse;
-import com.dataease.cloud.constant.PayStatusEnum;
-import com.dataease.cloud.entity.request.pay.PayOrderRequest;
-import com.dataease.cloud.entity.response.pay.PayOrderResponse;
-import com.dataease.cloud.entity.response.pay.PayResultResponse;
 import com.dataease.cloud.exception.CloudException;
 import com.dataease.cloud.i18n.I18nService;
-import com.dataease.cloud.pay.AbstractPayService;
-import com.dataease.cloud.properties.pay.AliPayProperties;
+import com.dataease.cloud.payment.annotation.PayTypeAnnotation;
+import com.dataease.cloud.payment.constant.PayProvider;
+import com.dataease.cloud.payment.constant.PayStatusEnum;
+import com.dataease.cloud.payment.entity.request.PayOrderRequest;
+import com.dataease.cloud.payment.entity.response.PayOrderResponse;
+import com.dataease.cloud.payment.entity.response.PayResultResponse;
+import com.dataease.cloud.payment.properties.AliPayProperties;
+import com.dataease.cloud.payment.service.AbstractPayService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 /**
- * 阿里云页面支付
+ * 支付宝电脑网页支付
  *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/4/26 6:43 PM
  **/
-public class AliPayService extends AbstractPayService {
+@PayTypeAnnotation(PayProvider.ALI_PAGE)
+public class AliPagePayService extends AbstractPayService<AliPayProperties> {
 
     private static final String charset = "UTF8";
     private static final String format = "json";
     private static final String signType = "RSA2 ";
+    private static final String productCode = "FAST_INSTANT_TRADE_PAY";//支付宝这个是写死的
 
-    private AliPayProperties aliPayProperties;
-
-    public AliPayService(AliPayProperties aliPayProperties) {
-        this.aliPayProperties = aliPayProperties;
+    public AliPagePayService(AliPayProperties properties) {
+        super(properties);
     }
 
     @Override
     public PayOrderResponse createPayOrder(PayOrderRequest payOrderRequest) {
         AlipayConfig alipayConfig = new AlipayConfig();
-        alipayConfig.setServerUrl(aliPayProperties.getServerUrl());
-        alipayConfig.setAppId(aliPayProperties.getAppId());
-        alipayConfig.setPrivateKey(aliPayProperties.getPrivateKey());
+        alipayConfig.setServerUrl(properties.getServerUrl());
+        alipayConfig.setAppId(properties.getAppId());
+        alipayConfig.setPrivateKey(properties.getPrivateKey());
         alipayConfig.setFormat(format);
-        alipayConfig.setAlipayPublicKey(aliPayProperties.getAlipayPublicKey());
+        alipayConfig.setAlipayPublicKey(properties.getPublicKey());
         alipayConfig.setCharset(charset);
         alipayConfig.setSignType(signType);
         try {
@@ -62,8 +65,13 @@ public class AliPayService extends AbstractPayService {
             model.setQrPayMode("1");
             model.setTotalAmount(String.valueOf(NumberUtil.div(payOrderRequest.getAmount(), 100, 2)));
             model.setSubject(payOrderRequest.getDescription());
-            model.setProductCode(payOrderRequest.getProductCode());
+            model.setProductCode(productCode);
             request.setBizModel(model);
+            //支付完后跳转回去的地址 如果不填默认不会跳转回自己的应用 最好是回到对应的订单页面
+            request.setReturnUrl(payOrderRequest.getReturnUrl());
+            if (StringUtils.hasText(properties.getNotifyUrl())) {
+                request.setNotifyUrl(properties.getNotifyUrl());
+            }
             AlipayTradePagePayResponse response = alipayClient.pageExecute(request);
             if (response.isSuccess()) {
                 return PayOrderResponse.builder()
@@ -82,11 +90,11 @@ public class AliPayService extends AbstractPayService {
     @Override
     public PayResultResponse queryPayResult(String orderId) {
         AlipayConfig alipayConfig = new AlipayConfig();
-        alipayConfig.setServerUrl(aliPayProperties.getServerUrl());
-        alipayConfig.setAppId(aliPayProperties.getAppId());
-        alipayConfig.setPrivateKey(aliPayProperties.getPrivateKey());
+        alipayConfig.setServerUrl(properties.getServerUrl());
+        alipayConfig.setAppId(properties.getAppId());
+        alipayConfig.setPrivateKey(properties.getPrivateKey());
         alipayConfig.setFormat(format);
-        alipayConfig.setAlipayPublicKey(aliPayProperties.getAlipayPublicKey());
+        alipayConfig.setAlipayPublicKey(properties.getPublicKey());
         alipayConfig.setCharset(charset);
         alipayConfig.setSignType(signType);
         try {
@@ -97,9 +105,8 @@ public class AliPayService extends AbstractPayService {
             request.setBizModel(model);
             AlipayTradeQueryResponse response = alipayClient.execute(request);
             if (response.isSuccess()) {
-                // 这是查询成功的情况 需要去比对一下
                 return PayResultResponse.builder()
-                        .appId(aliPayProperties.getAppId())
+                        .appId(properties.getAppId())
                         .outTradeNo(response.getOutTradeNo())
                         .transactionId(response.getTradeNo())
                         .buyerId(response.getBuyerLogonId())
@@ -135,7 +142,7 @@ public class AliPayService extends AbstractPayService {
                 valueStr = new String(valueStr.getBytes("ISO-8859-1"), "utf-8");
                 params.put(name, valueStr);
             }
-            boolean signVerified = AlipaySignature.rsaCheckV1(params, aliPayProperties.getAlipayPublicKey(), charset, signType);
+            boolean signVerified = AlipaySignature.rsaCheckV1(params, properties.getPublicKey(), charset, signType);
             if (signVerified) {
                 String out_trade_no = new String(request.getParameter("out_trade_no").getBytes("ISO-8859-1"), "UTF-8");
                 // 根据orderId查询信息

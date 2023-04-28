@@ -1,4 +1,4 @@
-package com.dataease.cloud.entity.response.pay;
+package com.dataease.cloud.payment.entity.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package com.dataease.cloud.entity.request.pay;
+package com.dataease.cloud.payment.entity.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,5 +20,5 @@ public class PayOrderRequest {
     private String orderId; // 平台订单号 不能大于32位切记
     private int amount;// 单位是分
     private String description;//商品描述
-    private String productCode;//商品编码 支付宝必填
+    private String returnUrl;//支付完成后返回的页面
 }

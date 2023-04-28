@@ -1,4 +1,4 @@
-package com.dataease.cloud.constant;
+package com.dataease.cloud.payment.constant;
 
 import com.wechat.pay.java.service.payments.model.Transaction;
 

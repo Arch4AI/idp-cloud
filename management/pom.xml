@@ -29,6 +29,7 @@
         <wx-pay.version>0.2.7</wx-pay.version>
         <alipay-sdk-java.version>4.35.110.ALL</alipay-sdk-java.version>
         <guava.version>31.1-jre</guava.version>
+        <reflections.version>0.10.2</reflections.version>
     </properties>
 
     <dependencies>
@@ -249,6 +250,13 @@
             <groupId>com.alipay.sdk</groupId>
             <artifactId>alipay-sdk-java</artifactId>
             <version>${alipay-sdk-java.version}</version>
+        </dependency>
+
+        <!--反射实现扫描 -->
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>${reflections.version}</version>
         </dependency>
 
     </dependencies>
