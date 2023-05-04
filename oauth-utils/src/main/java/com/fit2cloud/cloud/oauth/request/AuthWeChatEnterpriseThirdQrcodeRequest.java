@@ -60,11 +60,12 @@ public class AuthWeChatEnterpriseThirdQrcodeRequest extends AbstractAuthWeChatEn
     @Override
     protected AuthToken getAccessToken(AuthCallback authCallback) {
         try {
-            String response = doGetAuthorizationCode(accessTokenUrl());
+            String response = doGetAuthorizationCode(authCallback.getAuth_code());
             JSONObject object = this.checkResponse(response);
             AuthToken authToken = AuthToken.builder()
                     .accessToken(object.getString("provider_access_token"))
                     .expireIn(object.getIntValue("expires_in"))
+                    .code(authCallback.getAuth_code())
                     .build();
             return authToken;
         } catch (Exception e) {
@@ -77,7 +78,7 @@ public class AuthWeChatEnterpriseThirdQrcodeRequest extends AbstractAuthWeChatEn
         JSONObject data = new JSONObject();
         data.put("corpid", config.getClientId());
         data.put("provider_secret", config.getClientSecret());
-        return new HttpUtils(config.getHttpConfig()).post(accessTokenUrl(code), data.toJSONString()).getBody();
+        return new HttpUtils(config.getHttpConfig()).post(accessTokenUrl(), data.toJSONString()).getBody();
     }
 
     /**

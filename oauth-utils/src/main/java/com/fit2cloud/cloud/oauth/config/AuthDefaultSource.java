@@ -828,6 +828,32 @@ public enum AuthDefaultSource implements AuthSource {
             return AuthWeChatEnterpriseWebRequest.class;
         }
     },
+    /**
+     * 企业微信网页登录新版
+     * https://developer.work.weixin.qq.com/document/path/98151
+     */
+    WECHAT_ENTERPRISE_PAGE {
+        @Override
+        public String authorize() {
+            return "https://login.work.weixin.qq.com/wwlogin/sso/login";
+        }
+
+        //这个只能是在微信主动推送ticket后获取到的才行，需要持久化
+        @Override
+        public String accessToken() {
+            return "https://qyapi.weixin.qq.com/cgi-bin/service/get_suite_token";
+        }
+
+        @Override
+        public String userInfo() {
+            return "https://qyapi.weixin.qq.com/cgi-bin/service/auth/getuserinfo3rd";
+        }
+
+        @Override
+        public Class<? extends AuthDefaultRequest> getTargetClass() {
+            return AuthWeChatEnterprisePageRequest.class;
+        }
+    },
 
     /**
      * 酷家乐

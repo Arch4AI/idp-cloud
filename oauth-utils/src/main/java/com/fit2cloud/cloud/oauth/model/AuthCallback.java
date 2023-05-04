@@ -41,7 +41,7 @@ public class AuthCallback implements Serializable {
 
     /**
      * Twitter回调后返回的oauth_token
-     *
+     * 企业微信回调的时候需要注入这个 不然会存在很大的问题
      * @since 1.13.0
      */
     private String oauth_token;
