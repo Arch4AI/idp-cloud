@@ -65,9 +65,15 @@ public class LogAspect {
      */
     protected void handleLog(SysLog controllerLog, final Exception e) {
         try {
-            // 获取当前的用户
-            LocalUser localUser =
-                (LocalUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+            LocalUser localUser = null;
+
+            if (SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString() !=
+                "anonymousUser") {
+                // 获取当前的用户, 如果是匿名用户这里会有转化类型错误问题
+                localUser = (LocalUser) SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
+            }
 
             // *========数据库日志=========*//
             CloudSysOperLog operLog = new CloudSysOperLog();
@@ -82,6 +88,9 @@ public class LogAspect {
                 // 这里取到的只是用户 ID
                 String userId = localUser.getUsername();
                 operLog.setOperName(cloudUserMapper.selectByPrimaryKey(userId).getUserName());
+            } else {
+                // 匿名用户
+                operLog.setOperName("anonymousUser");
             }
             // 操作用户 IP
             String ip = IpUtils.getIpAddr(ServletUtils.getRequest());
