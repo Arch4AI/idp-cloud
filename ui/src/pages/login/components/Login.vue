@@ -43,7 +43,6 @@
               <t-input
                 class="phoneCode"
                 v-model="phoneFormData.code"
-                :disabled="showSendBtn"
                 placeholder="请输入验证码"
               />
               <t-button
