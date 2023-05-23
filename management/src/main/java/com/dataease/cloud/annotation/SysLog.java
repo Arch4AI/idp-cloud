@@ -1,6 +1,6 @@
 package com.dataease.cloud.annotation;
 
-import com.dataease.cloud.constant.LogBusinessType;
+import com.dataease.cloud.constant.LogOperationType;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -18,12 +18,22 @@ import java.lang.annotation.Target;
 public @interface SysLog {
 
     /**
-     * 操作描述
+     * 标题
      */
-    public String title() default "";
+    public String title() default "无标题";
 
     /**
      * 业务类型
      */
-    public LogBusinessType logBusinessType() default LogBusinessType.SELECT;
+    public LogOperationType type() default LogOperationType.NONE;
+
+    /**
+     * 是否保存请求的参数 默认false
+     */
+    public boolean isSaveRequestData() default true;
+
+    /**
+     * 是否保存响应的参数 默认false
+     */
+    public boolean isSaveResponseData() default true;
 }

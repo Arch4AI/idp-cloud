@@ -1,7 +1,7 @@
 package com.dataease.cloud.controller;
 
 import com.dataease.cloud.annotation.SysLog;
-import com.dataease.cloud.constant.LogBusinessType;
+import com.dataease.cloud.constant.LogOperationType;
 import com.dataease.cloud.entity.response.Result;
 import com.dataease.cloud.service.ExternalAuthSourceService;
 import jakarta.annotation.Resource;
@@ -29,7 +29,7 @@ public class AuthController {
      *
      * @return
      */
-    @SysLog(title = "获取可用的提供商", logBusinessType = LogBusinessType.SELECT)
+    @SysLog(title = "获取可用的提供商", type = LogOperationType.QUERY)
     @GetMapping("providers")
     public Result listActiveProviders() {
         return Result.success(externalAuthSourceService.listActive());
@@ -41,7 +41,7 @@ public class AuthController {
      * @param id
      * @return
      */
-    @SysLog(title = "根据ID获取跳转路径", logBusinessType = LogBusinessType.SELECT)
+    @SysLog(title = "根据ID获取跳转路径", type = LogOperationType.QUERY)
     @GetMapping("providers/{id}")
     public Result redirectUri(@PathVariable("id") String id) {
         return Result.success(externalAuthSourceService.getSettingById(id));

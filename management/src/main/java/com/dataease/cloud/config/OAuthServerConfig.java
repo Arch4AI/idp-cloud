@@ -52,7 +52,7 @@ import java.nio.charset.StandardCharsets;
  **/
 @Configuration(proxyBeanMethods = false)
 @Slf4j
-public class OauthServerConfig {
+public class OAuthServerConfig {
 
     /**
      * 具体的实现都在OAuth2AuthorizationServerConfiguration

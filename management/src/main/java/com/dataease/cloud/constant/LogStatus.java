@@ -1,5 +1,15 @@
 package com.dataease.cloud.constant;
 
+/**
+ * 日志的状态
+ */
 public enum LogStatus {
-    NORMAL, ERROR;
+    /**
+     * 成功
+     */
+    OK,
+    /**
+     * 失败
+     */
+    ERROR;
 }

@@ -1,7 +1,7 @@
 package com.dataease.cloud.controller;
 
 import com.dataease.cloud.annotation.SysLog;
-import com.dataease.cloud.constant.LogBusinessType;
+import com.dataease.cloud.constant.LogOperationType;
 import com.dataease.cloud.entity.request.SmsRequest;
 import com.dataease.cloud.entity.response.Result;
 import com.dataease.cloud.entity.response.SmsCodeResponse;
@@ -32,7 +32,7 @@ public class SmsController {
      * @param smsRequest
      * @return
      */
-    @SysLog(title = "发送短信", logBusinessType = LogBusinessType.INCREASE)
+    @SysLog(title = "发送短信", type = LogOperationType.SEND_SMS)
     @PostMapping("/send")
     public Result<SmsCodeResponse> send(@RequestBody SmsRequest smsRequest) {
         return Result.success(smsService.sendCode(smsRequest));
@@ -44,7 +44,7 @@ public class SmsController {
      * @param smsRequest
      * @return
      */
-    @SysLog(title = "短信校验", logBusinessType = LogBusinessType.SELECT)
+    @SysLog(title = "短信校验", type = LogOperationType.VERIFY)
     @PostMapping("/check")
     public Result check(@RequestBody SmsRequest smsRequest) {
         smsService.checkCode(smsRequest);

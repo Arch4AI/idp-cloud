@@ -3,7 +3,7 @@
         "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
 <generatorConfiguration>
     <!--配置数据库连接的位置-->
-    <properties resource="application.properties"/>
+    <properties resource="db.properties"/>
 
     <!-- 此处指定生成针对MyBatis3的DAO -->
     <context id="mysql" targetRuntime="MyBatis3">
@@ -53,6 +53,6 @@
         <!--        <table tableName="cloud_spring_session"/>-->
         <!--        <table tableName="cloud_spring_session_attributes"/>-->
         <!--        <table tableName="cloud_redis_session"/>-->
-        <table tableName="cloud_oauth2_authorization"/>
+        <table tableName="cloud_sys_oper_log"/>
     </context>
 </generatorConfiguration>
