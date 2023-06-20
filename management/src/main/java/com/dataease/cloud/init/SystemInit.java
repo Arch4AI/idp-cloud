@@ -2,13 +2,15 @@ package com.dataease.cloud.init;
 
 import cn.hutool.core.util.IdUtil;
 import com.dataease.cloud.base.domain.*;
+import com.dataease.cloud.base.mapper.CloudSocialSettingMapper;
 import com.dataease.cloud.base.mapper.CloudUserMapper;
 import com.dataease.cloud.base.mapper.CloudUserRoleMapper;
 import com.dataease.cloud.constant.GenderEnum;
 import com.dataease.cloud.constant.LanguageEnum;
 import com.dataease.cloud.constant.RoleEnum;
 import com.dataease.cloud.entity.request.RegisteredClientQueryReq;
-import com.dataease.cloud.service.ExternalAuthSourceService;
+import com.dataease.cloud.security.social.constant.ClientType;
+import com.dataease.cloud.service.SocialAuthenticationService;
 import com.dataease.cloud.service.Oauth2RegisteredClientSerive;
 import com.dataease.cloud.utils.CommonBeanFactory;
 import com.fit2cloud.cloud.oauth.config.AuthDefaultSource;
@@ -16,6 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.oauth2.core.AuthenticationMethod;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.util.StringUtils;
 
 import java.util.Calendar;
@@ -34,10 +39,10 @@ public class SystemInit {
 
     private CloudUserMapper cloudUserMapper;
     private CloudUserRoleMapper cloudUserRoleMapper;
-    private ExternalAuthSourceService externalAuthSourceService;
+    private SocialAuthenticationService externalAuthSourceService;
     private static final String DEFAULT_USER = "admin";
 
-    public SystemInit(CloudUserMapper cloudUserMapper, CloudUserRoleMapper cloudUserRoleMapper, ExternalAuthSourceService externalAuthSourceService) {
+    public SystemInit(CloudUserMapper cloudUserMapper, CloudUserRoleMapper cloudUserRoleMapper, SocialAuthenticationService externalAuthSourceService) {
         this.cloudUserMapper = cloudUserMapper;
         this.cloudUserRoleMapper = cloudUserRoleMapper;
         this.externalAuthSourceService = externalAuthSourceService;
@@ -51,6 +56,8 @@ public class SystemInit {
         initDefaultProvider();
         //创建一个RegisteredClient
         initRegisteredClient();
+        // 创建一个新的认证
+        initSocialClientSetting();
     }
 
     /**
@@ -127,6 +134,38 @@ public class SystemInit {
                 add("http://127.0.0.1:4000");
             }}));
             registeredClientSerive.createRegisteredClient(client);
+        }
+    }
+
+    private void initSocialClientSetting(){
+        String id = "gitee";
+        CloudSocialSetting setting = new CloudSocialSetting();
+        setting.setId("gitee");
+        setting.setClientId("2a7d3bbe6f10e1bea35a1d0b7e6439bdc073370e9b8dc069d7a8b05bfc525dcc");
+        setting.setClientSecret("a40d2efb892a2f96eb9d64989e3ea318a1771645fa52c8cf68ae3643192612a4");
+        setting.setClientType(ClientType.oauth2.name());
+        setting.setClientName("Gitee");
+        setting.setEnable(true);
+        setting.setAuthSecret("{}");
+        setting.setCreateTime(Calendar.getInstance().getTime());
+        setting.setUpdateTime(Calendar.getInstance().getTime());
+        setting.setScopes("user_info,emails");
+        setting.setAuthGrantType(AuthorizationGrantType.AUTHORIZATION_CODE.getValue());
+        setting.setClientAuthMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC.getValue());
+        setting.setUserAuthMethod(AuthenticationMethod.HEADER.getValue());
+        setting.setUserUniqueAttr("login");
+        setting.setIcon("icon/gitte.svg");
+        setting.setAuthUri("https://gitee.com/oauth/authorize");
+        setting.setTokenUri("https://gitee.com/oauth/token");
+        setting.setUserInfoUri("https://gitee.com/api/v5/user");
+        CloudSocialSettingMapper settingMapper = CommonBeanFactory.getBean(CloudSocialSettingMapper.class);
+        if(settingMapper != null){
+            CloudSocialSetting clientSetting = settingMapper.selectByPrimaryKey(id);
+            if(clientSetting == null){
+                settingMapper.insertSelective(setting);
+            }else{
+                settingMapper.updateByPrimaryKeyWithBLOBs(setting);
+            }
         }
     }
 }

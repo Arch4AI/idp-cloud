@@ -3,12 +3,13 @@ package com.dataease.cloud.config;
 import com.dataease.cloud.properties.SessionProperties;
 import com.dataease.cloud.security.CustomSecurityConfigurerAdapter;
 import com.dataease.cloud.security.exclude.DefaultSecurityExcludes;
-import com.dataease.cloud.security.handler.CustomAccessDeniedHandler;
-import com.dataease.cloud.security.handler.CustomAuthenticationEntryPoint;
-import com.dataease.cloud.security.handler.CustomLogoutSuccessHandler;
+import com.dataease.cloud.security.handler.*;
+import com.dataease.cloud.security.social.configurer.SocialLoginConfigurer;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.web.SecurityFilterChain;
@@ -43,6 +44,7 @@ public class SecurityConfig {
                                                              CustomAuthenticationEntryPoint customAuthenticationEntryPoint,
                                                              CustomLogoutSuccessHandler customLogoutSuccessHandler,
                                                              RememberMeServices rememberMeServices,
+                                                             SocialLoginConfigurer socialLoginConfigurer,
                                                              CustomSecurityConfigurerAdapter customSecurityConfigurerAdapter) throws Exception {
         return httpSecurity.authorizeHttpRequests().requestMatchers(DefaultSecurityExcludes.excludes)
                 .permitAll()
@@ -73,6 +75,8 @@ public class SecurityConfig {
                 .rememberMeServices(rememberMeServices)
                 .and()
                 .apply(customSecurityConfigurerAdapter)
+                .and()
+                .apply(socialLoginConfigurer)
                 .and()
                 .build();
     }

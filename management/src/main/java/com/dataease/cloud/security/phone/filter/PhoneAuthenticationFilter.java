@@ -10,7 +10,7 @@ import com.dataease.cloud.security.LocalUser;
 import com.dataease.cloud.security.exception.SecurityException;
 import com.dataease.cloud.security.phone.PhoneAuthenticationToken;
 import com.dataease.cloud.security.phone.request.PhoneLoginRequest;
-import com.dataease.cloud.service.ExternalAuthSourceService;
+import com.dataease.cloud.service.SocialAuthenticationService;
 import com.dataease.cloud.service.UserService;
 import com.dataease.cloud.utils.EncryptUtils;
 import com.dataease.cloud.utils.ObjectMapperUtils;
@@ -48,13 +48,13 @@ public class PhoneAuthenticationFilter extends AbstractAuthenticationProcessingF
 
     private StringRedisTemplate stringRedisTemplate;
     private UserService userService;
-    private ExternalAuthSourceService externalAuthSourceService;
+    private SocialAuthenticationService externalAuthSourceService;
 
     public PhoneAuthenticationFilter() {
         super(new AntPathRequestMatcher(DEFAULT_FILTER_PROCESSES_URL, HttpMethod.POST.name()));
     }
 
-    public PhoneAuthenticationFilter(AuthenticationManager authenticationManager, StringRedisTemplate stringRedisTemplate, UserService userService, ExternalAuthSourceService externalAuthSourceService) {
+    public PhoneAuthenticationFilter(AuthenticationManager authenticationManager, StringRedisTemplate stringRedisTemplate, UserService userService, SocialAuthenticationService externalAuthSourceService) {
         super(new AntPathRequestMatcher(DEFAULT_FILTER_PROCESSES_URL, HttpMethod.POST.name()), authenticationManager);
         this.stringRedisTemplate = stringRedisTemplate;
         this.userService = userService;
@@ -106,6 +106,7 @@ public class PhoneAuthenticationFilter extends AbstractAuthenticationProcessingF
         stringRedisTemplate.delete(phoneLoginRequest.getPhone());
         //如果是传递进来了 就绑定一下第三方的 这个绑定的意思就是这个已经存在才可以绑定
         if (StringUtils.hasText(phoneLoginRequest.getSourceId()) && StringUtils.hasText(phoneLoginRequest.getUuid())) {
+            externalAuthSourceService.bindSocailLocalUser(user.getUserId(),phoneLoginRequest.getSourceId(),phoneLoginRequest.getUuid());
             externalAuthSourceService.bindUserRelation(user.getUserId(), phoneLoginRequest.getSourceId(), phoneLoginRequest.getUuid());
         }
         if (user != null) {

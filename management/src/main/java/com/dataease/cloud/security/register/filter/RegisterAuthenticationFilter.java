@@ -8,7 +8,7 @@ import com.dataease.cloud.security.LocalUser;
 import com.dataease.cloud.security.exception.SecurityException;
 import com.dataease.cloud.security.register.RegisterAuthenticationToken;
 import com.dataease.cloud.security.register.request.RegisterRequest;
-import com.dataease.cloud.service.ExternalAuthSourceService;
+import com.dataease.cloud.service.SocialAuthenticationService;
 import com.dataease.cloud.service.UserService;
 import com.dataease.cloud.utils.EncryptUtils;
 import com.dataease.cloud.utils.ObjectMapperUtils;
@@ -45,13 +45,13 @@ public class RegisterAuthenticationFilter extends AbstractAuthenticationProcessi
 
     private UserService userService;
 
-    private ExternalAuthSourceService externalAuthSourceService;
+    private SocialAuthenticationService externalAuthSourceService;
 
     public RegisterAuthenticationFilter() {
         super(new AntPathRequestMatcher(DEFAULT_FILTER_PROCESSES_URL, HttpMethod.POST.name()));
     }
 
-    public RegisterAuthenticationFilter(AuthenticationManager authenticationManager, UserService userService, ExternalAuthSourceService externalAuthSourceService) {
+    public RegisterAuthenticationFilter(AuthenticationManager authenticationManager, UserService userService, SocialAuthenticationService externalAuthSourceService) {
         super(new AntPathRequestMatcher(DEFAULT_FILTER_PROCESSES_URL, HttpMethod.POST.name()), authenticationManager);
         this.userService = userService;
         this.externalAuthSourceService = externalAuthSourceService;
@@ -88,6 +88,7 @@ public class RegisterAuthenticationFilter extends AbstractAuthenticationProcessi
         }
         //如果是传递进来了 就绑定一下第三方的 这个绑定的意思就是这个已经存在才可以绑定
         if (StringUtils.hasText(req.getSourceId()) && StringUtils.hasText(req.getUuid())) {
+            externalAuthSourceService.bindSocailLocalUser(user.getUserId(),req.getSourceId(),req.getUuid());
             externalAuthSourceService.bindUserRelation(user.getUserId(), req.getSourceId(), req.getUuid());
         }
         //创建一个token 传入获取到的用户request

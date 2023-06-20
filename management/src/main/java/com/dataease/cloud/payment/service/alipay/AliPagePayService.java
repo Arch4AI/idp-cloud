@@ -22,6 +22,7 @@ import com.dataease.cloud.payment.entity.response.PayResultResponse;
 import com.dataease.cloud.payment.properties.AliPayProperties;
 import com.dataease.cloud.payment.service.AbstractPayService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpMethod;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
@@ -40,7 +41,7 @@ public class AliPagePayService extends AbstractPayService<AliPayProperties> {
 
     private static final String charset = "UTF8";
     private static final String format = "json";
-    private static final String signType = "RSA2 ";
+    private static final String signType = "RSA2";
     private static final String productCode = "FAST_INSTANT_TRADE_PAY";//支付宝这个是写死的
 
     public AliPagePayService(AliPayProperties properties) {
@@ -62,7 +63,7 @@ public class AliPagePayService extends AbstractPayService<AliPayProperties> {
             AlipayTradePagePayRequest request = new AlipayTradePagePayRequest();
             AlipayTradePagePayModel model = new AlipayTradePagePayModel();
             model.setOutTradeNo(payOrderRequest.getOrderId());
-            model.setQrPayMode("1");
+            model.setQrPayMode("4");
             model.setTotalAmount(String.valueOf(NumberUtil.div(payOrderRequest.getAmount(), 100, 2)));
             model.setSubject(payOrderRequest.getDescription());
             model.setProductCode(productCode);
@@ -72,7 +73,8 @@ public class AliPagePayService extends AbstractPayService<AliPayProperties> {
             if (StringUtils.hasText(properties.getNotifyUrl())) {
                 request.setNotifyUrl(properties.getNotifyUrl());
             }
-            AlipayTradePagePayResponse response = alipayClient.pageExecute(request);
+            // 这样返回的就是URL 可以根据URL生成二维码
+            AlipayTradePagePayResponse response = alipayClient.pageExecute(request, HttpMethod.GET.name());
             if (response.isSuccess()) {
                 return PayOrderResponse.builder()
                         .orderId(payOrderRequest.getOrderId())

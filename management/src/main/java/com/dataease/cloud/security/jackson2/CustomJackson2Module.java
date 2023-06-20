@@ -9,10 +9,12 @@ import com.dataease.cloud.security.jackson2.serializer.password.PasswordAuthenti
 import com.dataease.cloud.security.jackson2.serializer.phone.PhoneAuthenticationTokenMixin;
 import com.dataease.cloud.security.jackson2.serializer.profile.ProfileAuthenticationTokenMixin;
 import com.dataease.cloud.security.jackson2.serializer.register.RegisterAuthenticationTokenMixin;
+import com.dataease.cloud.security.jackson2.serializer.social.SocialAuthenticationTokenMixin;
 import com.dataease.cloud.security.password.PasswordAuthenticationToken;
 import com.dataease.cloud.security.phone.PhoneAuthenticationToken;
 import com.dataease.cloud.security.profile.ProfileAuthenticationToken;
 import com.dataease.cloud.security.register.RegisterAuthenticationToken;
+import com.dataease.cloud.security.social.SocialAuthenticationToken;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
@@ -37,6 +39,7 @@ public class CustomJackson2Module extends SimpleModule {
         context.setMixInAnnotations(PhoneAuthenticationToken.class, PhoneAuthenticationTokenMixin.class);
         context.setMixInAnnotations(RegisterAuthenticationToken.class, RegisterAuthenticationTokenMixin.class);
         context.setMixInAnnotations(ExternalAuthenticationToken.class, ExternalAuthenticationTokenMixin.class);
+        context.setMixInAnnotations(SocialAuthenticationToken.class, SocialAuthenticationTokenMixin.class);
         context.setMixInAnnotations(Long.class, LongMixin.class);
     }
 }

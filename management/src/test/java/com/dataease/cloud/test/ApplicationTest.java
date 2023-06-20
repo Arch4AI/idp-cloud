@@ -4,7 +4,7 @@ import cn.hutool.core.util.IdUtil;
 import com.dataease.cloud.base.domain.CloudExternalAuthSource;
 import com.dataease.cloud.i18n.I18nService;
 import com.dataease.cloud.properties.SmsProperties;
-import com.dataease.cloud.service.ExternalAuthSourceService;
+import com.dataease.cloud.service.SocialAuthenticationService;
 import com.dataease.cloud.service.sms.MessageService;
 import com.dataease.cloud.utils.GlobalConfigurations;
 import com.fit2cloud.cloud.oauth.config.AuthDefaultSource;
@@ -26,7 +26,7 @@ import java.util.Locale;
 public class ApplicationTest {
 
     @Resource
-    private ExternalAuthSourceService cloudOauthProviderSettingService;
+    private SocialAuthenticationService cloudOauthProviderSettingService;
 
     @Resource
     private SmsProperties smsProperties;

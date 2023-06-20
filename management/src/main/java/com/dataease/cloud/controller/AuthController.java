@@ -3,7 +3,7 @@ package com.dataease.cloud.controller;
 import com.dataease.cloud.annotation.SysLog;
 import com.dataease.cloud.constant.LogOperationType;
 import com.dataease.cloud.entity.response.Result;
-import com.dataease.cloud.service.ExternalAuthSourceService;
+import com.dataease.cloud.service.SocialAuthenticationService;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     @Resource
-    private ExternalAuthSourceService externalAuthSourceService;
+    private SocialAuthenticationService externalAuthSourceService;
 
     /**
      * 获取可用的提供商

@@ -70,6 +70,12 @@
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
+        <!-- 引入oauth2-client -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-client</artifactId>
+        </dependency>
+
         <!-- 引入websocket -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -107,6 +113,8 @@
             <groupId>org.springframework.session</groupId>
             <artifactId>spring-session-data-redis</artifactId>
         </dependency>
+
+
 
         <!-- 加入spring jdbc session -->
         <dependency>

@@ -50,9 +50,8 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <!--        <table tableName="cloud_spring_session"/>-->
-        <!--        <table tableName="cloud_spring_session_attributes"/>-->
-        <!--        <table tableName="cloud_redis_session"/>-->
-        <table tableName="cloud_sys_oper_log"/>
+        <table tableName="cloud_social_setting"/>
+        <table tableName="cloud_social_authorized_token"/>
+        <table tableName="cloud_user_social"/>
     </context>
 </generatorConfiguration>

@@ -18,8 +18,6 @@
     </parent>
 
     <modules>
-        <module>http-utils</module>
-        <module>oauth-utils</module>
         <module>plugin</module>
         <module>management</module>
     </modules>
@@ -45,16 +43,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>com.dataease.cloud</groupId>
-                <artifactId>http-utils</artifactId>
-                <version>1.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>com.dataease.cloud</groupId>
-                <artifactId>oauth-utils</artifactId>
-                <version>1.0-SNAPSHOT</version>
-            </dependency>
             <dependency>
                 <groupId>com.dataease.cloud</groupId>
                 <artifactId>plugin</artifactId>

@@ -11,7 +11,7 @@ import com.dataease.cloud.security.exception.SecurityException;
 import com.dataease.cloud.security.external.ExternalAuthenticationToken;
 import com.dataease.cloud.security.external.request.ExternalSecurityRequest;
 import com.dataease.cloud.security.external.response.ExternalSecurityResponse;
-import com.dataease.cloud.service.ExternalAuthSourceService;
+import com.dataease.cloud.service.SocialAuthenticationService;
 import com.dataease.cloud.utils.EncryptUtils;
 import com.dataease.cloud.utils.ObjectMapperUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,13 +49,13 @@ public class ExternalAuthenticationFilter extends AbstractAuthenticationProcessi
 
     private static final String DEFAULT_FILTER_PROCESSES_URL = Constants.EXTERNAL_LOGIN_URI;
 
-    private ExternalAuthSourceService externalAuthSourceService;
+    private SocialAuthenticationService externalAuthSourceService;
 
     public ExternalAuthenticationFilter() {
         super(new AntPathRequestMatcher(DEFAULT_FILTER_PROCESSES_URL, HttpMethod.POST.name()));
     }
 
-    public ExternalAuthenticationFilter(AuthenticationManager authenticationManager, ExternalAuthSourceService externalAuthSourceService) {
+    public ExternalAuthenticationFilter(AuthenticationManager authenticationManager, SocialAuthenticationService externalAuthSourceService) {
         super(new AntPathRequestMatcher(DEFAULT_FILTER_PROCESSES_URL, HttpMethod.POST.name()), authenticationManager);
         this.externalAuthSourceService = externalAuthSourceService;
     }

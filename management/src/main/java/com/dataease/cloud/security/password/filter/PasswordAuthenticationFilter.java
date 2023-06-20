@@ -8,7 +8,7 @@ import com.dataease.cloud.security.LocalUser;
 import com.dataease.cloud.security.exception.SecurityException;
 import com.dataease.cloud.security.password.PasswordAuthenticationToken;
 import com.dataease.cloud.security.password.request.PasswordLoginRequest;
-import com.dataease.cloud.service.ExternalAuthSourceService;
+import com.dataease.cloud.service.SocialAuthenticationService;
 import com.dataease.cloud.service.UserService;
 import com.dataease.cloud.utils.EncryptUtils;
 import com.dataease.cloud.utils.ObjectMapperUtils;
@@ -44,13 +44,13 @@ public class PasswordAuthenticationFilter extends AbstractAuthenticationProcessi
 
     private UserService userService;
 
-    private ExternalAuthSourceService externalAuthSourceService;
+    private SocialAuthenticationService externalAuthSourceService;
 
     public PasswordAuthenticationFilter() {
         super(new AntPathRequestMatcher(DEFAULT_FILTER_PROCESSES_URL, HttpMethod.POST.name()));
     }
 
-    public PasswordAuthenticationFilter(AuthenticationManager authenticationManager, UserService userService, ExternalAuthSourceService externalAuthSourceService) {
+    public PasswordAuthenticationFilter(AuthenticationManager authenticationManager, UserService userService, SocialAuthenticationService externalAuthSourceService) {
         super(new AntPathRequestMatcher(DEFAULT_FILTER_PROCESSES_URL, HttpMethod.POST.name()), authenticationManager);
         this.userService = userService;
         this.externalAuthSourceService = externalAuthSourceService;
@@ -93,6 +93,7 @@ public class PasswordAuthenticationFilter extends AbstractAuthenticationProcessi
             SecurityException.throwException(I18nService.getMessage("user_has_disabled"));
         //如果是传递进来了 就绑定一下第三方的 这个绑定的意思就是这个已经存在才可以绑定
         if (StringUtils.hasText(passwordLoginRequest.getSourceId()) && StringUtils.hasText(passwordLoginRequest.getUuid())) {
+            externalAuthSourceService.bindSocailLocalUser(user.getUserId(),passwordLoginRequest.getSourceId(),passwordLoginRequest.getUuid());
             externalAuthSourceService.bindUserRelation(user.getUserId(), passwordLoginRequest.getSourceId(), passwordLoginRequest.getUuid());
         }
         if (user != null) {

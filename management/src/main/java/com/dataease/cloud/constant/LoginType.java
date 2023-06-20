@@ -8,5 +8,24 @@ package com.dataease.cloud.constant;
  * @date 2023/3/8 6:34 PM
  **/
 public enum LoginType {
-    PASSWORD, PHONE, EXTERNAL, REMEMBER_ME;
+    /**
+     * 密码
+     */
+    PASSWORD,
+    /**
+     * 手机
+     */
+    PHONE,
+    /**
+     * 外部
+     */
+    EXTERNAL,
+    /**
+     * 社交
+     */
+    SOCIAL,
+    /**
+     * 记住我
+     */
+    REMEMBER_ME;
 }

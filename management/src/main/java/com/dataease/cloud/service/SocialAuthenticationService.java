@@ -4,7 +4,7 @@ import cn.hutool.core.codec.Base64;
 import com.dataease.cloud.base.domain.*;
 import com.dataease.cloud.base.mapper.CloudExternalAuthSourceMapper;
 import com.dataease.cloud.base.mapper.CloudUserAuthSourceRelationMapper;
-import com.dataease.cloud.base.mapper.CloudUserMapper;
+import com.dataease.cloud.base.mapper.CloudUserSocialMapper;
 import com.dataease.cloud.entity.response.ExternalLoginUri;
 import com.dataease.cloud.exception.CloudException;
 import com.dataease.cloud.i18n.I18nService;
@@ -39,16 +39,19 @@ import java.util.stream.Collectors;
  **/
 @Service
 @Transactional(rollbackFor = Exception.class)
-public class ExternalAuthSourceService {
+public class SocialAuthenticationService {
 
     @Resource
     private CloudExternalAuthSourceMapper cloudExternalAuthSourceMapper;
 
     @Resource
-    private CloudUserMapper cloudUserMapper;
+    private CloudUserAuthSourceRelationMapper cloudUserAuthSourceRelationMapper;
 
     @Resource
-    private CloudUserAuthSourceRelationMapper cloudUserAuthSourceRelationMapper;
+    private CloudUserSocialMapper cloudUserSocialMapper;
+
+    @Resource
+    private UserService userService;
 
 
     /**
@@ -413,7 +416,7 @@ public class ExternalAuthSourceService {
         if (localUser == null)
             SecurityException.throwException(I18nService.getMessage("user_not_found"));
         //查询用户是否是可用
-        CloudUser cloudUser = cloudUserMapper.selectByPrimaryKey(localUser.getUserId());
+        CloudUser cloudUser = userService.findById(localUser.getUserId());
         if (cloudUser == null)
             SecurityException.throwException(I18nService.getMessage("user_not_found"));
         if (!cloudUser.getEnabled())
@@ -468,7 +471,7 @@ public class ExternalAuthSourceService {
             //创建一个空的记录 但是他会抛出异常 所以他无法插入
             SecurityException.throwException(I18nService.getMessage("user_not_found"));
         }
-        CloudUser cloudUser = cloudUserMapper.selectByPrimaryKey(cloudUserAuthSourceRelation.getUserId());
+        CloudUser cloudUser = userService.findById(cloudUserAuthSourceRelation.getUserId());
         return cloudUser;
     }
 
@@ -508,6 +511,106 @@ public class ExternalAuthSourceService {
         cloudUserAuthSourceRelation.setUserId(userId);
         cloudUserAuthSourceRelation.setUpdateTime(Calendar.getInstance().getTime());
         cloudUserAuthSourceRelationMapper.updateByPrimaryKeySelective(cloudUserAuthSourceRelation);
+    }
+
+
+
+    /**
+     * 绑定信息，必须是没有绑定过的
+     * @param userId 用户ID
+     * @param uuid 社交用户uuid
+     * @param registrationId 社交登录配置ID
+     * @param raw 社交用户原始数据
+     */
+    public void bindNewUser(String userId, String uuid, String registrationId, String raw){
+        CloudUser cloudUser = userService.findById(userId);
+        if (cloudUser == null)
+            SecurityException.throwException(I18nService.getMessage("user_not_found"));
+        if (!cloudUser.getEnabled())
+            SecurityException.throwException(I18nService.getMessage("user_has_disabled"));
+        CloudUserSocialKey key = new CloudUserSocialKey();
+        key.setSocialSettingId(registrationId);
+        key.setSocialUserUuid(uuid);
+        CloudUserSocial cloudUserSocial = cloudUserSocialMapper.selectByPrimaryKey(key);
+        if(cloudUserSocial != null)
+            SecurityException.throwException(I18nService.getMessage("auth_user_has_binded"));
+        cloudUserSocial = new CloudUserSocial();
+        cloudUserSocial.setSocialUserUuid(uuid);
+        cloudUserSocial.setSocialSettingId(registrationId);
+        cloudUserSocial.setUserId(userId);
+        cloudUserSocial.setUserRaw(raw);
+        cloudUserSocial.setCreateTime(Calendar.getInstance().getTime());
+        cloudUserSocial.setUpdateTime(Calendar.getInstance().getTime());
+        cloudUserSocialMapper.insertSelective(cloudUserSocial);
+    }
+
+    /**
+     * 判断是否是当前用户
+     * @param userId
+     * @param uuid
+     * @param registrationId
+     * @return
+     */
+    public boolean isCurrentUser(String userId, String uuid, String registrationId){
+        CloudUserSocialKey key = new CloudUserSocialKey();
+        key.setSocialSettingId(registrationId);
+        key.setSocialUserUuid(uuid);
+        CloudUserSocial cloudUserSocial = cloudUserSocialMapper.selectByPrimaryKey(key);
+        return cloudUserSocial!=null && userId.equals(cloudUserSocial.getUserId());
+    }
+
+    /**
+     * 根据这个去获取信息
+     * @param uuid 社交用户uuid
+     * @param registrationId 社交登录配置
+     * @return
+     */
+    public LocalUser queryUserBySocailUser(String uuid,String registrationId){
+        CloudUserSocialKey key = new CloudUserSocialKey();
+        key.setSocialSettingId(registrationId);
+        key.setSocialUserUuid(uuid);
+        CloudUserSocial cloudUserSocial = cloudUserSocialMapper.selectByPrimaryKey(key);
+        if(cloudUserSocial == null || !StringUtils.hasText(cloudUserSocial.getUserId())){
+            SecurityException.throwException(I18nService.getMessage("user_not_found"));
+        }
+        //返回LocalUser
+        return userService.getUserById(cloudUserSocial.getUserId());
+    }
+
+    /**
+     * 保存社交信息
+     * @param uuid
+     * @param registrationId
+     * @param raw
+     */
+    public void saveSocialUser(String uuid,String registrationId,String raw){
+        CloudUserSocial cloudUserSocial = new CloudUserSocial();
+        cloudUserSocial.setSocialUserUuid(uuid);
+        cloudUserSocial.setSocialSettingId(registrationId);
+        cloudUserSocial.setUserRaw(raw);
+        cloudUserSocial.setCreateTime(Calendar.getInstance().getTime());
+        cloudUserSocial.setUpdateTime(Calendar.getInstance().getTime());
+        cloudUserSocialMapper.insertSelective(cloudUserSocial);
+    }
+
+    /**
+     * 如果这个第三方已经绑定直接报错
+     *
+     * @param userId 用户ID
+     * @param registrationId
+     * @param uuid
+     */
+    public void bindSocailLocalUser(String userId, String registrationId, String uuid) {
+        //最好判断一下是不是已经绑定了
+        CloudUserSocialKey cloudUserSocialKey = new CloudUserSocialKey();
+        cloudUserSocialKey.setSocialSettingId(registrationId);
+        cloudUserSocialKey.setSocialUserUuid(uuid);
+        CloudUserSocial cloudUserSocial = cloudUserSocialMapper.selectByPrimaryKey(cloudUserSocialKey);
+        if (StringUtils.hasText(cloudUserSocial.getUserId()))
+            SecurityException.throwException(I18nService.getMessage("external_user_has_bind"));
+        cloudUserSocial.setUserId(userId);
+        cloudUserSocial.setUpdateTime(Calendar.getInstance().getTime());
+        cloudUserSocialMapper.updateByPrimaryKeySelective(cloudUserSocial);
     }
 
 }

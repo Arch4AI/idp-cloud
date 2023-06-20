@@ -4,7 +4,7 @@ import com.dataease.cloud.base.mapper.CloudUserMapper;
 import com.dataease.cloud.base.mapper.CloudUserRoleMapper;
 import com.dataease.cloud.i18n.I18nService;
 import com.dataease.cloud.init.SystemInit;
-import com.dataease.cloud.service.ExternalAuthSourceService;
+import com.dataease.cloud.service.SocialAuthenticationService;
 import com.dataease.cloud.utils.CommonBeanFactory;
 import com.dataease.cloud.utils.GlobalConfigurations;
 import org.springframework.context.MessageSource;
@@ -38,7 +38,7 @@ public class CommonConfig {
     @Bean
     public SystemInit systemInit(CloudUserMapper cloudUserMapper,
                                  CloudUserRoleMapper cloudUserRoleMapper,
-                                 ExternalAuthSourceService externalAuthSourceService) {
+                                 SocialAuthenticationService externalAuthSourceService) {
         return new SystemInit(cloudUserMapper, cloudUserRoleMapper, externalAuthSourceService);
     }
 

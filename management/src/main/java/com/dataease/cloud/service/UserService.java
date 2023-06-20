@@ -47,6 +47,11 @@ public class UserService {
     @Resource
     private CloudUserRoleMapper cloudUserRoleMapper;
 
+
+    public CloudUser findById(String userId){
+        return cloudUserMapper.selectByPrimaryKey(userId);
+    }
+
     /**
      * 根据手机号码获取用户
      *
@@ -101,7 +106,9 @@ public class UserService {
         CloudUserRoleExample roleExample = new CloudUserRoleExample();
         roleExample.createCriteria().andUserIdEqualTo(cloudUser.getUserId());
         List<CloudUserRole> cloudUserRoles = cloudUserRoleMapper.selectByExample(roleExample);
-        Set<SimpleGrantedAuthority> grantedAuthoritySet = cloudUserRoles.stream().map(cloudUserRole -> new SimpleGrantedAuthority("ROLE_" + cloudUserRole.getRole())).collect(Collectors.toSet());
+        Set<SimpleGrantedAuthority> grantedAuthoritySet = cloudUserRoles.stream()
+                .map(cloudUserRole -> new SimpleGrantedAuthority("ROLE_" + cloudUserRole.getRole()))
+                .collect(Collectors.toSet());
         return grantedAuthoritySet;
     }
 

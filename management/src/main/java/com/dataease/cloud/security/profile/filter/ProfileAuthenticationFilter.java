@@ -9,7 +9,7 @@ import com.dataease.cloud.security.LocalUser;
 import com.dataease.cloud.security.exception.SecurityException;
 import com.dataease.cloud.security.profile.ProfileAuthenticationToken;
 import com.dataease.cloud.security.profile.request.UserUpdateProfileRequest;
-import com.dataease.cloud.service.ExternalAuthSourceService;
+import com.dataease.cloud.service.SocialAuthenticationService;
 import com.dataease.cloud.service.UserService;
 import com.dataease.cloud.utils.EncryptUtils;
 import com.dataease.cloud.utils.ObjectMapperUtils;
@@ -53,14 +53,14 @@ public class ProfileAuthenticationFilter extends AbstractAuthenticationProcessin
 
     private UserService userService;
 
-    private ExternalAuthSourceService externalAuthSourceService;
+    private SocialAuthenticationService externalAuthSourceService;
     private SecurityContextRepository contextRepository;
 
     public ProfileAuthenticationFilter() {
         super(new AntPathRequestMatcher(DEFAULT_FILTER_PROCESSES_URL, HttpMethod.POST.name()));
     }
 
-    public ProfileAuthenticationFilter(AuthenticationManager authenticationManager, UserService userService, ExternalAuthSourceService externalAuthSourceService) {
+    public ProfileAuthenticationFilter(AuthenticationManager authenticationManager, UserService userService, SocialAuthenticationService externalAuthSourceService) {
         super(new AntPathRequestMatcher(DEFAULT_FILTER_PROCESSES_URL, HttpMethod.POST.name()), authenticationManager);
         this.userService = userService;
         this.externalAuthSourceService = externalAuthSourceService;
@@ -127,6 +127,7 @@ public class ProfileAuthenticationFilter extends AbstractAuthenticationProcessin
         user = userService.registerUserByProfile(req);
         //如果是传递进来了 就绑定一下第三方的 这个绑定的意思就是这个已经存在才可以绑定
         if (StringUtils.hasText(req.getSourceId()) && StringUtils.hasText(req.getUuid())) {
+            externalAuthSourceService.bindSocailLocalUser(user.getUserId(),req.getSourceId(),req.getUuid());
             externalAuthSourceService.bindUserRelation(user.getUserId(), req.getSourceId(), req.getUuid());
         }
 

@@ -53,4 +53,9 @@ public class AuthCallback implements Serializable {
      */
     private String oauth_verifier;
 
+    /**
+     * 钉钉
+     */
+    private String authCode;
+
 }
