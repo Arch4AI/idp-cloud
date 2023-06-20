@@ -1,7 +1,6 @@
 package com.dataease.cloud.security.jackson2.serializer.social;
 
 import com.dataease.cloud.security.LocalUser;
-import com.dataease.cloud.security.register.RegisterAuthenticationToken;
 import com.dataease.cloud.security.social.SocialAuthenticationToken;
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -10,7 +9,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.node.MissingNode;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.io.IOException;
 import java.util.List;
@@ -44,7 +42,7 @@ public class SocialAuthenticationTokenDeserializer extends JsonDeserializer<Soci
                 GRANTED_AUTHORITY_LIST);
         SocialAuthenticationToken token = (!authenticated)
                 ? null
-                : new SocialAuthenticationToken(principal,authUser,authorizedClientRegistrationId);
+                : new SocialAuthenticationToken(principal, authUser, authorizedClientRegistrationId);
         JsonNode detailsNode = readJsonNode(jsonNode, "details");
         if (detailsNode.isNull() || detailsNode.isMissingNode()) {
             token.setDetails(null);

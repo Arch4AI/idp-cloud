@@ -92,9 +92,8 @@ public class PasswordAuthenticationFilter extends AbstractAuthenticationProcessi
         if (!user.isEnabled())
             SecurityException.throwException(I18nService.getMessage("user_has_disabled"));
         //如果是传递进来了 就绑定一下第三方的 这个绑定的意思就是这个已经存在才可以绑定
-        if (StringUtils.hasText(passwordLoginRequest.getSourceId()) && StringUtils.hasText(passwordLoginRequest.getUuid())) {
-            externalAuthSourceService.bindSocailLocalUser(user.getUserId(),passwordLoginRequest.getSourceId(),passwordLoginRequest.getUuid());
-            externalAuthSourceService.bindUserRelation(user.getUserId(), passwordLoginRequest.getSourceId(), passwordLoginRequest.getUuid());
+        if (StringUtils.hasText(passwordLoginRequest.getRegistrationId()) && StringUtils.hasText(passwordLoginRequest.getUuid())) {
+            externalAuthSourceService.bindSocailLocalUser(user.getUserId(), passwordLoginRequest.getRegistrationId(), passwordLoginRequest.getUuid());
         }
         if (user != null) {
             request.setAttribute(Constants.REQ_USER_ATTRIBUTE, user);

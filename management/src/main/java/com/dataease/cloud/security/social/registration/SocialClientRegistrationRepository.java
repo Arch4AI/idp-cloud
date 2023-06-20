@@ -19,18 +19,18 @@ import org.springframework.util.StringUtils;
 public class SocialClientRegistrationRepository implements ClientRegistrationRepository {
 
     //这个是默认的回调的参数
-    private final static String REDIRECT_URI="{baseUrl}/login/oauth2/code/{registrationId}";
+    private final static String REDIRECT_URI = "{baseUrl}/login/oauth2/code/{registrationId}";
 
     private final CloudSocialSettingMapper settingMapper;
 
-    public SocialClientRegistrationRepository(CloudSocialSettingMapper settingMapper){
+    public SocialClientRegistrationRepository(CloudSocialSettingMapper settingMapper) {
         this.settingMapper = settingMapper;
     }
 
     @Override
     public ClientRegistration findByRegistrationId(String registrationId) {
         CloudSocialSetting setting = settingMapper.selectByPrimaryKey(registrationId);
-        if(setting == null || !setting.getEnable())
+        if (setting == null || !setting.getEnable())
             return null;
         return ClientRegistration.withRegistrationId(registrationId)
                 .clientName(setting.getClientName())
@@ -51,6 +51,7 @@ public class SocialClientRegistrationRepository implements ClientRegistrationRep
 
     /**
      * return OAuth2 client auth method
+     *
      * @param method
      * @return
      */
@@ -63,6 +64,7 @@ public class SocialClientRegistrationRepository implements ClientRegistrationRep
 
     /**
      * return OAuth2 cient auth grant type
+     *
      * @param grantType
      * @return
      */
@@ -75,6 +77,7 @@ public class SocialClientRegistrationRepository implements ClientRegistrationRep
 
     /**
      * return OAuth2 client user info auth method
+     *
      * @param method
      * @return
      */

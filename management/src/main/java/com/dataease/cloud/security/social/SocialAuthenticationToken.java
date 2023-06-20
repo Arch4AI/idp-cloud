@@ -3,7 +3,6 @@ package com.dataease.cloud.security.social;
 import com.dataease.cloud.security.LocalUser;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.SpringSecurityCoreVersion;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.util.Assert;
 
 /**

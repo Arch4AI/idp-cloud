@@ -1,14 +1,14 @@
 DROP TABLE IF EXISTS `cloud_social_setting`;
 CREATE TABLE `cloud_social_setting`
 (
-    `id`                 varchar(64) NOT NULL COMMENT '主键',
+    `id`                 varchar(64)  NOT NULL COMMENT '主键',
     `client_name`        varchar(256) NOT NULL COMMENT '客户端名称',
     `icon`               varchar(256) NULL COMMENT '显示图标',
     `client_id`          varchar(256) NOT NULL COMMENT '客户端ID',
     `client_secret`      varchar(256) NOT NULL COMMENT '客户端密钥',
-    `client_type`        varchar(32) NOT NULL COMMENT '客服端类型',
-    `client_auth_method` varchar(32)  NULL COMMENT '客户端认证方法',
-    `auth_grant_type`    varchar(64)  NULL COMMENT '授权方法',
+    `client_type`        varchar(32)  NOT NULL COMMENT '客服端类型',
+    `client_auth_method` varchar(32) NULL COMMENT '客户端认证方法',
+    `auth_grant_type`    varchar(64) NULL COMMENT '授权方法',
     `scopes`             varchar(256) NULL COMMENT '逗号隔开',
     `scope_separator`    varchar(16) NULL COMMENT '分隔符为空的时候默认就是空格',
     `auth_uri`           varchar(256) NULL COMMENT '认证地址',
@@ -16,7 +16,7 @@ CREATE TABLE `cloud_social_setting`
     `user_info_uri`      varchar(256) NULL COMMENT '用户信息地址',
     `user_unique_attr`   varchar(32) NULL COMMENT '用户唯一属性',
     `user_auth_method`   varchar(32) NULL COMMENT '用户信息认证方法',
-    `auth_secret`        text NOT NULL COMMENT '认证密钥',
+    `auth_secret`        text         NOT NULL COMMENT '认证密钥',
     `enable`             boolean default true COMMENT '是否启用',
     `create_time`        timestamp NULL COMMENT '创建时间',
     `update_time`        timestamp NULL COMMENT '修改时间',
@@ -44,11 +44,11 @@ DROP TABLE IF EXISTS `cloud_user_social`;
 CREATE TABLE `cloud_user_social`
 (
     `social_setting_id` varchar(64)  NOT NULL COMMENT '社交登录设置ID',
-    `social_user_uuid` varchar(255) NOT NULL COMMENT '社交用户UUID',
-    `user_id`        varchar(64) NULL COMMENT '用户ID',
-    `user_raw`       longtext NULL COMMENT '用户原始数据',
-    `create_time`    datetime(0) NULL COMMENT '创建时间',
-    `update_time`    datetime(0) NULL COMMENT '修改时间',
+    `social_user_uuid`  varchar(255) NOT NULL COMMENT '社交用户UUID',
+    `user_id`           varchar(64) NULL COMMENT '用户ID',
+    `user_raw`          longtext NULL COMMENT '用户原始数据',
+    `create_time`       datetime(0) NULL COMMENT '创建时间',
+    `update_time`       datetime(0) NULL COMMENT '修改时间',
     PRIMARY KEY (`social_setting_id`, `social_user_uuid`),
-    INDEX            `idx_user_id`(`user_id`) USING BTREE COMMENT '用户ID索引'
+    INDEX               `idx_user_id`(`user_id`) USING BTREE COMMENT '用户ID索引'
 ) COMMENT = '用户与社交登录的关联';

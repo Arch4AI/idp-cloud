@@ -12,8 +12,8 @@ import lombok.Data;
  **/
 @Data
 public class UserUpdateProfileRequest extends CloudUser {
-    //来源ID
-    private String sourceId;
-    //用户的uuid
+    //社交登录配置ID
+    private String registrationId;
+    //社交用户的uuid
     private String uuid;
 }

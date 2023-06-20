@@ -126,9 +126,8 @@ public class ProfileAuthenticationFilter extends AbstractAuthenticationProcessin
         //这里相当于是注册
         user = userService.registerUserByProfile(req);
         //如果是传递进来了 就绑定一下第三方的 这个绑定的意思就是这个已经存在才可以绑定
-        if (StringUtils.hasText(req.getSourceId()) && StringUtils.hasText(req.getUuid())) {
-            externalAuthSourceService.bindSocailLocalUser(user.getUserId(),req.getSourceId(),req.getUuid());
-            externalAuthSourceService.bindUserRelation(user.getUserId(), req.getSourceId(), req.getUuid());
+        if (StringUtils.hasText(req.getRegistrationId()) && StringUtils.hasText(req.getUuid())) {
+            externalAuthSourceService.bindSocailLocalUser(user.getUserId(), req.getRegistrationId(), req.getUuid());
         }
 
         //创建一个token 传入获取到的用户request

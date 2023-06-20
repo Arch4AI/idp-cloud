@@ -17,8 +17,8 @@ public class PhoneLoginRequest implements Serializable {
     private String phone;
     //验证码
     private String code;
-    //来源ID
-    private String sourceId;
-    //用户的uuid
+    //社交登录配置ID
+    private String registrationId;
+    //社交用户的uuid
     private String uuid;
 }

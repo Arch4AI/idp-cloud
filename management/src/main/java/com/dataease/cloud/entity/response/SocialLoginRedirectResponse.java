@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 外部登录返回的URI
+ * 社交登录重定向请求
  *
  * @author ShrChang.Liu
  * @version v1.0
@@ -16,8 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExternalLoginUri {
-    private String id;
-    private String clientType;
+public class SocialLoginRedirectResponse {
+    //重定向的地址
     private String uri;
 }

@@ -48,7 +48,7 @@ public class UserService {
     private CloudUserRoleMapper cloudUserRoleMapper;
 
 
-    public CloudUser findById(String userId){
+    public CloudUser findById(String userId) {
         return cloudUserMapper.selectByPrimaryKey(userId);
     }
 

@@ -1,8 +1,7 @@
 package com.dataease.cloud.security.social.filter;
 
-import com.dataease.cloud.entity.response.ExternalLoginUri;
 import com.dataease.cloud.entity.response.Result;
-import com.dataease.cloud.i18n.I18nService;
+import com.dataease.cloud.entity.response.SocialLoginRedirectResponse;
 import com.dataease.cloud.utils.ObjectMapperUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -105,7 +104,7 @@ public class SocialAuthorizationRequestRedirectFilter extends OncePerRequestFilt
         } catch (IOException ex) {
             throw ex;
         } catch (Exception ex) {
-            logger.error("Catch Social Authorization Request error:",ex);
+            logger.error("Catch Social Authorization Request error:", ex);
             Throwable[] causeChain = this.throwableAnalyzer.determineCauseChain(ex);
             ClientAuthorizationRequiredException authzEx = (ClientAuthorizationRequiredException) this.throwableAnalyzer
                     .getFirstThrowableOfType(ClientAuthorizationRequiredException.class, causeChain);
@@ -140,7 +139,7 @@ public class SocialAuthorizationRequestRedirectFilter extends OncePerRequestFilt
         }
         //这里触发重定向
         //理论上我们应该直接返回一个JSON格式到前端去处理 Like:
-        ExternalLoginUri externalLoginUri = ExternalLoginUri
+        SocialLoginRedirectResponse externalLoginUri = SocialLoginRedirectResponse
                 .builder()
                 .uri(authorizationRequest.getAuthorizationRequestUri())
                 .build();
@@ -150,17 +149,14 @@ public class SocialAuthorizationRequestRedirectFilter extends OncePerRequestFilt
         out.write(ObjectMapperUtils.simpleObjectMapper.writeValueAsString(Result.success(externalLoginUri)));
         out.flush();
         out.close();
-
-//        this.authorizationRedirectStrategy.sendRedirect(request, response,
-//                authorizationRequest.getAuthorizationRequestUri());
     }
 
     private void unsuccessfulRedirectForAuthorization(HttpServletRequest request, HttpServletResponse response,
                                                       Exception ex) throws IOException {
         LogMessage message = LogMessage.format("Authorization Request failed: %s", ex);
-        if(this.logger.isWarnEnabled()){
+        if (this.logger.isWarnEnabled()) {
             this.logger.warn(message, ex);
-        }else{
+        } else {
             this.logger.error(message, ex);
         }
         response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value(),

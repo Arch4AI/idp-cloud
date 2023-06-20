@@ -6,7 +6,6 @@ import com.dataease.cloud.entity.response.Result;
 import com.dataease.cloud.service.SocialAuthenticationService;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     @Resource
-    private SocialAuthenticationService externalAuthSourceService;
+    private SocialAuthenticationService socialAuthenticationService;
 
     /**
      * 获取可用的提供商
@@ -32,18 +31,6 @@ public class AuthController {
     @SysLog(title = "获取可用的提供商", type = LogOperationType.QUERY)
     @GetMapping("providers")
     public Result listActiveProviders() {
-        return Result.success(externalAuthSourceService.listActive());
-    }
-
-    /**
-     * 根据ID获取跳转路径
-     *
-     * @param id
-     * @return
-     */
-    @SysLog(title = "根据ID获取跳转路径", type = LogOperationType.QUERY)
-    @GetMapping("providers/{id}")
-    public Result redirectUri(@PathVariable("id") String id) {
-        return Result.success(externalAuthSourceService.getSettingById(id));
+        return Result.success(socialAuthenticationService.listActive());
     }
 }

@@ -36,6 +36,7 @@ import java.util.function.Consumer;
 
 /**
  * custom defind request resolver
+ *
  * @author ShrChang.Liu
  * @version v1.0
  * @date 2023/6/1 6:11 PM
@@ -66,9 +67,10 @@ public class SocialAuthorizationRequestResolver implements OAuth2AuthorizationRe
     /**
      * Constructs a {@code DefaultOAuth2AuthorizationRequestResolver} using the provided
      * parameters.
+     *
      * @param clientRegistrationRepository the repository of client registrations
-     * @param authorizationRequestBaseUri the base {@code URI} used for resolving
-     * authorization requests
+     * @param authorizationRequestBaseUri  the base {@code URI} used for resolving
+     *                                     authorization requests
      */
     public SocialAuthorizationRequestResolver(ClientRegistrationRepository clientRegistrationRepository,
                                               CloudSocialSettingMapper settingMapper,
@@ -103,10 +105,11 @@ public class SocialAuthorizationRequestResolver implements OAuth2AuthorizationRe
     /**
      * Sets the {@code Consumer} to be provided the
      * {@link OAuth2AuthorizationRequest.Builder} allowing for further customizations.
+     *
      * @param authorizationRequestCustomizer the {@code Consumer} to be provided the
-     * {@link OAuth2AuthorizationRequest.Builder}
-     * @since 5.3
+     *                                       {@link OAuth2AuthorizationRequest.Builder}
      * @see OAuth2AuthorizationRequestCustomizers
+     * @since 5.3
      */
     public void setAuthorizationRequestCustomizer(
             Consumer<OAuth2AuthorizationRequest.Builder> authorizationRequestCustomizer) {
@@ -149,6 +152,7 @@ public class SocialAuthorizationRequestResolver implements OAuth2AuthorizationRe
 
     /**
      * 自定义处理了一下需要修改的重定向信息
+     *
      * @param registrationId
      * @param builder
      */
@@ -157,7 +161,7 @@ public class SocialAuthorizationRequestResolver implements OAuth2AuthorizationRe
         CloudSocialSetting setting = settingMapper.selectByPrimaryKey(registrationId);
         String settingClientType = setting.getClientType();
         ClientType clientType = ClientType.valueOf(settingClientType.toLowerCase());
-        if(clientType == null){
+        if (clientType == null) {
             throw new IllegalArgumentException("Not support client type:" + settingClientType);
         }
         String authorizationRequestUri = "";
@@ -166,7 +170,7 @@ public class SocialAuthorizationRequestResolver implements OAuth2AuthorizationRe
         builder.state(state);
         OAuth2AuthorizationRequest authorizationRequest = builder.build();
         String separator = StringUtils.hasText(setting.getScopeSeparator()) ? setting.getScopeSeparator() : " ";
-        switch (clientType){
+        switch (clientType) {
             case dingtalk -> {
                 // 或者直接加这个
                 builder.additionalParameters(new HashMap<>() {{
@@ -176,7 +180,7 @@ public class SocialAuthorizationRequestResolver implements OAuth2AuthorizationRe
                 break;
             }
             case qq -> {
-                Set<String> scopes = new LinkedHashSet<>(Arrays.asList(StringUtils.delimitedListToStringArray(setting.getScopes(),",")));
+                Set<String> scopes = new LinkedHashSet<>(Arrays.asList(StringUtils.delimitedListToStringArray(setting.getScopes(), ",")));
                 authorizationRequestUri = UriComponentsBuilder.fromUriString(authorizationRequest.getAuthorizationUri())
                         .queryParam(OAuth2ParameterNames.RESPONSE_TYPE, authorizationRequest.getResponseType().getValue())
                         .queryParam(OAuth2ParameterNames.CLIENT_ID, encodeQueryParam(authorizationRequest.getClientId()))
@@ -188,7 +192,7 @@ public class SocialAuthorizationRequestResolver implements OAuth2AuthorizationRe
                 break;
             }
             case wechat -> {
-                Set<String> scopes = new LinkedHashSet<>(Arrays.asList(StringUtils.delimitedListToStringArray(setting.getScopes(),",")));
+                Set<String> scopes = new LinkedHashSet<>(Arrays.asList(StringUtils.delimitedListToStringArray(setting.getScopes(), ",")));
                 authorizationRequestUri = UriComponentsBuilder.fromUriString(authorizationRequest.getAuthorizationUri())
                         .queryParam("appid", encodeQueryParam(authorizationRequest.getClientId()))
                         .queryParam(OAuth2ParameterNames.REDIRECT_URI, encodeQueryParam(authorizationRequest.getRedirectUri()))
@@ -211,7 +215,7 @@ public class SocialAuthorizationRequestResolver implements OAuth2AuthorizationRe
             }
             case wechatwork_self_app -> {
                 // 这里有问题 不知道如何弄比较好 因为这里是在一个json字符串中
-                Map<String,String> settingMap = JsonUtils.jsonToObject(setting.getAuthSecret(),Map.class);
+                Map<String, String> settingMap = JsonUtils.jsonToObject(setting.getAuthSecret(), Map.class);
                 authorizationRequestUri = UriComponentsBuilder.fromUriString(authorizationRequest.getAuthorizationUri())
                         .queryParam("login_type", encodeQueryParam("CorpApp"))
                         .queryParam("appid", encodeQueryParam(settingMap.get("corpId")))
@@ -226,7 +230,7 @@ public class SocialAuthorizationRequestResolver implements OAuth2AuthorizationRe
                 // 添加作用域 这里是作用域的效果
                 builder.parameters(stringObjectMap -> {
                     //如果没有设置则用默认的空格 否则用自己的
-                    Set<String> scopes = new LinkedHashSet<>(Arrays.asList(StringUtils.delimitedListToStringArray(setting.getScopes(),",")));
+                    Set<String> scopes = new LinkedHashSet<>(Arrays.asList(StringUtils.delimitedListToStringArray(setting.getScopes(), ",")));
                     stringObjectMap.put(OAuth2ParameterNames.SCOPE, StringUtils.collectionToDelimitedString(scopes, separator));
                 });
                 break;
@@ -298,6 +302,7 @@ public class SocialAuthorizationRequestResolver implements OAuth2AuthorizationRe
      * <p/>
      * Default redirectUri is:
      * {@code org.springframework.security.config.oauth2.client.CommonOAuth2Provider#DEFAULT_REDIRECT_URL}
+     *
      * @return expanded URI
      */
     private static String expandRedirectUri(HttpServletRequest request, ClientRegistration clientRegistration,
@@ -333,13 +338,13 @@ public class SocialAuthorizationRequestResolver implements OAuth2AuthorizationRe
 
     /**
      * Creates nonce and its hash for use in OpenID Connect 1.0 Authentication Requests.
-     * @param builder where the {@link OidcParameterNames#NONCE} and hash is stored for
-     * the authentication request
      *
-     * @since 5.2
+     * @param builder where the {@link OidcParameterNames#NONCE} and hash is stored for
+     *                the authentication request
      * @see <a target="_blank" href=
      * "https://openid.net/specs/openid-connect-core-1_0.html#AuthRequest">3.1.2.1.
      * Authentication Request</a>
+     * @since 5.2
      */
     private static void applyNonce(OAuth2AuthorizationRequest.Builder builder) {
         try {
@@ -347,8 +352,7 @@ public class SocialAuthorizationRequestResolver implements OAuth2AuthorizationRe
             String nonceHash = createHash(nonce);
             builder.attributes((attrs) -> attrs.put(OidcParameterNames.NONCE, nonce));
             builder.additionalParameters((params) -> params.put(OidcParameterNames.NONCE, nonceHash));
-        }
-        catch (NoSuchAlgorithmException ex) {
+        } catch (NoSuchAlgorithmException ex) {
         }
     }
 

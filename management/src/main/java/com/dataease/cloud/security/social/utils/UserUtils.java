@@ -18,15 +18,16 @@ public class UserUtils {
     /**
      * get Logined user info
      * must be {@link LocalUser} else has not real logined
+     *
      * @return
      */
-    public static LocalUser getCurrentUser(){
+    public static LocalUser getCurrentUser() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
-        if(securityContext != null){
+        if (securityContext != null) {
             Authentication authentication = securityContext.getAuthentication();
-            if(authentication != null && !(authentication instanceof AnonymousAuthenticationToken)){
+            if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
                 Object principal = authentication.getPrincipal();
-                if(principal instanceof LocalUser){
+                if (principal instanceof LocalUser) {
                     return (LocalUser) principal;
                 }
             }

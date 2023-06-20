@@ -115,7 +115,6 @@
         </dependency>
 
 
-
         <!-- 加入spring jdbc session -->
         <dependency>
             <groupId>org.springframework.session</groupId>
@@ -182,12 +181,6 @@
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-core</artifactId>
             <version>${hutool.version}</version>
-        </dependency>
-
-        <!-- justAuth 源码维护 -->
-        <dependency>
-            <groupId>com.dataease.cloud</groupId>
-            <artifactId>oauth-utils</artifactId>
         </dependency>
 
         <!-- 采用hutool-http的方式连接 -->

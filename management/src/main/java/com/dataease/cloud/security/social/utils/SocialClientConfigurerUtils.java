@@ -54,7 +54,7 @@ public class SocialClientConfigurerUtils {
         return authorizedClientRepository;
     }
 
-    public static <B extends HttpSecurityBuilder<B>> OAuth2AccessTokenResponseClient getOAuth2AccessTokenResponseClient(B builder){
+    public static <B extends HttpSecurityBuilder<B>> OAuth2AccessTokenResponseClient getOAuth2AccessTokenResponseClient(B builder) {
         OAuth2AccessTokenResponseClient oAuth2AccessTokenResponseClient = builder.getSharedObject(OAuth2AccessTokenResponseClient.class);
         if (oAuth2AccessTokenResponseClient == null) {
             oAuth2AccessTokenResponseClient = getOAuth2AccessTokenResponseClientBean(builder);
@@ -66,7 +66,7 @@ public class SocialClientConfigurerUtils {
         return oAuth2AccessTokenResponseClient;
     }
 
-    private static <B extends HttpSecurityBuilder<B>> OAuth2AccessTokenResponseClient getOAuth2AccessTokenResponseClientBean(B builder){
+    private static <B extends HttpSecurityBuilder<B>> OAuth2AccessTokenResponseClient getOAuth2AccessTokenResponseClientBean(B builder) {
         Map<String, OAuth2AccessTokenResponseClient> oAuth2AccessTokenResponseClientMap = BeanFactoryUtils
                 .beansOfTypeIncludingAncestors(builder.getSharedObject(ApplicationContext.class),
                         OAuth2AccessTokenResponseClient.class);

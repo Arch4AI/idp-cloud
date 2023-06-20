@@ -2,9 +2,9 @@ package com.dataease.cloud.security.social.filter;
 
 import com.dataease.cloud.constant.LoginType;
 import com.dataease.cloud.entity.response.Result;
+import com.dataease.cloud.entity.response.SocialLoginResponse;
 import com.dataease.cloud.i18n.I18nService;
 import com.dataease.cloud.security.LocalUser;
-import com.dataease.cloud.security.external.response.ExternalSecurityResponse;
 import com.dataease.cloud.security.social.SocialAuthenticationToken;
 import com.dataease.cloud.security.social.utils.SocialAuthorizationResponseUtils;
 import com.dataease.cloud.security.social.utils.UserUtils;
@@ -190,9 +190,9 @@ public class SocialLoginAuthenticationFilter extends AbstractAuthenticationProce
                     response.setContentType(MediaType.APPLICATION_JSON.toString());
                     PrintWriter out = response.getWriter();
                     out.write(ObjectMapperUtils.simpleObjectMapper.writeValueAsString(Result.error(HttpStatus.FORBIDDEN, e,
-                            ExternalSecurityResponse.builder()
-                                    .sourceId(registrationId)
-                                    .type(clientRegistration.getClientName())//这里暂时有问题
+                            SocialLoginResponse.builder()
+                                    .registrationId(registrationId)
+                                    .clientName(clientRegistration.getClientName())
                                     .uuid(userUId)
                                     .build())));
                     out.flush();
@@ -202,7 +202,7 @@ public class SocialLoginAuthenticationFilter extends AbstractAuthenticationProce
             } else {// 处理登录绑定社交登录的情况
                 try {
                     //判断是当前的用户直接返回
-                    if(socialAuthenticationService.isCurrentUser(loginUser.getUserId(),userUId,registrationId))
+                    if (socialAuthenticationService.isCurrentUser(loginUser.getUserId(), userUId, registrationId))
                         return SecurityContextHolder.getContext().getAuthentication();
                     socialAuthenticationService.bindNewUser(loginUser.getUserId(), userUId, registrationId, JsonUtils.toJsonString(oAuth2User));
                     response.setCharacterEncoding(StandardCharsets.UTF_8.name());

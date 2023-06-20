@@ -19,5 +19,5 @@ public class SocialConstant {
     /**
      * 用于保存获取AccessToken时返回的用户唯一属性
      */
-    public static final String SOCIAL_ACCESSTOKEN_USER_UNIONID_ATTR="openid";
+    public static final String SOCIAL_ACCESSTOKEN_USER_UNIONID_ATTR = "openid";
 }

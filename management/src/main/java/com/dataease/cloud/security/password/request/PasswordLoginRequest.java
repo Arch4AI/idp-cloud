@@ -18,8 +18,8 @@ public class PasswordLoginRequest implements Serializable {
     private String userName;
     //密码
     private String password;
-    //认证来源ID
-    private String sourceId;
-    //认证源用户UUID
+    //社交登录配置ID
+    private String registrationId;
+    //社交用户ID
     private String uuid;
 }

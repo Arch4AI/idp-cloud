@@ -1,7 +1,5 @@
 package com.dataease.cloud.security;
 
-import com.dataease.cloud.security.external.ExternalAuthenticationProvider;
-import com.dataease.cloud.security.external.filter.ExternalAuthenticationFilter;
 import com.dataease.cloud.security.handler.CustomAuthenticationFailureHandler;
 import com.dataease.cloud.security.handler.CustomSuccessHandler;
 import com.dataease.cloud.security.password.PasswordAuthenticationProvider;
@@ -64,36 +62,9 @@ public class CustomSecurityConfigurerAdapter extends SecurityConfigurerAdapter<D
                 .authenticationProvider(new RegisterAuthenticationProvider(localDetailsService))
                 .addFilterAfter(getRegisterAuthenticationFilter(http), UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(new ProfileAuthenticationProvider(localDetailsService))
-                .addFilterAfter(getProfileAuthenticationFilter(http), UsernamePasswordAuthenticationFilter.class)
-                .authenticationProvider(new ExternalAuthenticationProvider(localDetailsService))
-                .addFilterAfter(getExternalAuthenticationFilter(http), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAfter(getProfileAuthenticationFilter(http), UsernamePasswordAuthenticationFilter.class);
     }
 
-    /**
-     * 外部认证
-     *
-     * @param http
-     * @return
-     */
-    private ExternalAuthenticationFilter getExternalAuthenticationFilter(HttpSecurity http) {
-        SessionAuthenticationStrategy sessionAuthenticationStrategy = http
-                .getSharedObject(SessionAuthenticationStrategy.class);
-        AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
-        RememberMeServices rememberMeServices = http.getSharedObject(RememberMeServices.class);
-        SecurityContextRepository repository = http.getSharedObject(SecurityContextRepository.class);
-
-        ExternalAuthenticationFilter externalAuthenticationFilter = new ExternalAuthenticationFilter(authenticationManager, socialAuthenticationService);
-        // 如果未设置这个会导致redis session中没有数据 需要将用户信息存储到httpSession中
-        externalAuthenticationFilter.setSecurityContextRepository(repository);
-        // 设置记住我
-        externalAuthenticationFilter.setRememberMeServices(rememberMeServices);
-        //session的
-        externalAuthenticationFilter.setSessionAuthenticationStrategy(sessionAuthenticationStrategy);
-        // 配置Filter执行完成后的处理器
-        externalAuthenticationFilter.setAuthenticationSuccessHandler(customSuccessHandler);
-        externalAuthenticationFilter.setAuthenticationFailureHandler(customAuthenticationFailureHandler);
-        return externalAuthenticationFilter;
-    }
 
     /**
      * 获取更新信息的Filter

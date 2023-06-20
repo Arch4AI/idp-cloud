@@ -10,10 +10,9 @@ import com.dataease.cloud.constant.LanguageEnum;
 import com.dataease.cloud.constant.RoleEnum;
 import com.dataease.cloud.entity.request.RegisteredClientQueryReq;
 import com.dataease.cloud.security.social.constant.ClientType;
-import com.dataease.cloud.service.SocialAuthenticationService;
 import com.dataease.cloud.service.Oauth2RegisteredClientSerive;
+import com.dataease.cloud.service.SocialAuthenticationService;
 import com.dataease.cloud.utils.CommonBeanFactory;
-import com.fit2cloud.cloud.oauth.config.AuthDefaultSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -52,33 +51,10 @@ public class SystemInit {
     public void initialize(ApplicationReadyEvent applicationReadyEvent) {
         // 创建admin
         initAdmin();
-        // 创建一个keycloak的认证
-        initDefaultProvider();
         //创建一个RegisteredClient
         initRegisteredClient();
         // 创建一个新的认证
         initSocialClientSetting();
-    }
-
-    /**
-     * 初始化一个提供商
-     */
-    private void initDefaultProvider() {
-        // 为空的时候才去注入
-        if (externalAuthSourceService.listAll().isEmpty()) {
-            CloudExternalAuthSource setting = new CloudExternalAuthSource();
-            setting.setId(IdUtil.randomUUID());
-            setting.setDisplayName("MeterSphere Cloud Keycloak");
-            setting.setClientId("halo");
-            setting.setClientSecret("dd942762-b30e-4e34-b2c4-d71daab393b8");
-            setting.setClientType(AuthDefaultSource.OIDC.name());
-            setting.setAuthUri("https://msdev.xgg.plus/auth/realms/halo/protocol/openid-connect/auth");
-            setting.setTokenUri("https://msdev.xgg.plus/auth/realms/halo/protocol/openid-connect/token");
-            setting.setUserInfoUri("https://msdev.xgg.plus/auth/realms/halo/protocol/openid-connect/userinfo");
-            setting.setRedirectUri("https://www.baidu.com");
-            setting.setEnable(true);
-            externalAuthSourceService.add(setting);
-        }
     }
 
     /**
@@ -137,7 +113,7 @@ public class SystemInit {
         }
     }
 
-    private void initSocialClientSetting(){
+    private void initSocialClientSetting() {
         String id = "gitee";
         CloudSocialSetting setting = new CloudSocialSetting();
         setting.setId("gitee");
@@ -159,11 +135,11 @@ public class SystemInit {
         setting.setTokenUri("https://gitee.com/oauth/token");
         setting.setUserInfoUri("https://gitee.com/api/v5/user");
         CloudSocialSettingMapper settingMapper = CommonBeanFactory.getBean(CloudSocialSettingMapper.class);
-        if(settingMapper != null){
+        if (settingMapper != null) {
             CloudSocialSetting clientSetting = settingMapper.selectByPrimaryKey(id);
-            if(clientSetting == null){
+            if (clientSetting == null) {
                 settingMapper.insertSelective(setting);
-            }else{
+            } else {
                 settingMapper.updateByPrimaryKeyWithBLOBs(setting);
             }
         }

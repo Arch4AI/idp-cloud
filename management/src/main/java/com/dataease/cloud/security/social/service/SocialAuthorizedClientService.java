@@ -1,6 +1,7 @@
 package com.dataease.cloud.security.social.service;
 
-import com.dataease.cloud.base.domain.*;
+import com.dataease.cloud.base.domain.CloudSocialAuthorizedTokenKey;
+import com.dataease.cloud.base.domain.CloudSocialAuthorizedTokenWithBLOBs;
 import com.dataease.cloud.base.mapper.CloudSocialAuthorizedTokenMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;

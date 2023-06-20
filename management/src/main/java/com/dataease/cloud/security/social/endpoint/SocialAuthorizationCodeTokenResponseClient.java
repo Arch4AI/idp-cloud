@@ -34,8 +34,8 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
-import static com.dataease.cloud.security.social.constant.SocialConstant.SOCIAL_ACCESSTOKEN_USER_UNIONID_ATTR;
 import static com.dataease.cloud.security.social.constant.SocialConstant.AUTHORIZATION_RESPONSE_KEY;
+import static com.dataease.cloud.security.social.constant.SocialConstant.SOCIAL_ACCESSTOKEN_USER_UNIONID_ATTR;
 
 /**
  * custom return token uri response

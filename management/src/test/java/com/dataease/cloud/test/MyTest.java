@@ -1,22 +1,12 @@
 package com.dataease.cloud.test;
 
-import cn.hutool.core.util.IdUtil;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.AlipayConfig;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.domain.AlipayTradePagePayModel;
 import com.alipay.api.request.AlipayTradePagePayRequest;
 import com.alipay.api.response.AlipayTradePagePayResponse;
-import com.dataease.cloud.payment.constant.PayProvider;
-import com.dataease.cloud.payment.entity.request.PayOrderRequest;
-import com.dataease.cloud.payment.entity.response.PayOrderResponse;
-import com.dataease.cloud.payment.factory.PayProviderFactory;
-import com.dataease.cloud.payment.properties.AliPayProperties;
-import com.dataease.cloud.payment.properties.WeixinPayProperties;
-import com.dataease.cloud.payment.service.AbstractPayService;
-import com.dataease.cloud.payment.service.alipay.AliPagePayService;
 import com.dataease.cloud.utils.JsonUtils;
-import com.dataease.cloud.utils.ObjectMapperUtils;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.api.ProgressCallback;
 import org.mybatis.generator.config.Configuration;
@@ -104,9 +94,9 @@ public class MyTest {
 //        alipay();
         RestTemplate restTemplate = new RestTemplate();
         String url = "https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=wwa9ad312afadcad20&corpsecret=0RVa_4shRyxSrdLCzfJz8pWxhPHn6L_AI47iGH06SA4";
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET,new HttpEntity<>(null),String.class);
-        if(response.getStatusCode().is2xxSuccessful()){
-            Map<String,Object> tokenMap = JsonUtils.jsonToObject(response.getBody(),Map.class);
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(null), String.class);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            Map<String, Object> tokenMap = JsonUtils.jsonToObject(response.getBody(), Map.class);
             tokenMap.values().forEach(System.out::println);
         }
         //System.out.println(response.getBody());

@@ -84,8 +84,8 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
      * @param exception
      * @return
      */
-    private String getMessageByException(AuthenticationException exception){
-        String message = I18nService.getMessage("login_error_msg",exception.getMessage());
+    private String getMessageByException(AuthenticationException exception) {
+        String message = I18nService.getMessage("login_error_msg", exception.getMessage());
         return message;
     }
 }

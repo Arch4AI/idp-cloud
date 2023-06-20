@@ -28,7 +28,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Custom OAuth2 User Service
@@ -86,7 +89,7 @@ public class SocialUserService implements OAuth2UserService<OAuth2UserRequest, O
         }
 
         CloudSocialSetting setting = settingMapper.selectByPrimaryKey(userRequest.getClientRegistration().getRegistrationId());
-        if(setting == null || !setting.getEnable()){
+        if (setting == null || !setting.getEnable()) {
             OAuth2Error oauth2Error = new OAuth2Error(SOCIAL_PROVIDER_NOT_FOUND_CODE,
                     "Social Provider has not found or setting disabled: "
                             + userRequest.getClientRegistration().getRegistrationId(),
@@ -96,7 +99,7 @@ public class SocialUserService implements OAuth2UserService<OAuth2UserRequest, O
         // 根据类型来处理 这里最好也包含OIDC的哦
         ClientType clientType = ClientType.valueOf(setting.getClientType());
         Map<String, Object> userAttributes = new HashMap<>();
-        switch (clientType){
+        switch (clientType) {
             //定义不同的类型获取不同的信息
             case wechatwork_self_app -> {
                 userAttributes = wechatworkSelfAppUserAttributes(userRequest);
@@ -136,7 +139,7 @@ public class SocialUserService implements OAuth2UserService<OAuth2UserRequest, O
                 userAttributes = response.getBody();
             }
         }
-        if(userAttributes.isEmpty()){
+        if (userAttributes.isEmpty()) {
             OAuth2Error oauth2Error = new OAuth2Error(INVALID_USER_INFO_RESPONSE_ERROR_CODE,
                     "Social provider get user response for client type:" + setting.getClientType() + " has some error!",
                     null);
@@ -153,23 +156,24 @@ public class SocialUserService implements OAuth2UserService<OAuth2UserRequest, O
 
     /**
      * 获取微博的用户信息
+     *
      * @param userRequest
      * @return
      */
-    private Map<String,Object> weiboUserAttributes(OAuth2UserRequest userRequest){
-        String uid = (String)userRequest.getAdditionalParameters().get(SocialConstant.SOCIAL_ACCESSTOKEN_USER_UNIONID_ATTR);
+    private Map<String, Object> weiboUserAttributes(OAuth2UserRequest userRequest) {
+        String uid = (String) userRequest.getAdditionalParameters().get(SocialConstant.SOCIAL_ACCESSTOKEN_USER_UNIONID_ATTR);
         String uri = UriComponentsBuilder.fromUriString(userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUri())
-                .queryParam(OAuth2ParameterNames.ACCESS_TOKEN,userRequest.getAccessToken().getTokenValue())
-                .queryParam("uid",uid)
+                .queryParam(OAuth2ParameterNames.ACCESS_TOKEN, userRequest.getAccessToken().getTokenValue())
+                .queryParam("uid", uid)
                 .toUriString();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity httpEntity = new HttpEntity(httpHeaders);
         try {
-            ResponseEntity<Map> responseEntity = this.restOperations.exchange(uri,HttpMethod.GET,httpEntity,Map.class);
-            Map<String,Object> userMap = responseEntity.getBody();
+            ResponseEntity<Map> responseEntity = this.restOperations.exchange(uri, HttpMethod.GET, httpEntity, Map.class);
+            Map<String, Object> userMap = responseEntity.getBody();
             return userMap;
-        }catch (OAuth2AuthorizationException ex) {
+        } catch (OAuth2AuthorizationException ex) {
             throw throwOAuthError(userRequest, ex);
         } catch (UnknownContentTypeException ex) {
             throw unknowError(userRequest, ex);
@@ -180,24 +184,25 @@ public class SocialUserService implements OAuth2UserService<OAuth2UserRequest, O
 
     /**
      * 获取百度的用户信息
+     *
      * @param userRequest
      * @return
      */
-    private Map<String,Object> baiduUserAttributes(OAuth2UserRequest userRequest){
+    private Map<String, Object> baiduUserAttributes(OAuth2UserRequest userRequest) {
         String uri = UriComponentsBuilder.fromUriString(userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUri())
-                .queryParam(OAuth2ParameterNames.ACCESS_TOKEN,userRequest.getAccessToken().getTokenValue())
+                .queryParam(OAuth2ParameterNames.ACCESS_TOKEN, userRequest.getAccessToken().getTokenValue())
                 .build()
                 .toUriString();
         try {
-            ResponseEntity<Map> responseEntity = this.restOperations.exchange(uri,HttpMethod.GET,null,Map.class);
-            Map<String,Object> userMap = responseEntity.getBody();
-            if(userMap.containsKey("error_msg")){
+            ResponseEntity<Map> responseEntity = this.restOperations.exchange(uri, HttpMethod.GET, null, Map.class);
+            Map<String, Object> userMap = responseEntity.getBody();
+            if (userMap.containsKey("error_msg")) {
                 OAuth2Error oauth2Error = new OAuth2Error(INVALID_USER_INFO_RESPONSE_ERROR_CODE,
                         "An error occurred while attempting to retrieve the UserInfo Resource: " + String.valueOf(userMap.get("error_msg")), null);
                 throw new OAuth2AuthenticationException(oauth2Error);
             }
             return userMap;
-        }catch (OAuth2AuthorizationException ex) {
+        } catch (OAuth2AuthorizationException ex) {
             throw throwOAuthError(userRequest, ex);
         } catch (UnknownContentTypeException ex) {
             throw unknowError(userRequest, ex);
@@ -208,19 +213,20 @@ public class SocialUserService implements OAuth2UserService<OAuth2UserRequest, O
 
     /**
      * 获取QQ的用户信息
+     *
      * @param userRequest
      * @return
      */
-    private Map<String,Object> qqUserAttributes(OAuth2UserRequest userRequest){
+    private Map<String, Object> qqUserAttributes(OAuth2UserRequest userRequest) {
         String uri = UriComponentsBuilder.fromUriString(userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUri())
                 .queryParam(OAuth2ParameterNames.ACCESS_TOKEN, userRequest.getAccessToken().getTokenValue())
                 .queryParam("fmt", "json")
                 .build()
                 .toUriString();
         try {
-            ResponseEntity<Map> responseEntity = this.restOperations.exchange(uri,HttpMethod.GET,null,Map.class);
+            ResponseEntity<Map> responseEntity = this.restOperations.exchange(uri, HttpMethod.GET, null, Map.class);
             return responseEntity.getBody();
-        }catch (OAuth2AuthorizationException ex) {
+        } catch (OAuth2AuthorizationException ex) {
             throw throwOAuthError(userRequest, ex);
         } catch (UnknownContentTypeException ex) {
             throw unknowError(userRequest, ex);
@@ -232,10 +238,11 @@ public class SocialUserService implements OAuth2UserService<OAuth2UserRequest, O
     /**
      * //TODO 具体需要测试 这个地方返回可能有问题
      * 微信开发平台获取用户信息
+     *
      * @param userRequest
      * @return
      */
-    private Map<String,Object> wechatUserAttributes(OAuth2UserRequest userRequest){
+    private Map<String, Object> wechatUserAttributes(OAuth2UserRequest userRequest) {
         String openid = (String) userRequest.getAdditionalParameters().get(SocialConstant.SOCIAL_ACCESSTOKEN_USER_UNIONID_ATTR);
         String uri = UriComponentsBuilder.fromUriString(userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUri())
                 .queryParam(OAuth2ParameterNames.ACCESS_TOKEN, userRequest.getAccessToken().getTokenValue())
@@ -244,15 +251,15 @@ public class SocialUserService implements OAuth2UserService<OAuth2UserRequest, O
                 .build()
                 .toUriString();
         try {
-            ResponseEntity<Map> responseEntity = this.restOperations.exchange(uri,HttpMethod.GET,new HttpEntity<>(null),Map.class);
-            Map<String,Object> userMap = responseEntity.getBody();
-            if(userMap.containsKey("errcode")){
+            ResponseEntity<Map> responseEntity = this.restOperations.exchange(uri, HttpMethod.GET, new HttpEntity<>(null), Map.class);
+            Map<String, Object> userMap = responseEntity.getBody();
+            if (userMap.containsKey("errcode")) {
                 OAuth2Error oauth2Error = new OAuth2Error(INVALID_USER_INFO_RESPONSE_ERROR_CODE,
                         "An error occurred while attempting to retrieve the UserInfo Resource: " + String.valueOf(userMap.get("errmsg")), null);
                 throw new OAuth2AuthenticationException(oauth2Error);
             }
             return userMap;
-        }catch (OAuth2AuthorizationException ex) {
+        } catch (OAuth2AuthorizationException ex) {
             throw throwOAuthError(userRequest, ex);
         } catch (UnknownContentTypeException ex) {
             throw unknowError(userRequest, ex);
@@ -263,10 +270,11 @@ public class SocialUserService implements OAuth2UserService<OAuth2UserRequest, O
 
     /**
      * 获取企业微信外部应用的用户信息
+     *
      * @param userRequest
      * @return
      */
-    private Map<String,Object> wechatworkExternalAppUserAttributes(OAuth2UserRequest userRequest){
+    private Map<String, Object> wechatworkExternalAppUserAttributes(OAuth2UserRequest userRequest) {
         OAuth2AuthorizationResponse oAuth2AuthorizationResponse = (OAuth2AuthorizationResponse) userRequest.getAdditionalParameters().get(SocialConstant.AUTHORIZATION_RESPONSE_KEY);
         //企业微信获取用户信息
         String uri = UriComponentsBuilder.fromUriString(userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUri())
@@ -275,15 +283,15 @@ public class SocialUserService implements OAuth2UserService<OAuth2UserRequest, O
                 .build()
                 .toUriString();
         try {
-           ResponseEntity<Map> responseEntity = this.restOperations.exchange(uri,HttpMethod.GET,new HttpEntity<>(null),Map.class);
-           Map<String,Object> userMap = responseEntity.getBody();
-           if(userMap.containsKey("errcode") && Integer.valueOf(userMap.get("errcode")+"")!=0){
-               OAuth2Error oauth2Error = new OAuth2Error(INVALID_USER_INFO_RESPONSE_ERROR_CODE,
-                       "An error occurred while attempting to retrieve the UserInfo Resource: " + String.valueOf(userMap.get("errmsg")), null);
-               throw new OAuth2AuthenticationException(oauth2Error);
-           }
-           return userMap;
-        }catch (OAuth2AuthorizationException ex) {
+            ResponseEntity<Map> responseEntity = this.restOperations.exchange(uri, HttpMethod.GET, new HttpEntity<>(null), Map.class);
+            Map<String, Object> userMap = responseEntity.getBody();
+            if (userMap.containsKey("errcode") && Integer.valueOf(userMap.get("errcode") + "") != 0) {
+                OAuth2Error oauth2Error = new OAuth2Error(INVALID_USER_INFO_RESPONSE_ERROR_CODE,
+                        "An error occurred while attempting to retrieve the UserInfo Resource: " + String.valueOf(userMap.get("errmsg")), null);
+                throw new OAuth2AuthenticationException(oauth2Error);
+            }
+            return userMap;
+        } catch (OAuth2AuthorizationException ex) {
             throw throwOAuthError(userRequest, ex);
         } catch (UnknownContentTypeException ex) {
             throw unknowError(userRequest, ex);
@@ -294,30 +302,31 @@ public class SocialUserService implements OAuth2UserService<OAuth2UserRequest, O
 
     /**
      * 获取飞书的用户信息
+     *
      * @param userRequest
      * @return
      */
-    private Map<String,Object> feishuUserAttributes(OAuth2UserRequest userRequest){
+    private Map<String, Object> feishuUserAttributes(OAuth2UserRequest userRequest) {
         OAuth2AuthorizationResponse oAuth2AuthorizationResponse = (OAuth2AuthorizationResponse) userRequest.getAdditionalParameters().get(SocialConstant.AUTHORIZATION_RESPONSE_KEY);
         String uri = userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUri();
-        Map<String,String> rawBody = new HashMap<>(){{
+        Map<String, String> rawBody = new HashMap<>() {{
             put(OAuth2ParameterNames.GRANT_TYPE, userRequest.getClientRegistration().getAuthorizationGrantType().getValue());
             put(OAuth2ParameterNames.CODE, oAuth2AuthorizationResponse.getCode());
         }};
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(userRequest.getAccessToken().getTokenValue());
         headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE);
-        HttpEntity httpEntity = new HttpEntity(JsonUtils.toJsonString(rawBody),headers);
+        HttpEntity httpEntity = new HttpEntity(JsonUtils.toJsonString(rawBody), headers);
         try {
-            ResponseEntity<Map> responseEntity = this.restOperations.exchange(uri,HttpMethod.POST,httpEntity,Map.class);
-            Map<String,Object> userMap = responseEntity.getBody();
-            if(userMap.containsKey("code") && Integer.valueOf(userMap.get("code")+"") != 0){
+            ResponseEntity<Map> responseEntity = this.restOperations.exchange(uri, HttpMethod.POST, httpEntity, Map.class);
+            Map<String, Object> userMap = responseEntity.getBody();
+            if (userMap.containsKey("code") && Integer.valueOf(userMap.get("code") + "") != 0) {
                 OAuth2Error oauth2Error = new OAuth2Error(INVALID_USER_INFO_RESPONSE_ERROR_CODE,
                         "An error occurred while attempting to retrieve the UserInfo Resource: " + String.valueOf(userMap.get("msg")), null);
                 throw new OAuth2AuthenticationException(oauth2Error);
             }
             return userMap;
-        }catch (OAuth2AuthorizationException ex) {
+        } catch (OAuth2AuthorizationException ex) {
             throw throwOAuthError(userRequest, ex);
         } catch (UnknownContentTypeException ex) {
             throw unknowError(userRequest, ex);
@@ -328,19 +337,20 @@ public class SocialUserService implements OAuth2UserService<OAuth2UserRequest, O
 
     /**
      * 获取钉钉的用户
+     *
      * @param userRequest
      * @return
      */
-    private Map<String,Object> dingtalkUserAttributes(OAuth2UserRequest userRequest){
+    private Map<String, Object> dingtalkUserAttributes(OAuth2UserRequest userRequest) {
         HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        headers.set("x-acs-dingtalk-access-token",userRequest.getAccessToken().getTokenValue());
+        headers.set("x-acs-dingtalk-access-token", userRequest.getAccessToken().getTokenValue());
         HttpEntity httpEntity = new HttpEntity(headers);
         try {
             String uri = userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUri();
-            ResponseEntity<Map> responseEntity = this.restOperations.exchange(uri,HttpMethod.GET,httpEntity,Map.class);
+            ResponseEntity<Map> responseEntity = this.restOperations.exchange(uri, HttpMethod.GET, httpEntity, Map.class);
             return responseEntity.getBody();
-        }catch (OAuth2AuthorizationException ex) {
+        } catch (OAuth2AuthorizationException ex) {
             throw throwOAuthError(userRequest, ex);
         } catch (UnknownContentTypeException ex) {
             throw unknowError(userRequest, ex);
@@ -350,11 +360,12 @@ public class SocialUserService implements OAuth2UserService<OAuth2UserRequest, O
     }
 
     /**
-     *  企业微信自建应用获取用户信息
+     * 企业微信自建应用获取用户信息
+     *
      * @param userRequest
      * @return
      */
-    private Map<String,Object> wechatworkSelfAppUserAttributes(OAuth2UserRequest userRequest){
+    private Map<String, Object> wechatworkSelfAppUserAttributes(OAuth2UserRequest userRequest) {
         OAuth2AuthorizationResponse oAuth2AuthorizationResponse = (OAuth2AuthorizationResponse) userRequest.getAdditionalParameters().get(SocialConstant.AUTHORIZATION_RESPONSE_KEY);
         String userUri = UriComponentsBuilder.fromUriString(userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUri())
                 .queryParam(OAuth2ParameterNames.ACCESS_TOKEN, userRequest.getAccessToken().getTokenValue())
@@ -363,15 +374,15 @@ public class SocialUserService implements OAuth2UserService<OAuth2UserRequest, O
                 .toUriString();
         HttpEntity httpEntity = new HttpEntity(null);
         try {
-            ResponseEntity<Map> response = this.restOperations.exchange(userUri, HttpMethod.GET,httpEntity,Map.class);
-            Map<String,Object> resMap = response.getBody();
-            if(resMap.containsKey("errcode") && !String.valueOf(resMap.get("errcode")).equals("0")){
+            ResponseEntity<Map> response = this.restOperations.exchange(userUri, HttpMethod.GET, httpEntity, Map.class);
+            Map<String, Object> resMap = response.getBody();
+            if (resMap.containsKey("errcode") && !String.valueOf(resMap.get("errcode")).equals("0")) {
                 OAuth2Error oauth2Error = new OAuth2Error(INVALID_USER_INFO_RESPONSE_ERROR_CODE,
                         "An error occurred while attempting to retrieve the UserInfo Resource: " + String.valueOf(resMap.get("errmsg")), null);
                 throw new OAuth2AuthenticationException(oauth2Error);
             }
             return resMap;
-        }catch (OAuth2AuthorizationException ex) {
+        } catch (OAuth2AuthorizationException ex) {
             throw throwOAuthError(userRequest, ex);
         } catch (UnknownContentTypeException ex) {
             throw unknowError(userRequest, ex);
@@ -388,7 +399,7 @@ public class SocialUserService implements OAuth2UserService<OAuth2UserRequest, O
         } catch (UnknownContentTypeException ex) {
             throw unknowError(userRequest, ex);
         } catch (RestClientException ex) {
-           throw restError(ex);
+            throw restError(ex);
         }
     }
 

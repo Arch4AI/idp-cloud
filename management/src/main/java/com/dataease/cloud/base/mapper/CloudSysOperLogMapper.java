@@ -3,9 +3,10 @@ package com.dataease.cloud.base.mapper;
 import com.dataease.cloud.base.domain.CloudSysOperLog;
 import com.dataease.cloud.base.domain.CloudSysOperLogExample;
 import com.dataease.cloud.base.domain.CloudSysOperLogWithBLOBs;
-import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 @Mapper
 public interface CloudSysOperLogMapper {

@@ -1,11 +1,12 @@
 package com.dataease.cloud.utils;
 
 import com.dataease.cloud.properties.CommonProperties;
-import com.fit2cloud.cloud.http.HttpUtil;
-import com.fit2cloud.cloud.http.support.SimpleHttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 
@@ -32,8 +33,9 @@ public class AddressUtils {
         }
         if (CommonProperties.isAddressEnabled()) {
             try {
-                SimpleHttpResponse simpleHttpResponse = HttpUtil.get(String.format("%s?ip=%s&json=true", IP_URL, ip));
-                String rspStr = simpleHttpResponse.getBody();
+                RestTemplate restTemplate = new RestTemplate();
+                ResponseEntity<String> responseEntity = restTemplate.exchange(String.format("%s?ip=%s&json=true", IP_URL, ip), HttpMethod.GET, null, String.class);
+                String rspStr = responseEntity.getBody();
                 if (!StringUtils.hasText(rspStr)) {
                     log.error("获取地理位置异常 {}", ip);
                     return UNKNOWN;

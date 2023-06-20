@@ -2,7 +2,6 @@ package com.dataease.cloud.aspect;
 
 import com.dataease.cloud.annotation.SysLog;
 import com.dataease.cloud.base.domain.CloudSysOperLogWithBLOBs;
-import com.dataease.cloud.base.mapper.CloudUserMapper;
 import com.dataease.cloud.constant.LogStatus;
 import com.dataease.cloud.security.LocalUser;
 import com.dataease.cloud.service.SystemLogService;
@@ -19,7 +18,6 @@ import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;

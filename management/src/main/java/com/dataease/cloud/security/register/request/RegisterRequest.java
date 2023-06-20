@@ -14,8 +14,8 @@ import java.io.Serializable;
  **/
 @Data
 public class RegisterRequest extends CloudUser implements Serializable {
-    //认证源ID
-    private String sourceId;
-    //认证用户UUID
+    //社交登录配置ID
+    private String registrationId;
+    //社交用户UUID
     private String uuid;
 }

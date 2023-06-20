@@ -1,9 +1,7 @@
 package com.dataease.cloud.security.jackson2;
 
 import com.dataease.cloud.security.LocalUser;
-import com.dataease.cloud.security.external.ExternalAuthenticationToken;
 import com.dataease.cloud.security.jackson2.serializer.LocalUserMixin;
-import com.dataease.cloud.security.jackson2.serializer.external.ExternalAuthenticationTokenMixin;
 import com.dataease.cloud.security.jackson2.serializer.number.LongMixin;
 import com.dataease.cloud.security.jackson2.serializer.password.PasswordAuthenticationTokenMixin;
 import com.dataease.cloud.security.jackson2.serializer.phone.PhoneAuthenticationTokenMixin;
@@ -38,7 +36,6 @@ public class CustomJackson2Module extends SimpleModule {
         context.setMixInAnnotations(ProfileAuthenticationToken.class, ProfileAuthenticationTokenMixin.class);
         context.setMixInAnnotations(PhoneAuthenticationToken.class, PhoneAuthenticationTokenMixin.class);
         context.setMixInAnnotations(RegisterAuthenticationToken.class, RegisterAuthenticationTokenMixin.class);
-        context.setMixInAnnotations(ExternalAuthenticationToken.class, ExternalAuthenticationTokenMixin.class);
         context.setMixInAnnotations(SocialAuthenticationToken.class, SocialAuthenticationTokenMixin.class);
         context.setMixInAnnotations(Long.class, LongMixin.class);
     }

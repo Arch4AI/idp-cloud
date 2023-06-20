@@ -105,9 +105,8 @@ public class PhoneAuthenticationFilter extends AbstractAuthenticationProcessingF
         //移除这个key
         stringRedisTemplate.delete(phoneLoginRequest.getPhone());
         //如果是传递进来了 就绑定一下第三方的 这个绑定的意思就是这个已经存在才可以绑定
-        if (StringUtils.hasText(phoneLoginRequest.getSourceId()) && StringUtils.hasText(phoneLoginRequest.getUuid())) {
-            externalAuthSourceService.bindSocailLocalUser(user.getUserId(),phoneLoginRequest.getSourceId(),phoneLoginRequest.getUuid());
-            externalAuthSourceService.bindUserRelation(user.getUserId(), phoneLoginRequest.getSourceId(), phoneLoginRequest.getUuid());
+        if (StringUtils.hasText(phoneLoginRequest.getRegistrationId()) && StringUtils.hasText(phoneLoginRequest.getUuid())) {
+            externalAuthSourceService.bindSocailLocalUser(user.getUserId(), phoneLoginRequest.getRegistrationId(), phoneLoginRequest.getUuid());
         }
         if (user != null) {
             request.setAttribute(Constants.REQ_USER_ATTRIBUTE, user);

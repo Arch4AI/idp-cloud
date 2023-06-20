@@ -18,7 +18,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2LoginAuthenticationToken;
-import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationCodeTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
@@ -26,7 +25,10 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
-import org.springframework.security.oauth2.client.web.*;
+import org.springframework.security.oauth2.client.web.AuthenticatedPrincipalOAuth2AuthorizedClientRepository;
+import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
@@ -77,11 +79,11 @@ public final class SocialLoginConfigurer extends AbstractHttpConfigurer<SocialLo
 
     private AuthenticationFailureHandler failureHandler;
 
-    public SocialLoginConfigurer(){
+    public SocialLoginConfigurer() {
 
     }
 
-    public SocialLoginConfigurer(AuthenticationSuccessHandler successHandler,AuthenticationFailureHandler failureHandler){
+    public SocialLoginConfigurer(AuthenticationSuccessHandler successHandler, AuthenticationFailureHandler failureHandler) {
         this.successHandler = successHandler;
         this.failureHandler = failureHandler;
     }
@@ -283,10 +285,10 @@ public final class SocialLoginConfigurer extends AbstractHttpConfigurer<SocialLo
         } else {
             //判断是不是有那个Bean
             OAuth2AuthorizationRequestResolver requestResolver = http.getSharedObject(ApplicationContext.class).getBean(OAuth2AuthorizationRequestResolver.class);
-            if(requestResolver != null){
+            if (requestResolver != null) {
                 authorizationRequestFilter = new SocialAuthorizationRequestRedirectFilter(
                         requestResolver);
-            }else{
+            } else {
                 // 判断是否指定了回调的地址 有的话 就会加入到对应的里面去
                 String authorizationRequestBaseUri = this.authorizationEndpointConfig.authorizationRequestBaseUri;
                 if (authorizationRequestBaseUri == null) {

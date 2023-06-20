@@ -15,15 +15,16 @@ public class JsonUtils {
 
     /**
      * 转JSON字符串
+     *
      * @param obj
      * @return
      */
-    public static String toJsonString(Object obj){
-        if(obj != null){
+    public static String toJsonString(Object obj) {
+        if (obj != null) {
             try {
                 return ObjectMapperUtils.simpleObjectMapper.writeValueAsString(obj);
-            }catch (Exception e){
-                log.error("object transform json string error:",e);
+            } catch (Exception e) {
+                log.error("object transform json string error:", e);
             }
         }
         return null;
@@ -31,16 +32,17 @@ public class JsonUtils {
 
     /**
      * 转对象
+     *
      * @param json
      * @param clz
      * @param <T>
      * @return
      */
-    public static <T> T jsonToObject(String json,Class<T> clz){
+    public static <T> T jsonToObject(String json, Class<T> clz) {
         try {
-            return ObjectMapperUtils.simpleObjectMapper.readValue(json,clz);
-        }catch (Exception e){
-            log.error("string transform object error:",e);
+            return ObjectMapperUtils.simpleObjectMapper.readValue(json, clz);
+        } catch (Exception e) {
+            log.error("string transform object error:", e);
         }
         return null;
     }
