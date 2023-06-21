@@ -27,7 +27,7 @@ EXPOSE 8090
 EXPOSE 6080
 
 # 执行jar
-COPY management/target/dataease-cloud-management.jar /opt/app/dataease-cloud-management.jar
+COPY backend/target/dataease-cloud-management.jar /opt/app/dataease-cloud-management.jar
 
 # 健康检查
 HEALTHCHECK --interval=15s --timeout=5s --retries=20 --start-period=30s CMD curl -s 127.0.0.1:8090

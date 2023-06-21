@@ -19,7 +19,7 @@
 
     <modules>
         <module>plugin</module>
-        <module>management</module>
+        <module>backend</module>
     </modules>
 
     <properties>
