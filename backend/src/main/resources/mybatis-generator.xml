@@ -17,13 +17,15 @@
         <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin"/>
         <!-- 这个东西可以忽略 不然无法指定多数据源 -->
         <plugin type="org.mybatis.generator.plugins.MapperAnnotationPlugin"/>
-        <plugin type="com.idp.cloud.plugin.LombokPlugin"/>
+        <plugin type="com.idp.cloud.plugin.LombokPlugin">
+            <property name="suppressAllComments" value="true"/>
+        </plugin>
 
         <!-- 用来除去时间信息的，这在配合类似subversion的代码管理工具时使用很有效，因为可以减少没有必要的注释迁入 -->
         <commentGenerator>
             <property name="suppressDate" value="true"/>
             <!--  关闭自动生成的注释  -->
-            <property name="suppressAllComments" value="false"/>
+            <property name="suppressAllComments" value="true"/>
         </commentGenerator>
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
                         connectionURL="${spring.datasource.url}&amp;nullCatalogMeansCurrent=true"
@@ -53,5 +55,17 @@
         <table tableName="cloud_social_setting"/>
         <table tableName="cloud_social_authorized_token"/>
         <table tableName="cloud_user_social"/>
+        <table tableName="cloud_user_role"/>
+        <table tableName="cloud_oauth2_authorization_consent"/>
+        <table tableName="cloud_user"/>
+        <table tableName="cloud_oauth2_authorization"/>
+        <table tableName="cloud_oauth2_registered_client"/>
+        <table tableName="cloud_redis_session"/>
+        <table tableName="cloud_remember_me_token"/>
+        <table tableName="cloud_spring_session_attributes"/>
+        <table tableName="cloud_spring_session"/>
+        <table tableName="cloud_sys_oper_log"/>
+        <table tableName="cloud_user_attribute"/>
+        <table tableName="cloud_user_login_log"/>
     </context>
 </generatorConfiguration>
