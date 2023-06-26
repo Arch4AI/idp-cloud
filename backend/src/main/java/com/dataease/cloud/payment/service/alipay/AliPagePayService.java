@@ -43,6 +43,7 @@ public class AliPagePayService extends AbstractPayService<AliPayProperties> {
         try {
             //easy aili payMent
             AlipayTradePagePayResponse response = Factory.Payment.Page()
+                    .optional("qr_pay_mode","0")
                     .pay(payOrderRequest.getDescription(), payOrderRequest.getOrderId(), String.valueOf(NumberUtil.div(payOrderRequest.getAmount(), 100, 2)), payOrderRequest.getReturnUrl());
             return PayOrderResponse.builder()
                     .orderId(payOrderRequest.getOrderId())

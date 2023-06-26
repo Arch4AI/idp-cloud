@@ -11,7 +11,6 @@ import com.dataease.cloud.constant.RoleEnum;
 import com.dataease.cloud.entity.request.RegisteredClientQueryReq;
 import com.dataease.cloud.security.social.constant.ClientType;
 import com.dataease.cloud.service.Oauth2RegisteredClientSerive;
-import com.dataease.cloud.service.SocialAuthenticationService;
 import com.dataease.cloud.utils.CommonBeanFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -38,13 +37,11 @@ public class SystemInit {
 
     private CloudUserMapper cloudUserMapper;
     private CloudUserRoleMapper cloudUserRoleMapper;
-    private SocialAuthenticationService externalAuthSourceService;
     private static final String DEFAULT_USER = "admin";
 
-    public SystemInit(CloudUserMapper cloudUserMapper, CloudUserRoleMapper cloudUserRoleMapper, SocialAuthenticationService externalAuthSourceService) {
+    public SystemInit(CloudUserMapper cloudUserMapper, CloudUserRoleMapper cloudUserRoleMapper) {
         this.cloudUserMapper = cloudUserMapper;
         this.cloudUserRoleMapper = cloudUserRoleMapper;
-        this.externalAuthSourceService = externalAuthSourceService;
     }
 
     @EventListener

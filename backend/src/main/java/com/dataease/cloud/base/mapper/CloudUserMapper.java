@@ -2,9 +2,10 @@ package com.dataease.cloud.base.mapper;
 
 import com.dataease.cloud.base.domain.CloudUser;
 import com.dataease.cloud.base.domain.CloudUserExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 @Mapper
 public interface CloudUserMapper {

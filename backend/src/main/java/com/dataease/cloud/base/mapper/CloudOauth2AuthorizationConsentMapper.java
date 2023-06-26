@@ -3,9 +3,10 @@ package com.dataease.cloud.base.mapper;
 import com.dataease.cloud.base.domain.CloudOauth2AuthorizationConsent;
 import com.dataease.cloud.base.domain.CloudOauth2AuthorizationConsentExample;
 import com.dataease.cloud.base.domain.CloudOauth2AuthorizationConsentKey;
-import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 @Mapper
 public interface CloudOauth2AuthorizationConsentMapper {

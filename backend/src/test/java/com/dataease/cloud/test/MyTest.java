@@ -143,8 +143,9 @@ public class MyTest {
     private static void easyPay() throws Exception {
         Factory.setOptions(getOptions());
         com.alipay.easysdk.payment.page.models.AlipayTradePagePayResponse response = Factory.Payment.Page()
+                .optional("qr_pay_mode","0")
                 .pay("Iphone6 16G", "20150320010101001", "88.88", "https://www.baidu.com");
-        System.out.println(JsonUtils.toJsonString(response));
+        System.out.println(JsonUtils.toJsonString(response.getBody()));
     }
 
     private static Config getOptions() {

@@ -3,9 +3,10 @@ package com.dataease.cloud.base.mapper;
 import com.dataease.cloud.base.domain.CloudUserSocial;
 import com.dataease.cloud.base.domain.CloudUserSocialExample;
 import com.dataease.cloud.base.domain.CloudUserSocialKey;
-import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 @Mapper
 public interface CloudUserSocialMapper {

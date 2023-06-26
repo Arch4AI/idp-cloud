@@ -2,9 +2,10 @@ package com.dataease.cloud.base.mapper;
 
 import com.dataease.cloud.base.domain.CloudRememberMeToken;
 import com.dataease.cloud.base.domain.CloudRememberMeTokenExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 @Mapper
 public interface CloudRememberMeTokenMapper {

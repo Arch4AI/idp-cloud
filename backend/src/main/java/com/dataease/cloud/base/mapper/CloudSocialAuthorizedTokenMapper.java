@@ -4,9 +4,10 @@ import com.dataease.cloud.base.domain.CloudSocialAuthorizedToken;
 import com.dataease.cloud.base.domain.CloudSocialAuthorizedTokenExample;
 import com.dataease.cloud.base.domain.CloudSocialAuthorizedTokenKey;
 import com.dataease.cloud.base.domain.CloudSocialAuthorizedTokenWithBLOBs;
-import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 @Mapper
 public interface CloudSocialAuthorizedTokenMapper {
