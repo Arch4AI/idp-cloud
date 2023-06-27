@@ -11,9 +11,9 @@
           @click="openHref(getHref(item)[0])"
         >
           <template #icon>
-            <component :is="menuIcon(item)" class="t-icon"></component>
+            <t-icon :name="item.icon" />
           </template>
-          {{ item.title }}
+          {{ $t(item.title) }}
         </t-menu-item>
         <t-menu-item
           v-else
@@ -22,19 +22,19 @@
           :to="item.path"
         >
           <template #icon>
-            <component :is="menuIcon(item)" class="t-icon"></component>
+            <t-icon :name="item.icon" />
           </template>
-          {{ item.title }}
+          {{ $t(item.title) }}
         </t-menu-item>
       </template>
       <t-submenu
         v-else
         :name="item.path"
         :value="item.path"
-        :title="item.title"
+        :title="$t(item.title)"
       >
         <template #icon>
-          <component :is="menuIcon(item)" class="t-icon"></component>
+          <t-icon :name="item.icon" />
         </template>
         <menu-content v-if="item.children" :nav-data="item.children" />
       </t-submenu>
@@ -43,7 +43,7 @@
 </template>
 <script setup lang="tsx">
 import type { PropType } from 'vue'
-import { computed, shallowRef } from 'vue'
+import { computed } from 'vue'
 
 import { getActive } from '@/router'
 import type { MenuRoute } from '@/api/common/types'
@@ -60,17 +60,8 @@ const active = computed(() => getActive())
 
 const list = computed(() => {
   const { navData } = props
-  return getMenuList(navData)
+  return getMenuList(navData, '')
 })
-
-const menuIcon = (item: ListItemType) => {
-  console.log(typeof item.icon)
-  // TODO 菜单icon
-  // if (typeof item.icon === 'string') return <t-icon name={item.icon} />;
-  if (typeof item.icon === 'string') return ''
-  const RenderIcon = item.icon
-  return RenderIcon
-}
 
 const getMenuList = (list: MenuRoute[], basePath?: string): ListItemType[] => {
   if (!list || list.length === 0) {

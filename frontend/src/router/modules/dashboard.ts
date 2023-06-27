@@ -1,6 +1,3 @@
-import { DashboardIcon } from 'tdesign-icons-vue-next'
-import { shallowRef } from 'vue'
-
 import Layout from '@/layouts/index.vue'
 
 export default [
@@ -10,8 +7,8 @@ export default [
     redirect: '/dashboard/base',
     name: 'dashboard',
     meta: {
-      title: '仪表盘',
-      icon: shallowRef(DashboardIcon),
+      title: 'home.dashboard',
+      icon: 'dashboard',
       orderNo: 0
     },
     children: [
@@ -20,7 +17,7 @@ export default [
         name: 'DashboardBase',
         component: () => import('@/pages/dashboard/base/index.vue'),
         meta: {
-          title: '概览仪表盘'
+          title: 'home.dashboardBase'
         }
       }
     ]

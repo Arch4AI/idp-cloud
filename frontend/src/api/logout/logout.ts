@@ -9,7 +9,7 @@ export const logout = () => {
       //单独的拦截器 在登出的地方清除sessionStroage localStorage
       responseInterceptors(res) {
         sessionStorage.clear()
-        localStorage.clear()
+        localStorage.removeItem('UserSate')
         return res
       }
     }

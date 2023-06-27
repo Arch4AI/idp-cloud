@@ -1,7 +1,7 @@
 import uniq from 'lodash/uniq'
 import { loginByExternal } from '@/api/login/login'
 import externalInfoStore from '@/store/externalUser'
-import userStore from '@/store/user'
+import { getUserStore } from '@/store/user'
 import { MessagePlugin } from 'tdesign-vue-next'
 import {
   createRouter,
@@ -48,7 +48,6 @@ export function mapModuleRouterList(
 ): Array<RouteRecordRaw> {
   const routerList: Array<RouteRecordRaw> = []
   Object.keys(modules).forEach((key) => {
-    // @ts-ignore
     const mod = modules[key].default || {}
     const modList = Array.isArray(mod) ? [...mod] : [mod]
     routerList.push(...modList)
@@ -68,7 +67,7 @@ router.beforeEach(async (to, from, next) => {
   // 这里判断用户是否登录 否则有些页面无法进入
   // 还可以在这里判断角色权限 如果这个用户的权限不对 则直接跳转到默认的界面即可
   //直接下一步
-  const storeUser = userStore()
+  const storeUser = getUserStore()
   if (to.query) {
     const query: LocationQuery = to.query
     // 仅仅针对oauth2.0对接的情况 一定会有这2个东西 其余的都是附带的

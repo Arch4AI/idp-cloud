@@ -6,8 +6,7 @@ import { MessagePlugin } from 'tdesign-vue-next'
 import { RouteRecordName, RouteRecordRaw } from 'vue-router'
 
 import router from '@/router'
-import { getPermissionStore } from '@/store'
-import userStore from '@/store/user'
+import { getUserStore, getPermissionStore } from '@/store'
 import { PAGE_NOT_FOUND_ROUTE } from './utils/route/constant'
 
 NProgress.configure({ showSpinner: false })
@@ -18,10 +17,9 @@ router.beforeEach(async (to, from, next) => {
   const permissionStore = getPermissionStore()
   const { whiteListRouters } = permissionStore
 
-  const storeUser = userStore()
+  const storeUser = getUserStore()
   await storeUser.checkLogin()
   const user = storeUser.user
-  debugger
   if (user.enabled) {
     if (to.path === '/login') {
       next()

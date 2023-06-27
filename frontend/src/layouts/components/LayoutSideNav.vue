@@ -10,19 +10,18 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 
 import { usePermissionStore } from '@/store'
 
 import LSideNav from './SideNav.vue'
 
-const layout = ref('mix')
-const theme = ref('light')
+const layout = 'mix'
+const theme = 'light'
 const permissionStore = usePermissionStore()
 const { routers: menuRouters } = storeToRefs(permissionStore)
 
 const sideMenu = computed(() => {
-  let newMenuRouters = menuRouters.value
-  return newMenuRouters
+  return menuRouters.value
 })
 </script>

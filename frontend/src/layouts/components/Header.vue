@@ -17,7 +17,15 @@
       <template #operations>
         <div class="operations-container">
           <!-- 全局通知 Notice-->
-
+          <t-dropdown
+            trigger="click"
+            :options="langList"
+            :on-click="(e) => switchLang(e.value)"
+          >
+            <t-button theme="default" shape="square" variant="text">
+              <t-icon name="internet" />
+            </t-button>
+          </t-dropdown>
           <t-dropdown :min-column-width="120" trigger="click">
             <template #dropdown>
               <t-dropdown-menu>
@@ -25,13 +33,13 @@
                   class="operations-dropdown-container-item"
                   @click="handleNav('/user/index')"
                 >
-                  <t-icon name="user-circle"></t-icon>个人中心
+                  <t-icon name="user-circle"></t-icon>{{ $t('layout.user') }}
                 </t-dropdown-item>
                 <t-dropdown-item
                   class="operations-dropdown-container-item"
                   @click="handleLogout"
                 >
-                  <t-icon name="poweroff"></t-icon>退出登录
+                  <t-icon name="poweroff"></t-icon>{{ $t('layout.signOut') }}
                 </t-dropdown-item>
               </t-dropdown-menu>
             </template>
@@ -60,7 +68,9 @@ import { prefix } from '@/config/global'
 import { getActive } from '@/router'
 import { logout } from '@/api/logout/logout'
 import { MessagePlugin } from 'tdesign-vue-next'
-import userStore from '@/store/user'
+import { getUserStore } from '@/store'
+import { langList } from '@/locales'
+import { useLocale } from '@/locales/useLocal'
 
 const props = defineProps({
   theme: {
@@ -85,7 +95,7 @@ const props = defineProps({
   }
 })
 
-const storeUser = userStore()
+const storeUser = getUserStore()
 
 const router = useRouter()
 
@@ -119,6 +129,11 @@ const handleLogout = () => {
       MessagePlugin.error(res.msg)
     }
   })
+}
+const defaultLang = localStorage.getItem('lang')
+const { changeLocale } = useLocale()
+const switchLang = (lang: any) => {
+  changeLocale(lang)
 }
 </script>
 <style lang="less" scoped>
@@ -170,7 +185,10 @@ const handleLogout = () => {
   }
 
   .t-button {
-    margin-left: var(--td-comp-margin-l);
+    //margin-left: var(--td-comp-margin-l);
+  }
+  .t-button + .t-button {
+    margin-left: 0;
   }
 }
 

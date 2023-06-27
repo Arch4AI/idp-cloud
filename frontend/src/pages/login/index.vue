@@ -1,5 +1,17 @@
 <template>
   <div class="login">
+    <!--  头部  -->
+    <div class="login-header">
+      <t-dropdown
+        trigger="click"
+        :options="langList"
+        :on-click="(e) => switchLang(e.value)"
+      >
+        <t-button theme="default" shape="square" variant="text">
+          <t-icon name="internet" size="1.5em" />
+        </t-button>
+      </t-dropdown>
+    </div>
     <div class="login-form">
       <t-divider>
         <h1 class="title">{{ type == 'register' ? '注册' : 'Any Login' }}</h1>
@@ -31,15 +43,21 @@ import { ref } from 'vue'
 
 import Login from './components/Login.vue'
 import Register from './components/Register.vue'
+import { langList } from '@/locales'
+import { useLocale } from '@/locales/useLocal'
 
 const type = ref('login')
 const switchType = (val: string) => {
   type.value = val
+}
+const defaultLang = localStorage.getItem('lang')
+
+const { changeLocale } = useLocale()
+const switchLang = (lang: any) => {
+  changeLocale(lang)
 }
 </script>
 
 <style lang="less" scoped>
 @import url('./index.less');
 </style>
-
-<style lang="less" scoped></style>

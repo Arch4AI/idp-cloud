@@ -5,7 +5,7 @@ import type {
   RequestConfig,
   RequestInterceptors
 } from './types'
-import userStore from '@/store/user'
+import { getUserStore } from '@/store/user'
 
 class Request {
   // axios 实例
@@ -51,7 +51,7 @@ class Request {
     this.instance.interceptors.response.use(
       // 因为我们接口的数据都在res.data下，所以我们直接返回res.data
       (res: AxiosResponse) => {
-        const storeUser = userStore()
+        const storeUser = getUserStore()
         const url = res.config.url || ''
         this.abortControllerMap.delete(url)
         if (res.data.code === 302) {

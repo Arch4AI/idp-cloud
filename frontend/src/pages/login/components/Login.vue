@@ -130,7 +130,7 @@ import { checkPhone } from '@/utils/common'
 import router from '@/router'
 import SlideVerify, { SlideVerifyInstance } from 'vue3-slide-verify'
 import 'vue3-slide-verify/dist/style.css'
-import userStore from '@/store/user'
+import { getUserStore } from '@/store/user'
 import { listActiveProviders, getProviderRedirectUri } from '@/api/auth/auth'
 import ExternalLoginIcon from '@/components/ExternalLoginIcon.vue'
 import externalInfoStore from '@/store/externalUser'
@@ -239,7 +239,7 @@ const loginPhone = (context: SubmitContext<FormData>) => {
 
 const providers: Ref<Array<ExternalAuthSource>> = ref([])
 
-const storeUser = userStore()
+const storeUser = getUserStore()
 onMounted(async () => {
   // await storeUser.checkLogin()
   // const user = storeUser.user

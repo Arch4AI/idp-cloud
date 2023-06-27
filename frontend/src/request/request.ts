@@ -1,6 +1,7 @@
 import Request from './'
 import { AxiosResponse } from 'axios'
 import type { RequestConfig } from './types'
+import { getUserStore } from '@/store/user'
 
 export interface Response<T> {
   code: number
@@ -13,10 +14,13 @@ interface ApiRequestConfig<T, R> extends RequestConfig<Response<R>> {
   data?: T
 }
 
+const Language = localStorage.getItem('lang') || 'zh_CN'
+
 const request = new Request({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   timeout: 1000 * 60 * 5,
   headers: {
+    'Accept-Language': Language,
     'Content-Type': 'application/json;charset=utf-8;'
   },
   interceptors: {

@@ -9,5 +9,6 @@ store.use(piniaPluginPersist)
 export { store }
 
 export * from './modules/permission'
+export * from './user'
 // 导出
 export default store

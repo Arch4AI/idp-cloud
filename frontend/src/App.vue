@@ -1,10 +1,16 @@
-<script setup lang="ts"></script>
-
 <template>
   <div class="content">
-    <router-view></router-view>
+    <t-config-provider :global-config="getLocale">
+      <router-view></router-view>
+    </t-config-provider>
   </div>
 </template>
+
+<script setup lang="ts">
+import { useLocale } from '@/locales/useLocal'
+
+const { getLocale } = useLocale()
+</script>
 
 <style lang="less" scoped>
 .logo {

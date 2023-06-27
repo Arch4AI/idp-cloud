@@ -12,7 +12,7 @@ import {
 import router from '@/router'
 import SlideVerify, { SlideVerifyInstance } from 'vue3-slide-verify'
 import 'vue3-slide-verify/dist/style.css'
-import userStore from '@/store/user'
+import { getUserStore } from '@/store/user'
 import externalInfoStore from '@/store/externalUser'
 import { UserRegisterReq } from '@/api/login/types'
 
@@ -26,7 +26,7 @@ const formData: UserRegisterReq = reactive({
   email: '',
   phone: '',
   gender: '1',
-  language: 'ZH_CN',
+  language: 'zh_CN',
   code: '',
   confirmPassword: '',
   uuid: stroeExternalInfo.info.uuid,
@@ -182,14 +182,14 @@ const onReset = () => {
   MessagePlugin.success('重置成功')
 }
 
-const storeUser = userStore()
-onMounted(async () => {
-  await storeUser.checkLogin()
-  const user = storeUser.user
-  if (user.enabled) {
-    router.push('dashboard')
-  }
-})
+const storeUser = getUserStore()
+// onMounted(async () => {
+//   await storeUser.checkLogin()
+//   const user = storeUser.user
+//   if (user.enabled) {
+//     router.push('dashboard')
+//   }
+// })
 
 onBeforeUnmount(() => {
   if (timer.value) {
